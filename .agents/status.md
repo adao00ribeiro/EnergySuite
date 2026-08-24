@@ -18,10 +18,10 @@
   - Entity Framework Core configurado com PostgreSQL (Migration `InitialCreate` gerada).
   - Padrão CQRS implementado via `MediatR` (`CreateContractCommand` e `Handler` funcionando).
   - `ContractsController` exposto.
+  - Configurar Kafka Producer para disparar evento quando contrato for criado (MassTransit).
+  - Adicionar as validações com `FluentValidation` no pipeline do MediatR.
 - **Próximos Passos (To-Do):**
-  - Implementar Queries de Leitura (`GetContractByIdQuery`).
-  - Configurar Kafka Producer para disparar evento quando contrato for criado.
-  - Adicionar as validações com `FluentValidation`.
+  - Implementar Queries de Leitura (`GetContractByIdQuery`, `GetContractsList`).
 
 ---
 
