@@ -8,18 +8,22 @@ using EtrmService.Application.Commands;
 using EtrmService.Domain.Entities;
 using EtrmService.Domain.Interfaces;
 using EtrmService.Domain.Enums;
+using EtrmService.Application.Interfaces;
+using EtrmService.Application.IntegrationEvents;
 
 namespace EtrmService.UnitTests.Application.Commands;
 
 public class CreateContractCommandHandlerTests
 {
     private readonly Mock<IContractRepository> _repositoryMock;
+    private readonly Mock<IEventPublisher> _eventPublisherMock;
     private readonly CreateContractCommandHandler _handler;
 
     public CreateContractCommandHandlerTests()
     {
         _repositoryMock = new Mock<IContractRepository>();
-        _handler = new CreateContractCommandHandler(_repositoryMock.Object);
+        _eventPublisherMock = new Mock<IEventPublisher>();
+        _handler = new CreateContractCommandHandler(_repositoryMock.Object, _eventPublisherMock.Object);
     }
 
     [Fact]
@@ -48,6 +52,12 @@ public class CreateContractCommandHandlerTests
             c.Id == resultId &&
             c.CounterpartyName == command.CounterpartyName &&
             c.VolumeMwMed == command.VolumeMwMed
+        ), It.IsAny<CancellationToken>()), Times.Once);
+
+        // Verifica se o evento de integração foi publicado no MessageBus/Kafka
+        _eventPublisherMock.Verify(bus => bus.PublishAsync(It.Is<ContractCreatedIntegrationEvent>(e => 
+            e.ContractId == resultId &&
+            e.CounterpartyName == command.CounterpartyName
         ), It.IsAny<CancellationToken>()), Times.Once);
     }
 }

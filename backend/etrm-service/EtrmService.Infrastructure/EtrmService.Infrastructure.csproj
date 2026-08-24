@@ -2,9 +2,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EtrmService.Domain\EtrmService.Domain.csproj" />
+    <ProjectReference Include="..\EtrmService.Application\EtrmService.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MassTransit" Version="9.2.0" />
+    <PackageReference Include="MassTransit.Kafka" Version="9.2.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
   </ItemGroup>
 

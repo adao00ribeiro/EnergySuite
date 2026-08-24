@@ -3,6 +3,11 @@ using EtrmService.Application.Commands;
 using Microsoft.EntityFrameworkCore;
 using MediatR;
 
+using MassTransit;
+using EtrmService.Application.IntegrationEvents;
+using EtrmService.Application.Interfaces;
+using EtrmService.Infrastructure.Messaging;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Configuração do Entity Framework (PostgreSQL)
@@ -16,6 +21,26 @@ builder.Services.AddScoped<EtrmService.Domain.Interfaces.IContractRepository, Et
 
 // Configuração do MediatR para o CQRS
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateContractCommand).Assembly));
+
+// Configuração do MassTransit (Kafka)
+builder.Services.AddScoped<IEventPublisher, KafkaEventPublisher>();
+
+var kafkaBootstrapServers = builder.Configuration.GetSection("Kafka:BootstrapServers").Value ?? "localhost:9092";
+
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingInMemory((context, cfg) => cfg.ConfigureEndpoints(context));
+
+    x.AddRider(rider =>
+    {
+        rider.AddProducer<ContractCreatedIntegrationEvent>("contract-events");
+
+        rider.UsingKafka((context, k) =>
+        {
+            k.Host(kafkaBootstrapServers);
+        });
+    });
+});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
