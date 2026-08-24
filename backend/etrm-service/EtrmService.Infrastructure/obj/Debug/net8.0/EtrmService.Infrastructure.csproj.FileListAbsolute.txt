@@ -1,0 +1,16 @@
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.Infrastructure/bin/Debug/net8.0/EtrmService.Infrastructure.deps.json
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.Infrastructure/bin/Debug/net8.0/EtrmService.Infrastructure.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.Infrastructure/bin/Debug/net8.0/EtrmService.Infrastructure.pdb
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.Infrastructure/bin/Debug/net8.0/EtrmService.Domain.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.Infrastructure/bin/Debug/net8.0/EtrmService.Domain.pdb
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.Infrastructure/obj/Debug/net8.0/EtrmService.Infrastructure.csproj.AssemblyReference.cache
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.Infrastructure/obj/Debug/net8.0/EtrmService.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.Infrastructure/obj/Debug/net8.0/EtrmService.Infrastructure.AssemblyInfoInputs.cache
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.Infrastructure/obj/Debug/net8.0/EtrmService.Infrastructure.AssemblyInfo.cs
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.Infrastructure/obj/Debug/net8.0/EtrmService.Infrastructure.csproj.CoreCompileInputs.cache
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.Infrastructure/obj/Debug/net8.0/EtrmService.Infrastructure.sourcelink.json
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.Infrastructure/obj/Debug/net8.0/EtrmServ.AE265290.Up2Date
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.Infrastructure/obj/Debug/net8.0/EtrmService.Infrastructure.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.Infrastructure/obj/Debug/net8.0/refint/EtrmService.Infrastructure.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.Infrastructure/obj/Debug/net8.0/EtrmService.Infrastructure.pdb
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.Infrastructure/obj/Debug/net8.0/ref/EtrmService.Infrastructure.dll
