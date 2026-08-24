@@ -6,6 +6,7 @@ O foco aqui é prover uma experiência Enterprise para o usuário final, com ext
 ## 1. Standalone Components
 - O projeto usa Angular 18+. O uso de `NgModules` está estritamente **PROIBIDO**. 
 - Todo componente, diretiva ou pipe criado deve ser `standalone: true`.
+- **Separação de Arquivos:** NUNCA utilize inline templates ou inline styles. Os componentes devem sempre ter arquivos separados para `.ts`, `.html` e `.scss`.
 
 ## 2. Gerenciamento de Estado e Reatividade
 - Use **Signals** para reatividade local em componentes no lugar do antigo `RxJS BehaviorSubject` sempre que possível.

@@ -1,0 +1,30 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  
+  h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 400;
+  }
+}
+.table-container {
+  position: relative;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+table {
+  width: 100%;
+}
+.loading-shade {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
