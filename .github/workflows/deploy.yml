@@ -1,0 +1,53 @@
+name: Auto Deploy to Home Lab
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch: # Permite rodar o deploy manualmente clicando num botão no GitHub
+
+jobs:
+  deploy:
+    # IMPORTANTE: Esse rótulo garante que o GitHub não use a nuvem dele, 
+    # mas sim o seu notebook ocioso que está escutando a fila!
+    runs-on: self-hosted
+    
+    steps:
+      - name: 📥 Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Deploy da Infraestrutura (Postgres, Kafka, Keycloak)
+        run: |
+          cd infra
+          # Força a recriação se houver mudança no docker-compose.yml
+          docker-compose down
+          docker-compose up -d
+
+      - name: ⚙️ Build & Deploy: ETRM Backend
+        run: |
+          cd backend/etrm-service
+          # Compila a imagem Docker do .NET (Multi-stage)
+          docker build -t energysuite/etrm-service:latest .
+          # Remove container antigo se existir para evitar conflito de nome
+          docker stop etrm-service || true
+          docker rm etrm-service || true
+          # Roda o novo container atachado na rede da infra
+          docker run -d \
+            --name etrm-service \
+            --network infra_energysuite-net \
+            -p 5000:8080 \
+            energysuite/etrm-service:latest
+
+      - name: 🎨 Build & Deploy: App Shell (Frontend Angular)
+        run: |
+          cd frontend/app-shell
+          # Compila o frontend e joga pro NGINX
+          docker build -t energysuite/app-shell:latest .
+          docker stop app-shell || true
+          docker rm app-shell || true
+          # Expõe o frontend na porta 4200
+          docker run -d \
+            --name app-shell \
+            --network infra_energysuite-net \
+            -p 4200:80 \
+            energysuite/app-shell:latest
