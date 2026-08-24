@@ -1,54 +1,36 @@
-name: Auto Deploy to Home Lab
+name: Auto Deploy to Home Lab (Kubernetes)
 
 on:
   push:
     branches:
       - master
-  workflow_dispatch: # Permite rodar o deploy manualmente clicando num botão no GitHub
+  workflow_dispatch:
 
 jobs:
   deploy:
-    # IMPORTANTE: Esse rótulo garante que o GitHub não use a nuvem dele, 
-    # mas sim o seu notebook ocioso que está escutando a fila!
     runs-on: self-hosted
     
     steps:
       - name: 📥 Checkout do Repositório
         uses: actions/checkout@v4
 
-      - name: 🏗️ Deploy da Infraestrutura (Postgres, Kafka, Keycloak)
+      - name: 🏗️ Deploy da Infraestrutura (K8s)
         run: |
-          cd infra
-          # Força a recriação se houver mudança no docker-compose.yml
-          docker compose down
-          docker compose up -d
-
-      - name: "⚙️ Build & Deploy: ETRM Backend"
+          kubectl apply -f k8s/infra/
+          
+      - name: "⚙️ Build & Deploy: ETRM Backend (K8s)"
         run: |
           cd backend/etrm-service
-          # Compila a imagem Docker do .NET (Multi-stage)
           docker build -t energysuite/etrm-service:latest .
-          # Remove container antigo se existir para evitar conflito de nome
-          docker stop etrm-service || true
-          docker rm etrm-service || true
-          # Roda o novo container atachado na rede da infra
-          docker run -d \
-            --name etrm-service \
-            --network infra_energysuite-net \
-            -p 5000:8080 \
-            -e ASPNETCORE_ENVIRONMENT=Development \
-            energysuite/etrm-service:latest
+          # IMPORTANTE: Se usar K3s ou Minikube, talvez seja necessário carregar a imagem, ex: k3s ctr images import ou minikube image load
+          cd ../../
+          kubectl apply -f k8s/apps/etrm-service.yaml
+          kubectl rollout restart deployment etrm-service
 
-      - name: "🎨 Build & Deploy: App Shell (Frontend Angular)"
+      - name: "🎨 Build & Deploy: App Shell (K8s)"
         run: |
           cd frontend/app-shell
-          # Compila o frontend e joga pro NGINX
           docker build -t energysuite/app-shell:latest .
-          docker stop app-shell || true
-          docker rm app-shell || true
-          # Expõe o frontend na porta 4200
-          docker run -d \
-            --name app-shell \
-            --network infra_energysuite-net \
-            -p 4200:80 \
-            energysuite/app-shell:latest
+          cd ../../
+          kubectl apply -f k8s/apps/app-shell.yaml
+          kubectl rollout restart deployment app-shell
