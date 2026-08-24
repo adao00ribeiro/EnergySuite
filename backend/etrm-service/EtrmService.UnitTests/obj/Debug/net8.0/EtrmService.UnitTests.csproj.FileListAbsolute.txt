@@ -162,3 +162,5 @@
 /media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/obj/Debug/net8.0/EtrmService.UnitTests.pdb
 /media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/obj/Debug/net8.0/EtrmService.UnitTests.genruntimeconfig.cache
 /media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/obj/Debug/net8.0/ref/EtrmService.UnitTests.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/FluentValidation.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/FluentValidation.DependencyInjectionExtensions.dll

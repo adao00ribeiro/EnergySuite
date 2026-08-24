@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "vVsE0KcR/R8=",
+  "dgSpecHash": "DutbZYhLa+0=",
   "success": true,
   "projectFilePath": "/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.Application/EtrmService.Application.csproj",
   "expectedPackageFiles": [
+    "/home/jarvis/.nuget/packages/fluentvalidation/12.1.1/fluentvalidation.12.1.1.nupkg.sha512",
+    "/home/jarvis/.nuget/packages/fluentvalidation.dependencyinjectionextensions/12.1.1/fluentvalidation.dependencyinjectionextensions.12.1.1.nupkg.sha512",
     "/home/jarvis/.nuget/packages/mediatr/14.2.0/mediatr.14.2.0.nupkg.sha512",
     "/home/jarvis/.nuget/packages/mediatr.contracts/2.0.1/mediatr.contracts.2.0.1.nupkg.sha512",
     "/home/jarvis/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/10.0.0/microsoft.extensions.dependencyinjection.abstractions.10.0.0.nupkg.sha512",

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "EtctEd2jrys=",
+  "dgSpecHash": "+T4f2sJ5xJ0=",
   "success": true,
   "projectFilePath": "/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/EtrmService.UnitTests.csproj",
   "expectedPackageFiles": [
@@ -8,6 +8,8 @@
     "/home/jarvis/.nuget/packages/coverlet.collector/6.0.4/coverlet.collector.6.0.4.nupkg.sha512",
     "/home/jarvis/.nuget/packages/diffengine/11.3.0/diffengine.11.3.0.nupkg.sha512",
     "/home/jarvis/.nuget/packages/emptyfiles/4.4.0/emptyfiles.4.4.0.nupkg.sha512",
+    "/home/jarvis/.nuget/packages/fluentvalidation/12.1.1/fluentvalidation.12.1.1.nupkg.sha512",
+    "/home/jarvis/.nuget/packages/fluentvalidation.dependencyinjectionextensions/12.1.1/fluentvalidation.dependencyinjectionextensions.12.1.1.nupkg.sha512",
     "/home/jarvis/.nuget/packages/mediatr/14.2.0/mediatr.14.2.0.nupkg.sha512",
     "/home/jarvis/.nuget/packages/mediatr.contracts/2.0.1/mediatr.contracts.2.0.1.nupkg.sha512",
     "/home/jarvis/.nuget/packages/microsoft.codecoverage/17.14.1/microsoft.codecoverage.17.14.1.nupkg.sha512",

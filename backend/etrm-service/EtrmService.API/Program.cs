@@ -4,8 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using MediatR;
 
 using MassTransit;
+using FluentValidation;
 using EtrmService.Application.IntegrationEvents;
 using EtrmService.Application.Interfaces;
+using EtrmService.Application.Validators;
+using EtrmService.Application.Behaviors;
+using EtrmService.API.Middleware;
 using EtrmService.Infrastructure.Messaging;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,8 +23,15 @@ builder.Services.AddDbContext<EtrmDbContext>(options =>
 
 builder.Services.AddScoped<EtrmService.Domain.Interfaces.IContractRepository, EtrmService.Infrastructure.Repositories.ContractRepository>();
 
-// Configuração do MediatR para o CQRS
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateContractCommand).Assembly));
+// Configuração do MediatR para o CQRS com Pipeline de Validação
+builder.Services.AddMediatR(cfg => 
+{
+    cfg.RegisterServicesFromAssembly(typeof(CreateContractCommand).Assembly);
+    cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+});
+
+// Configuração do FluentValidation
+builder.Services.AddValidatorsFromAssembly(typeof(CreateContractCommandValidator).Assembly);
 
 // Configuração do MassTransit (Kafka)
 builder.Services.AddScoped<IEventPublisher, KafkaEventPublisher>();
@@ -56,6 +67,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
+
+// Middleware Global de Tratamento de Erros (incluindo Validações)
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 app.MapControllers();
 
 app.Run();
