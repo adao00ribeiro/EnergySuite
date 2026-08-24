@@ -3,4 +3,5 @@
   <Project Path="EtrmService.Application/EtrmService.Application.csproj" />
   <Project Path="EtrmService.Domain/EtrmService.Domain.csproj" />
   <Project Path="EtrmService.Infrastructure/EtrmService.Infrastructure.csproj" />
+  <Project Path="EtrmService.UnitTests/EtrmService.UnitTests.csproj" />
 </Solution>
