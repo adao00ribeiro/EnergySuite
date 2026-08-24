@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using EtrmService.Application.Commands;
+using EtrmService.Application.Queries;
 
 namespace EtrmService.API.Controllers;
 
@@ -22,5 +23,25 @@ public class ContractsController : ControllerBase
     {
         var contractId = await _mediator.Send(command);
         return Ok(new { Id = contractId });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetContracts()
+    {
+        var query = new GetContractsListQuery();
+        var result = await _mediator.Send(query);
+        return Ok(result);
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetContractById(Guid id)
+    {
+        var query = new GetContractByIdQuery(id);
+        var result = await _mediator.Send(query);
+        
+        if (result == null)
+            return NotFound();
+
+        return Ok(result);
     }
 }

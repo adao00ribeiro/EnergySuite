@@ -1,10 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "DbhHxGCBQ74=",
+  "dgSpecHash": "FlcJ/QL6EeQ=",
   "success": true,
   "projectFilePath": "/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.Infrastructure/EtrmService.Infrastructure.csproj",
   "expectedPackageFiles": [
     "/home/jarvis/.nuget/packages/confluent.kafka/2.15.0/confluent.kafka.2.15.0.nupkg.sha512",
+    "/home/jarvis/.nuget/packages/fluentvalidation/12.1.1/fluentvalidation.12.1.1.nupkg.sha512",
+    "/home/jarvis/.nuget/packages/fluentvalidation.dependencyinjectionextensions/12.1.1/fluentvalidation.dependencyinjectionextensions.12.1.1.nupkg.sha512",
     "/home/jarvis/.nuget/packages/librdkafka.redist/2.15.0/librdkafka.redist.2.15.0.nupkg.sha512",
     "/home/jarvis/.nuget/packages/masstransit/9.2.0/masstransit.9.2.0.nupkg.sha512",
     "/home/jarvis/.nuget/packages/masstransit.abstractions/9.2.0/masstransit.abstractions.9.2.0.nupkg.sha512",

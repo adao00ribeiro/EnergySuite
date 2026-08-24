@@ -151,3 +151,5 @@
 /media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.API/bin/Debug/net8.0/runtimes/win-x86/native/vcruntime140.dll
 /media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.API/bin/Debug/net8.0/runtimes/win-x86/native/z.dll
 /media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.API/bin/Debug/net8.0/runtimes/win-x86/native/zstd.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.API/bin/Debug/net8.0/FluentValidation.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.API/bin/Debug/net8.0/FluentValidation.DependencyInjectionExtensions.dll

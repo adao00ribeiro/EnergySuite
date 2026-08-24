@@ -35,26 +35,21 @@ export class ContractService {
   public readonly isLoading = signal<boolean>(false);
   public readonly error = signal<string | null>(null);
 
-  // Mocks por enquanto, até implementarmos o GET na API
   public loadContracts() {
     this.isLoading.set(true);
-    // Simulating API Call
-    setTimeout(() => {
-      this.contracts.set([
-        {
-          id: '1',
-          counterpartyName: 'Solaris Energy',
-          type: 1, // Sale
-          submarket: 2, // Nordeste
-          volumeMwMed: 15.5,
-          price: 210.0,
-          startDate: '2026-01-01',
-          endDate: '2026-12-31',
-          createdAt: new Date().toISOString()
-        }
-      ]);
-      this.isLoading.set(false);
-    }, 1000);
+    this.error.set(null);
+    
+    this.http.get<Contract[]>(this.apiUrl).subscribe({
+      next: (data) => {
+        this.contracts.set(data);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Erro ao carregar contratos:', err);
+        this.error.set('Falha ao carregar contratos.');
+        this.isLoading.set(false);
+      }
+    });
   }
 
   public createContract(payload: CreateContractPayload) {
