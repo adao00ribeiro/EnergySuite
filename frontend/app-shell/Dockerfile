@@ -1,5 +1,5 @@
-# Multi-stage build for Angular 18 App Shell
-FROM node:20-alpine AS build
+# Multi-stage build for Angular 22 App Shell
+FROM node:24-alpine AS build
 WORKDIR /app
 
 # Install dependencies
