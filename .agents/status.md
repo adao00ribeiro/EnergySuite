@@ -10,15 +10,17 @@
 ---
 
 ## 🟢 Backend: ETRM Service (.NET 8)
-- **Status:** Iniciado (Scaffolding da Clean Architecture)
+- **Status:** Estrutura base da API concluída (CQRS + Banco)
 - **Concluído:**
-  - `EtrmService.Domain`, `EtrmService.Application`, `EtrmService.Infrastructure`, `EtrmService.API` criados e referenciados.
-  - Entidade `Contract` criada (`EtrmService.Domain/Entities/Contract.cs`).
-  - Enumeradores `ContractType` e `EnergySubmarket` criados.
+  - `EtrmService.Domain`, `EtrmService.Application`, `EtrmService.Infrastructure`, `EtrmService.API` criados.
+  - Entidade `Contract` criada e Repositório implementado.
+  - Entity Framework Core configurado com PostgreSQL (Migration `InitialCreate` gerada).
+  - Padrão CQRS implementado via `MediatR` (`CreateContractCommand` e `Handler` funcionando).
+  - `ContractsController` exposto.
 - **Próximos Passos (To-Do):**
-  - Instalar dependências (MediatR, Entity Framework Core).
-  - Criar as migrations do EF Core no PostgreSQL.
-  - Criar os Commands e Queries de `Contract`.
+  - Implementar Queries de Leitura (`GetContractByIdQuery`).
+  - Configurar Kafka Producer para disparar evento quando contrato for criado.
+  - Adicionar as validações com `FluentValidation`.
 
 ---
 
