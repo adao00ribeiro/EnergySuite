@@ -1,5 +1,5 @@
 using System;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 using EtrmService.Domain.Entities;
 using EtrmService.Domain.Enums;
@@ -24,14 +24,14 @@ public class ContractTests
         var contract = new Contract(counterpartyName, type, submarket, volumeMwMed, price, startDate, endDate);
 
         // Assert
-        contract.Should().NotBeNull();
-        contract.Id.Should().NotBeEmpty();
-        contract.CounterpartyName.Should().Be(counterpartyName);
-        contract.Type.Should().Be(type);
-        contract.Submarket.Should().Be(submarket);
-        contract.VolumeMwMed.Should().Be(volumeMwMed);
-        contract.Price.Should().Be(price);
-        contract.StartDate.Should().Be(startDate);
-        contract.EndDate.Should().Be(endDate);
+        contract.ShouldNotBeNull();
+        contract.Id.ShouldNotBe(Guid.Empty);
+        contract.CounterpartyName.ShouldBe(counterpartyName);
+        contract.Type.ShouldBe(type);
+        contract.Submarket.ShouldBe(submarket);
+        contract.VolumeMwMed.ShouldBe(volumeMwMed);
+        contract.Price.ShouldBe(price);
+        contract.StartDate.ShouldBe(startDate);
+        contract.EndDate.ShouldBe(endDate);
     }
 }

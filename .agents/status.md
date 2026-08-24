@@ -13,7 +13,7 @@
 - **Status:** Estrutura base da API concluída (CQRS + Banco + Testes)
 - **Concluído:**
   - `EtrmService.Domain`, `EtrmService.Application`, `EtrmService.Infrastructure`, `EtrmService.API` criados.
-  - Projeto `EtrmService.UnitTests` implementado com xUnit, Moq e FluentAssertions.
+  - Projeto `EtrmService.UnitTests` implementado com xUnit, Moq e Shouldly.
   - Entidade `Contract` criada e Repositório implementado.
   - Entity Framework Core configurado com PostgreSQL (Migration `InitialCreate` gerada).
   - Padrão CQRS implementado via `MediatR` (`CreateContractCommand` e `Handler` funcionando).

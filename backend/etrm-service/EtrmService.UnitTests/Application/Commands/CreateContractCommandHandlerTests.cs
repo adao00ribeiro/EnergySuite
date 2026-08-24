@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 using EtrmService.Application.Commands;
 using EtrmService.Domain.Entities;
@@ -41,7 +41,7 @@ public class CreateContractCommandHandlerTests
         var resultId = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        resultId.Should().NotBeEmpty();
+        resultId.ShouldNotBe(Guid.Empty);
         
         // Verifica se o método AddAsync foi chamado exatamente 1 vez com a entidade preenchida corretamente
         _repositoryMock.Verify(repo => repo.AddAsync(It.Is<Contract>(c => 
