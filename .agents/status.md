@@ -22,13 +22,14 @@
 
 ---
 
-## 🟡 Frontend: Portal Unificado (Angular 18)
-- **Status:** Apenas Dockerfile criado.
+## 🟢 Frontend: Portal Unificado (Angular 22)
+- **Status:** Scaffolding inicializado (Standalone Components).
 - **Concluído:**
   - `Dockerfile` (Multi-stage com NGINX).
+  - Repositório App Shell gerado via `ng new` (SCSS, Routing).
+  - Angular Material instalado (`@angular/material`).
 - **Próximos Passos (To-Do):**
-  - Rodar `ng new` para inicializar o repositório do App Shell.
-  - Configurar Angular Material.
+  - Configurar interface inicial (Sidenav, Toolbar).
   - Configurar Webpack Module Federation para os Micro-frontends.
 
 ---
