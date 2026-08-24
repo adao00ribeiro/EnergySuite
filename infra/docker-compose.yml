@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   # ==========================================
@@ -22,7 +21,7 @@ services:
   # MESSAGING (KAFKA WITH KRAFT)
   # ==========================================
   kafka:
-    image: bitnami/kafka:3.5.0
+    image: bitnami/kafka:latest
     container_name: energysuite-kafka
     ports:
       - "9092:9092"
