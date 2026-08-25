@@ -40,3 +40,12 @@ class RiskMetricResponse(BaseModel):
     class Config:
         orm_mode = True
         from_attributes = True
+
+# Pydantic Schema for Event Publication (BI)
+class RiskCalculatedEvent(BaseModel):
+    eventId: uuid.UUID
+    contractId: uuid.UUID
+    counterpartyName: str
+    financialExposure: float
+    riskCategory: str
+    calculatedAt: datetime
