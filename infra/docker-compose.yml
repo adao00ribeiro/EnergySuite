@@ -211,7 +211,7 @@ services:
     container_name: energysuite-mlflow
     ports:
       - "5000:5000"
-    command: bash -c "pip install mlflow boto3 psycopg2-binary && mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri postgresql://root:rootpassword@postgres:5432/mlflow_db --default-artifact-root s3://mlflow/"
+    command: bash -c "pip install 'numpy<2.0.0' mlflow boto3 psycopg2-binary && mlflow server --host 0.0.0.0 --port 5000 --cors-allowed-origins '*' --backend-store-uri postgresql://root:rootpassword@postgres:5432/mlflow_db --default-artifact-root s3://mlflow/"
     environment:
       - AWS_ACCESS_KEY_ID=minioadmin
       - AWS_SECRET_ACCESS_KEY=minioadmin
@@ -229,8 +229,8 @@ services:
     ports:
       - "8082:8080"
     environment:
-      - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://root:rootpassword@postgres:5432/airflow_db
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
       - AWS_ACCESS_KEY_ID=minioadmin
       - AWS_SECRET_ACCESS_KEY=minioadmin
@@ -242,9 +242,10 @@ services:
     depends_on:
       - minio
       - mlflow
+      - postgres
     networks:
       - energysuite-net
-    command: bash -c "airflow db migrate && airflow users create --role Admin --username admin --password admin --email admin@example.com --firstname Admin --lastname Admin && airflow scheduler & airflow webserver"
+    command: bash -c "airflow scheduler & airflow webserver"
 
 volumes:
   postgres_data:
