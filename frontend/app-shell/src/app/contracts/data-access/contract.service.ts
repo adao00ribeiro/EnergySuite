@@ -23,12 +23,14 @@ export interface CreateContractPayload {
   endDate: string;
 }
 
+import { environment } from '../../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ContractService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:5000/api/contracts'; // TODO: Move to environment
+  private readonly apiUrl = `${environment.apiUrl}/contracts`;
 
   // Signals para reatividade local
   public readonly contracts = signal<Contract[]>([]);

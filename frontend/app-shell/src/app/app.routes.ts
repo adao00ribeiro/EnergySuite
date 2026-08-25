@@ -9,6 +9,10 @@ export const routes: Routes = [
         path: 'contracts',
         loadComponent: () => import('./contracts/features/contract-list/contract-list.component').then(m => m.ContractListComponent)
       },
+      {
+        path: 'contracts/new',
+        loadComponent: () => import('./contracts/features/contract-create/contract-create.component').then(m => m.ContractCreateComponent)
+      },
       { path: '', redirectTo: 'contracts', pathMatch: 'full' }
     ]
   }
