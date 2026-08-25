@@ -2,6 +2,8 @@ apache-airflow
 mlflow
 scikit-learn
 pandas
+numpy
 boto3
 s3fs
 pyarrow
+joblib

@@ -1,40 +1,49 @@
+import os
 import pandas as pd
 import numpy as np
 from datetime import datetime
+import logging
+
+logger = logging.getLogger(__name__)
 
 class RiskEngine:
     # Submarket configurations: Base Price (R$/MWh) and Volatility (std dev)
-    SUBMARKET_CONFIGS = {
+    # Fallback defaults used only when Data Lake is unavailable
+    DEFAULT_SUBMARKET_CONFIGS = {
         0: {"name": "SUD", "base_price": 250.0, "volatility": 0.15},
         1: {"name": "SUL", "base_price": 200.0, "volatility": 0.20},
         2: {"name": "NE",  "base_price": 150.0, "volatility": 0.35},
         3: {"name": "N",   "base_price": 100.0, "volatility": 0.30},
     }
 
-    MINIO_URL = "http://minio:9000"
-    AWS_ACCESS_KEY_ID = "minioadmin"
-    AWS_SECRET_ACCESS_KEY = "minioadmin"
+    SUBMARKET_CONFIGS = dict(DEFAULT_SUBMARKET_CONFIGS)
+
+    MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "http://minio:9000")
+    MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY", "minioadmin")
+    MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY", "minioadmin")
+    MINIO_BUCKET = os.getenv("MINIO_BUCKET", "datalake")
+
+    _configs_loaded = False
 
     @classmethod
-    def load_configs_from_datalake(cls):
-        import s3fs
-        import pandas as pd
-        import logging
+    def load_configs_from_datalake(cls, force: bool = False):
+        if cls._configs_loaded and not force:
+            return
 
-        logger = logging.getLogger(__name__)
-        s3_path = "s3://datalake/prices/latest_prices.parquet"
-        
+        import s3fs
+
+        s3_path = f"s3://{cls.MINIO_BUCKET}/prices/latest_prices.parquet"
+
         try:
             fs = s3fs.S3FileSystem(
-                client_kwargs={'endpoint_url': cls.MINIO_URL},
-                key=cls.AWS_ACCESS_KEY_ID,
-                secret=cls.AWS_SECRET_ACCESS_KEY
+                client_kwargs={'endpoint_url': cls.MINIO_ENDPOINT},
+                key=cls.MINIO_ACCESS_KEY,
+                secret=cls.MINIO_SECRET_KEY
             )
             if fs.exists(s3_path):
                 with fs.open(s3_path, 'rb') as f:
                     df = pd.read_parquet(f)
-                    
-                # Update cls.SUBMARKET_CONFIGS
+
                 for _, row in df.iterrows():
                     sub_id = int(row['submarket_id'])
                     cls.SUBMARKET_CONFIGS[sub_id] = {
@@ -42,11 +51,12 @@ class RiskEngine:
                         "base_price": float(row['base_price']),
                         "volatility": float(row['volatility'])
                     }
+                cls._configs_loaded = True
                 logger.info("RiskEngine loaded dynamic configs from Data Lake.")
             else:
                 logger.info("Data Lake parquet not found yet. Using default configs.")
         except Exception as e:
-            logger.warning(f"Failed to load configs from Data Lake: {e}")
+            logger.warning(f"Failed to load configs from Data Lake: {e}. Using defaults.")
 
     @classmethod
     def generate_forward_curve(cls, submarket: int, start_date: datetime, end_date: datetime) -> pd.DataFrame:
