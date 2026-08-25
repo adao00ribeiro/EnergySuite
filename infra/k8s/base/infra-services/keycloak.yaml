@@ -29,7 +29,7 @@ spec:
                 secretKeyRef:
                   name: energysuite-secrets
                   key: POSTGRES_USER
-            - name: KC_DB_PASSWORD:
+            - name: KC_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: energysuite-secrets
