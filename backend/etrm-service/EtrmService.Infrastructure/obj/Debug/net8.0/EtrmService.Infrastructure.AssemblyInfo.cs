@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EtrmService.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+95b4b978d1acd45eb5b0d6545fcb5fb2771528c0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9228d461fcbd5e0643caa78ef78a2b941a07d711")]
 [assembly: System.Reflection.AssemblyProductAttribute("EtrmService.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EtrmService.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

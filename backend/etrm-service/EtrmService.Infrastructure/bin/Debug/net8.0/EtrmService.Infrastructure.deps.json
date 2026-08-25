@@ -10,22 +10,22 @@
         "dependencies": {
           "EtrmService.Application": "1.0.0",
           "EtrmService.Domain": "1.0.0",
-          "MassTransit": "9.2.0",
-          "MassTransit.Kafka": "9.2.0",
+          "MassTransit": "8.3.0",
+          "MassTransit.Kafka": "8.3.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "8.0.0"
         },
         "runtime": {
           "EtrmService.Infrastructure.dll": {}
         }
       },
-      "Confluent.Kafka/2.15.0": {
+      "Confluent.Kafka/2.6.0": {
         "dependencies": {
-          "librdkafka.redist": "2.15.0"
+          "librdkafka.redist": "2.6.0"
         },
         "runtime": {
           "lib/net8.0/Confluent.Kafka.dll": {
-            "assemblyVersion": "2.15.0.0",
-            "fileVersion": "2.15.0.0"
+            "assemblyVersion": "2.6.0.0",
+            "fileVersion": "2.6.0.0"
           }
         }
       },
@@ -49,20 +49,10 @@
           }
         }
       },
-      "librdkafka.redist/2.15.0": {
+      "librdkafka.redist/2.6.0": {
         "runtimeTargets": {
-          "runtimes/linux-arm64/native/alpine-librdkafka.so": {
-            "rid": "linux-arm64",
-            "assetType": "native",
-            "fileVersion": "0.0.0.0"
-          },
           "runtimes/linux-arm64/native/librdkafka.so": {
             "rid": "linux-arm64",
-            "assetType": "native",
-            "fileVersion": "0.0.0.0"
-          },
-          "runtimes/linux-s390x/native/librdkafka.so": {
-            "rid": "linux-s390x",
             "assetType": "native",
             "fileVersion": "0.0.0.0"
           },
@@ -126,7 +116,7 @@
             "assetType": "native",
             "fileVersion": "0.0.0.0"
           },
-          "runtimes/win-x64/native/z.dll": {
+          "runtimes/win-x64/native/zlib1.dll": {
             "rid": "win-x64",
             "assetType": "native",
             "fileVersion": "0.0.0.0"
@@ -171,7 +161,7 @@
             "assetType": "native",
             "fileVersion": "0.0.0.0"
           },
-          "runtimes/win-x86/native/z.dll": {
+          "runtimes/win-x86/native/zlib1.dll": {
             "rid": "win-x86",
             "assetType": "native",
             "fileVersion": "0.0.0.0"
@@ -183,9 +173,9 @@
           }
         }
       },
-      "MassTransit/9.2.0": {
+      "MassTransit/8.3.0": {
         "dependencies": {
-          "MassTransit.Abstractions": "9.2.0",
+          "MassTransit.Abstractions": "8.3.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0",
           "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.0",
           "Microsoft.Extensions.Hosting.Abstractions": "8.0.0",
@@ -194,28 +184,28 @@
         },
         "runtime": {
           "lib/net8.0/MassTransit.dll": {
-            "assemblyVersion": "9.2.0.0",
-            "fileVersion": "9.2.0.0"
+            "assemblyVersion": "8.3.0.0",
+            "fileVersion": "8.3.0.0"
           }
         }
       },
-      "MassTransit.Abstractions/9.2.0": {
+      "MassTransit.Abstractions/8.3.0": {
         "runtime": {
           "lib/net8.0/MassTransit.Abstractions.dll": {
-            "assemblyVersion": "9.2.0.0",
-            "fileVersion": "9.2.0.0"
+            "assemblyVersion": "8.3.0.0",
+            "fileVersion": "8.3.0.0"
           }
         }
       },
-      "MassTransit.Kafka/9.2.0": {
+      "MassTransit.Kafka/8.3.0": {
         "dependencies": {
-          "Confluent.Kafka": "2.15.0",
-          "MassTransit": "9.2.0"
+          "Confluent.Kafka": "2.6.0",
+          "MassTransit": "8.3.0"
         },
         "runtime": {
           "lib/net8.0/MassTransit.KafkaIntegration.dll": {
-            "assemblyVersion": "9.2.0.0",
-            "fileVersion": "9.2.0.0"
+            "assemblyVersion": "8.3.0.0",
+            "fileVersion": "8.3.0.0"
           }
         }
       },
@@ -540,12 +530,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "Confluent.Kafka/2.15.0": {
+    "Confluent.Kafka/2.6.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-/BOEnIKAq1AHq6vPl+0RBDiKwI6L6tJaYBo1qH+OAUP5MFy0i0MhSfgtqKW9/M8J9dQPfb/izWU+R0Uc6DyW2w==",
-      "path": "confluent.kafka/2.15.0",
-      "hashPath": "confluent.kafka.2.15.0.nupkg.sha512"
+      "sha512": "sha512-hnJqbYssNx0xlfTV45/XB419ZEQhzrjnXfeDvS8SUQgHh/Q7qd1dH3ubV2I/k6+abBR28Yv/EOeoAEgmDbaUUQ==",
+      "path": "confluent.kafka/2.6.0",
+      "hashPath": "confluent.kafka.2.6.0.nupkg.sha512"
     },
     "FluentValidation/12.1.1": {
       "type": "package",
@@ -561,33 +551,33 @@
       "path": "fluentvalidation.dependencyinjectionextensions/12.1.1",
       "hashPath": "fluentvalidation.dependencyinjectionextensions.12.1.1.nupkg.sha512"
     },
-    "librdkafka.redist/2.15.0": {
+    "librdkafka.redist/2.6.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-DzG2YcqWPT3Ly91aeDYsgsVcJXlOMiK9oqyRdPvQz9ZMbcV8Ob0rQA6fNUQ4sarmzFk4phqwPlVQxtZDGLP69w==",
-      "path": "librdkafka.redist/2.15.0",
-      "hashPath": "librdkafka.redist.2.15.0.nupkg.sha512"
+      "sha512": "sha512-BGtv6H+rhVBuxcQTvHc/pvKcBYvdq3eQ4KG/edW0SgDGImMN2IJNMInGbzA5hZasg+w+oBAJVCIdkIIGxgnvVw==",
+      "path": "librdkafka.redist/2.6.0",
+      "hashPath": "librdkafka.redist.2.6.0.nupkg.sha512"
     },
-    "MassTransit/9.2.0": {
+    "MassTransit/8.3.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-jPzXSKh1h+zSLHNoI2EadZuqml+pSk2B7pB4S7ylaCdLRqYlImBgZNyzkTNK1PGeP4/w0LGTjNY6q0r4rd+bzA==",
-      "path": "masstransit/9.2.0",
-      "hashPath": "masstransit.9.2.0.nupkg.sha512"
+      "sha512": "sha512-LZbHqGeP+enkeidjyLeAFQjOFyc5eCJmc5Wru/9Xv1dtcfI2wT+Ga5OQqUCJsqIQzcV1yfumRtbMnAVxwxB/4g==",
+      "path": "masstransit/8.3.0",
+      "hashPath": "masstransit.8.3.0.nupkg.sha512"
     },
-    "MassTransit.Abstractions/9.2.0": {
+    "MassTransit.Abstractions/8.3.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-9nMSgeU4sH/1P1MZFQiZ78K/DNk9l1iSCMJi+iH1JNFMuNkvr1xpSc5HkmbARK+dyFe6yUJkD8o16T+UoM+VyA==",
-      "path": "masstransit.abstractions/9.2.0",
-      "hashPath": "masstransit.abstractions.9.2.0.nupkg.sha512"
+      "sha512": "sha512-smYAGbCnHXl927Xvr2nzxtQAhfJfRSnVZAcIHGMI3QQq/aK3KvsCqgail1bw7acw0NkEhw8yv7cnKBGYKKFXPQ==",
+      "path": "masstransit.abstractions/8.3.0",
+      "hashPath": "masstransit.abstractions.8.3.0.nupkg.sha512"
     },
-    "MassTransit.Kafka/9.2.0": {
+    "MassTransit.Kafka/8.3.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-aWhgeZVOewXTeQ78/GfvA1fvelVQ3yuCuJ1h3kDJZ9gtyYtAtUyI9f5RI0gdVWFEAb+2mAtbZIMU5H5ekT/K6Q==",
-      "path": "masstransit.kafka/9.2.0",
-      "hashPath": "masstransit.kafka.9.2.0.nupkg.sha512"
+      "sha512": "sha512-iqCBkN3VmKTlkWcOZ89wEZJkLI57wVFXW6AaSfO86+mWP2QRh+umwseHgsYLBBcP1RH5Mrow+rJARaN7Ck0AYg==",
+      "path": "masstransit.kafka/8.3.0",
+      "hashPath": "masstransit.kafka.8.3.0.nupkg.sha512"
     },
     "MediatR/14.2.0": {
       "type": "package",

@@ -194,11 +194,11 @@
           "dependencies": {
             "MassTransit": {
               "target": "Package",
-              "version": "[9.2.0, )"
+              "version": "[8.3.0, )"
             },
             "MassTransit.Kafka": {
               "target": "Package",
-              "version": "[9.2.0, )"
+              "version": "[8.3.0, )"
             },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",

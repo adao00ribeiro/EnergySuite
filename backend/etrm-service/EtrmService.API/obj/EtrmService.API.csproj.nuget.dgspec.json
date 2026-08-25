@@ -54,13 +54,21 @@
           "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
+            "Asp.Versioning.Mvc": {
+              "target": "Package",
+              "version": "[8.1.0, )"
+            },
+            "Asp.Versioning.Mvc.ApiExplorer": {
+              "target": "Package",
+              "version": "[8.1.0, )"
+            },
             "MassTransit": {
               "target": "Package",
-              "version": "[9.2.0, )"
+              "version": "[8.3.0, )"
             },
             "MassTransit.Kafka": {
               "target": "Package",
-              "version": "[9.2.0, )"
+              "version": "[8.3.0, )"
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
@@ -70,7 +78,7 @@
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
-              "version": "[10.2.3, )"
+              "version": "[6.5.0, )"
             }
           },
           "imports": [
@@ -286,11 +294,11 @@
           "dependencies": {
             "MassTransit": {
               "target": "Package",
-              "version": "[9.2.0, )"
+              "version": "[8.3.0, )"
             },
             "MassTransit.Kafka": {
               "target": "Package",
-              "version": "[9.2.0, )"
+              "version": "[8.3.0, )"
             },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",

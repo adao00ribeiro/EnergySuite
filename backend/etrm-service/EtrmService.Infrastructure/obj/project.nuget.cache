@@ -1,16 +1,16 @@
 {
   "version": 2,
-  "dgSpecHash": "FlcJ/QL6EeQ=",
+  "dgSpecHash": "7mtPoYBe7co=",
   "success": true,
   "projectFilePath": "/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.Infrastructure/EtrmService.Infrastructure.csproj",
   "expectedPackageFiles": [
-    "/home/jarvis/.nuget/packages/confluent.kafka/2.15.0/confluent.kafka.2.15.0.nupkg.sha512",
+    "/home/jarvis/.nuget/packages/confluent.kafka/2.6.0/confluent.kafka.2.6.0.nupkg.sha512",
     "/home/jarvis/.nuget/packages/fluentvalidation/12.1.1/fluentvalidation.12.1.1.nupkg.sha512",
     "/home/jarvis/.nuget/packages/fluentvalidation.dependencyinjectionextensions/12.1.1/fluentvalidation.dependencyinjectionextensions.12.1.1.nupkg.sha512",
-    "/home/jarvis/.nuget/packages/librdkafka.redist/2.15.0/librdkafka.redist.2.15.0.nupkg.sha512",
-    "/home/jarvis/.nuget/packages/masstransit/9.2.0/masstransit.9.2.0.nupkg.sha512",
-    "/home/jarvis/.nuget/packages/masstransit.abstractions/9.2.0/masstransit.abstractions.9.2.0.nupkg.sha512",
-    "/home/jarvis/.nuget/packages/masstransit.kafka/9.2.0/masstransit.kafka.9.2.0.nupkg.sha512",
+    "/home/jarvis/.nuget/packages/librdkafka.redist/2.6.0/librdkafka.redist.2.6.0.nupkg.sha512",
+    "/home/jarvis/.nuget/packages/masstransit/8.3.0/masstransit.8.3.0.nupkg.sha512",
+    "/home/jarvis/.nuget/packages/masstransit.abstractions/8.3.0/masstransit.abstractions.8.3.0.nupkg.sha512",
+    "/home/jarvis/.nuget/packages/masstransit.kafka/8.3.0/masstransit.kafka.8.3.0.nupkg.sha512",
     "/home/jarvis/.nuget/packages/mediatr/14.2.0/mediatr.14.2.0.nupkg.sha512",
     "/home/jarvis/.nuget/packages/mediatr.contracts/2.0.1/mediatr.contracts.2.0.1.nupkg.sha512",
     "/home/jarvis/.nuget/packages/microsoft.entityframeworkcore/8.0.0/microsoft.entityframeworkcore.8.0.0.nupkg.sha512",
@@ -37,7 +37,8 @@
     "/home/jarvis/.nuget/packages/microsoft.identitymodel.tokens/8.14.0/microsoft.identitymodel.tokens.8.14.0.nupkg.sha512",
     "/home/jarvis/.nuget/packages/npgsql/8.0.0/npgsql.8.0.0.nupkg.sha512",
     "/home/jarvis/.nuget/packages/npgsql.entityframeworkcore.postgresql/8.0.0/npgsql.entityframeworkcore.postgresql.8.0.0.nupkg.sha512",
-    "/home/jarvis/.nuget/packages/system.diagnostics.diagnosticsource/10.0.0/system.diagnostics.diagnosticsource.10.0.0.nupkg.sha512"
+    "/home/jarvis/.nuget/packages/system.diagnostics.diagnosticsource/10.0.0/system.diagnostics.diagnosticsource.10.0.0.nupkg.sha512",
+    "/home/jarvis/.nuget/packages/system.memory/4.5.0/system.memory.4.5.0.nupkg.sha512"
   ],
   "logs": []
 }

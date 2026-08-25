@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EtrmService.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c7fe8e07e0cf19f8e7b741fc5ffb5d3fc99e32ca")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9228d461fcbd5e0643caa78ef78a2b941a07d711")]
 [assembly: System.Reflection.AssemblyProductAttribute("EtrmService.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EtrmService.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

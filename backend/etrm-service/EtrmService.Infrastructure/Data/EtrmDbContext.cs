@@ -11,16 +11,8 @@ public class EtrmDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Contract>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.CounterpartyName).IsRequired().HasMaxLength(200);
-            entity.Property(e => e.Type).IsRequired();
-            entity.Property(e => e.Submarket).IsRequired();
-            entity.Property(e => e.VolumeMwMed).HasPrecision(18, 4);
-            entity.Property(e => e.Price).HasPrecision(18, 2);
-        });
-
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(EtrmDbContext).Assembly);
+        
         base.OnModelCreating(modelBuilder);
     }
 }

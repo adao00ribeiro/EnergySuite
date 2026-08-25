@@ -1,62 +1,55 @@
+using EtrmService.API.Extensions;
+using EtrmService.API.IoC;
 using EtrmService.Infrastructure.Data;
-using EtrmService.Application.Commands;
-using Microsoft.EntityFrameworkCore;
-using MediatR;
-
-using MassTransit;
-using FluentValidation;
-using EtrmService.Application.IntegrationEvents;
-using EtrmService.Application.Interfaces;
-using EtrmService.Application.Validators;
-using EtrmService.Application.Behaviors;
 using EtrmService.API.Middleware;
-using EtrmService.Infrastructure.Messaging;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuração do Entity Framework (PostgreSQL)
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
-    ?? "Host=localhost;Port=5432;Database=etrm_db;Username=root;Password=rootpassword";
-
-builder.Services.AddDbContext<EtrmDbContext>(options =>
-    options.UseNpgsql(connectionString));
-
-builder.Services.AddScoped<EtrmService.Domain.Interfaces.IContractRepository, EtrmService.Infrastructure.Repositories.ContractRepository>();
-
-// Configuração do MediatR para o CQRS com Pipeline de Validação
-builder.Services.AddMediatR(cfg => 
+// Configuração de Rate Limiting
+builder.Services.AddRateLimiter(options =>
 {
-    cfg.RegisterServicesFromAssembly(typeof(CreateContractCommand).Assembly);
-    cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
-});
-
-// Configuração do FluentValidation
-builder.Services.AddValidatorsFromAssembly(typeof(CreateContractCommandValidator).Assembly);
-
-// Configuração do MassTransit (Kafka)
-builder.Services.AddScoped<IEventPublisher, KafkaEventPublisher>();
-
-var kafkaBootstrapServers = builder.Configuration.GetSection("Kafka:BootstrapServers").Value ?? "localhost:9092";
-
-builder.Services.AddMassTransit(x =>
-{
-    x.UsingInMemory((context, cfg) => cfg.ConfigureEndpoints(context));
-
-    x.AddRider(rider =>
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "anon",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 100,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0,
+                AutoReplenishment = true
+            }
+        )
+    );
+    options.OnRejected = async (context, cancellationToken) =>
     {
-        rider.AddProducer<ContractCreatedIntegrationEvent>("contract-events");
-
-        rider.UsingKafka((context, k) =>
-        {
-            k.Host(kafkaBootstrapServers);
-        });
-    });
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        context.HttpContext.Response.Headers.Append("Retry-After", "60");
+        await context.HttpContext.Response.WriteAsync("Rate limit exceeded. Please try again later.", cancellationToken);
+    };
 });
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// Configuração Global de JSON
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.WriteIndented = true;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
+builder.Services.AddProblemDetails();
 builder.Services.AddHealthChecks();
+builder.Services.AddLogging();
+
+// Configuração de Versionamento e Swagger
+builder.Services.AddApiVersioningSetup();
+builder.Services.AddSwaggerSetup();
 
 builder.Services.AddCors(options =>
 {
@@ -68,7 +61,23 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Registrar serviços via NativeInjectorConfig
+builder.Services.RegisterServices(builder.Configuration);
+
 var app = builder.Build();
+
+// Executa as Migrations no startup
+app.MigrateDatabase<EtrmDbContext>();
+
+// Injeta Cabeçalhos de Segurança
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Append("X-Frame-Options", "DENY");
+    context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+    context.Response.Headers.Append("Referrer-Policy", "no-referrer");
+    context.Response.Headers.Append("Content-Security-Policy", "default-src 'self'");
+    await next();
+});
 
 if (app.Environment.IsDevelopment())
 {
@@ -78,10 +87,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
-app.UseAuthorization();
 
 // Middleware Global de Tratamento de Erros (incluindo Validações)
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseRateLimiter();
 
 app.MapControllers();
 app.MapHealthChecks("/health");
