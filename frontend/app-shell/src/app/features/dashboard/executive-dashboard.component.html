@@ -1,0 +1,129 @@
+<div class="dashboard-container">
+  <!-- Header Bar -->
+  <div class="dashboard-header">
+    <div>
+      <h1 class="page-title">ETRM & Risk Intelligence Hub</h1>
+      <p class="subtitle">Real-time MLOps Forecasts, Data Lake Ingestion & Portfolio Risk Analytics</p>
+    </div>
+    <div class="status-badges">
+      <span class="status-badge online">
+        <mat-icon class="pulse-icon">sensors</mat-icon> SignalR Risk Stream: Connected
+      </span>
+      <span class="status-badge ml-badge">
+        <mat-icon>auto_awesome</mat-icon> ML Model: RandomForest (Airflow)
+      </span>
+    </div>
+  </div>
+
+  <!-- Key Metrics Row -->
+  <div class="metrics-grid" *ngIf="riskSummary">
+    <div class="metric-card glass-card border-blue">
+      <div class="metric-icon blue-gradient">
+        <mat-icon>account_balance_wallet</mat-icon>
+      </div>
+      <div class="metric-content">
+        <span class="metric-label">Total Portfolio Exposure</span>
+        <h2 class="metric-value">R$ {{ riskSummary.totalExposure | number:'1.2-2' }}</h2>
+        <span class="metric-sub text-blue">24 Active Contracts</span>
+      </div>
+    </div>
+
+    <div class="metric-card glass-card border-orange">
+      <div class="metric-icon orange-gradient">
+        <mat-icon>warning</mat-icon>
+      </div>
+      <div class="metric-content">
+        <span class="metric-label">Value at Risk (VaR 95%)</span>
+        <h2 class="metric-value">R$ {{ riskSummary.var95 | number:'1.2-2' }}</h2>
+        <span class="metric-sub text-orange">Confidence: 95.0%</span>
+      </div>
+    </div>
+
+    <div class="metric-card glass-card border-purple">
+      <div class="metric-icon purple-gradient">
+        <mat-icon>shield_alert</mat-icon>
+      </div>
+      <div class="metric-content">
+        <span class="metric-label">Extreme Risk (VaR 99%)</span>
+        <h2 class="metric-value">R$ {{ riskSummary.var99 | number:'1.2-2' }}</h2>
+        <span class="metric-sub text-purple">Extreme Tail Loss</span>
+      </div>
+    </div>
+
+    <div class="metric-card glass-card border-red">
+      <div class="metric-icon red-gradient">
+        <mat-icon>trending_down</mat-icon>
+      </div>
+      <div class="metric-content">
+        <span class="metric-label">Stress Testing Worst Case</span>
+        <h2 class="metric-value">R$ {{ riskSummary.stressTestLoss | number:'1.2-2' }}</h2>
+        <span class="metric-sub text-red">Hydrological Shock (-30%)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart & Analytics Row -->
+  <div class="content-grid">
+    <!-- Main Forecasting Chart Card -->
+    <div class="chart-card glass-card">
+      <div class="card-header">
+        <div>
+          <h3><mat-icon class="header-icon">show_chart</mat-icon> Dynamic Forward Price Curve (PLD R$/MWh)</h3>
+          <p class="card-subtitle">AI Forecasted Monthly Averages via Airflow & MinIO Data Lake</p>
+        </div>
+        <div class="submarket-selector">
+          <button mat-flat-button [color]="selectedSubmarket === 'pldSE' ? 'primary' : ''" (click)="setSubmarket('pldSE')">SE / CO</button>
+          <button mat-flat-button [color]="selectedSubmarket === 'pldS' ? 'primary' : ''" (click)="setSubmarket('pldS')">Sul</button>
+          <button mat-flat-button [color]="selectedSubmarket === 'pldNE' ? 'primary' : ''" (click)="setSubmarket('pldNE')">Nordeste</button>
+          <button mat-flat-button [color]="selectedSubmarket === 'pldN' ? 'primary' : ''" (click)="setSubmarket('pldN')">Norte</button>
+        </div>
+      </div>
+
+      <!-- Custom Visual Bar Graph with Glow -->
+      <div class="chart-body">
+        <div class="bars-container">
+          <div class="bar-wrapper" *ngFor="let item of forecastData">
+            <div class="bar-tooltip">
+              <span class="tooltip-price">R$ {{ item[selectedSubmarket] }}</span>
+              <span class="tooltip-conf">Conf: {{ item.modelConfidence }}%</span>
+            </div>
+            <div class="bar-fill" [style.height.%]="getBarHeightPercent(item[selectedSubmarket])">
+              <div class="bar-top-glow"></div>
+            </div>
+            <span class="bar-label">{{ item.date }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Risk Calculations Stream -->
+    <div class="stream-card glass-card">
+      <div class="card-header">
+        <h3><mat-icon class="header-icon pulse">graphic_eq</mat-icon> Live Risk Stream</h3>
+        <span class="live-dot"></span>
+      </div>
+      <div class="stream-list">
+        <div class="stream-item" *ngFor="let evt of realTimeEvents">
+          <div class="stream-icon" [ngClass]="evt.riskCategory.toLowerCase()">
+            <mat-icon>flash_on</mat-icon>
+          </div>
+          <div class="stream-details">
+            <div class="stream-title">
+              <strong>{{ evt.counterpartyName }}</strong>
+              <span class="stream-category" [ngClass]="evt.riskCategory.toLowerCase()">{{ evt.riskCategory }}</span>
+            </div>
+            <div class="stream-numbers">
+              <span>MtM: R$ {{ evt.markToMarket | number:'1.2-2' }}</span>
+              <span>Exp: R$ {{ evt.financialExposure | number:'1.2-2' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="empty-stream" *ngIf="realTimeEvents.length === 0">
+          <mat-icon class="large-icon">hourglass_empty</mat-icon>
+          <p>Listening for real-time Kafka / SignalR risk calculation events...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

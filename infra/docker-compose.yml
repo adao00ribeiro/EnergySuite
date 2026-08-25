@@ -93,15 +93,18 @@ services:
     networks:
       - energysuite-net
 
-  jaeger:
-    image: jaegertracing/all-in-one:latest
-    container_name: energysuite-jaeger
+  tempo:
+    image: grafana/tempo:latest
+    container_name: energysuite-tempo
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    volumes:
+      - ./tempo/tempo.yaml:/etc/tempo.yaml
     ports:
-      - "16686:16686" # UI
-      - "4317:4317"   # OTLP gRPC
-      - "4318:4318"   # OTLP HTTP
-    environment:
-      - COLLECTOR_OTLP_ENABLED=true
+      - "3200:3200" # Tempo HTTP
+      - "4317:4317" # OTLP gRPC
+      - "4318:4318" # OTLP HTTP
+    depends_on:
+      - minio
     networks:
       - energysuite-net
 
@@ -118,7 +121,7 @@ services:
       - ./grafana/dashboards:/var/lib/grafana/dashboards
     depends_on:
       - prometheus
-      - jaeger
+      - tempo
     networks:
       - energysuite-net
 
@@ -136,9 +139,11 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=etrm_db;Username=root;Password=rootpassword
       - Kafka__BootstrapServers=kafka:19092
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4317
     depends_on:
       - postgres
       - kafka
+      - tempo
     networks:
       - energysuite-net
 
@@ -158,10 +163,12 @@ services:
       - MINIO_SECRET_KEY=minioadmin
       - MINIO_BUCKET=datalake
       - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4317
     depends_on:
       - kafka
       - minio
       - mlflow
+      - tempo
     networks:
       - energysuite-net
 

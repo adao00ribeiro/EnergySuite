@@ -6,6 +6,10 @@ export const routes: Routes = [
     loadComponent: () => import('./layout/app-layout/app-layout.component').then(m => m.AppLayoutComponent),
     children: [
       {
+        path: 'dashboard',
+        loadComponent: () => import('./features/dashboard/executive-dashboard.component').then(m => m.ExecutiveDashboardComponent)
+      },
+      {
         path: 'contracts',
         loadComponent: () => import('./contracts/features/contract-list/contract-list.component').then(m => m.ContractListComponent)
       },
@@ -13,7 +17,7 @@ export const routes: Routes = [
         path: 'contracts/new',
         loadComponent: () => import('./contracts/features/contract-create/contract-create.component').then(m => m.ContractCreateComponent)
       },
-      { path: '', redirectTo: 'contracts', pathMatch: 'full' }
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }
 ];

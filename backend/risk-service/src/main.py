@@ -21,7 +21,7 @@ from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
 
 resource = Resource.create({"service.name": "risk-service"})
 trace.set_tracer_provider(TracerProvider(resource=resource))
-otlp_exporter = OTLPSpanExporter(endpoint=os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://jaeger:4317"), insecure=True)
+otlp_exporter = OTLPSpanExporter(endpoint=os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://tempo:4317"), insecure=True)
 trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(otlp_exporter))
 
 SQLAlchemyInstrumentor().instrument(engine=engine.sync_engine)

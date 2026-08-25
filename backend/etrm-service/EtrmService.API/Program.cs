@@ -80,7 +80,7 @@ builder.Services.AddOpenTelemetry()
         tracing.AddSource("MassTransit");
         tracing.AddOtlpExporter(opt =>
         {
-            var endpoint = builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"] ?? "http://jaeger:4317";
+            var endpoint = builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"] ?? "http://tempo:4317";
             opt.Endpoint = new Uri(endpoint);
         });
     })
