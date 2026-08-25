@@ -36,16 +36,31 @@
   - Configurar Webpack Module Federation para os Micro-frontends.
   - Integrar o App Shell com a API (Serviço `ContractService` com Signals e HttpClient para `ContractsController`).
   - Implementar telas de listagem (`ContractListComponent`) e criação (`ContractCreateComponent`) com formulários reativos Material.
-- **Próximos Passos (To-Do):**
-  - Desenvolver o microsserviço de Risco (`Risk Service` em Python) para consumir eventos Kafka e prover o dashboard de risco no frontend.
+  - **Dashboard Visual e Risk Service (Imeris):** Componente `ExecutiveDashboardComponent` criado consumindo métricas em tempo real (`RiskSignalrService`) e APIs MLOps.
 
 ---
 
-## 🟡 Backend: Risk & Prospec Service (Python)
-- **Status:** Apenas Dockerfile criado.
+## 🟢 Backend: Risk & Prospec Service (Python) e MLOps (Pluvia)
+- **Status:** Concluído e integrado (FastAPI + Kafka + OpenTelemetry + PostgreSQL Async + Airflow MLOps).
 - **Concluído:**
-  - `Dockerfile` (FastAPI).
-  - Iniciar projeto base do FastAPI.
-  - Criar consumidor base do Kafka (`aiokafka`).
-- **Próximos Passos (To-Do):**
-  - Implementar lógica de cálculo de risco ao receber o evento de contrato e expor métricas.
+  - `Dockerfile` (FastAPI com timeout estendido do pip).
+  - FastAPI configurado com OpenTelemetry Tracing (OTLP/Tempo) e instrumentação SQLAlchemy.
+  - Consumidor/Produtor Kafka com `aiokafka` (`contract-events` ➔ `risk-events`).
+  - Motor de Risco (`RiskEngine`) com cálculo de Exposição Financeira, Mark-to-Market (MtM) e categoria de risco.
+  - Métricas Prometheus (`risk_mtm_value`, `risk_contracts_processed_total`).
+  - Persistência assíncrona dos cálculos de risco no PostgreSQL.
+  - Autenticação OIDC via Keycloak JWT (`auth.py`).
+  - Endpoint REST `/api/v1/metrics/contracts/{contract_id}` exposto.
+  - **Módulo Pluvia (MLOps):** Pipeline Airflow configurada para treinamento de previsão de preço/PLD em `backend/mlops`.
+  - **Testes E2E Completos:** Fluxo End-to-End no Kubernetes validado (Contrato ➔ Kafka ➔ Risk Service ➔ Banco de Risco ➔ Dashboard Angular).
+
+---
+
+## 🎯 Status Geral e Próximos Passos
+**O MVP do EnergySuite (Clone da Norus) está com 100% dos fluxos base integrados!** 🚀
+As frentes de ETRM, MLOps e Risco comunicam-se perfeitamente via Kafka e REST.
+
+**Próximos passos (A definir):**
+- Deploy em nuvem pública (AWS EKS, Azure AKS) via GitHub Actions CI/CD.
+- Refinamentos de UX/UI no Angular.
+- Implementar novas regras de precificação/risco (ex: Opções, Swap).

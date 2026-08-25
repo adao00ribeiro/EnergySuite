@@ -191,80 +191,10 @@
       align-items: flex-end;
       padding-top: 40px;
 
-      .bars-container {
+      .echarts-graph {
         width: 100%;
         height: 100%;
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        gap: 12px;
-
-        .bar-wrapper {
-          flex: 1;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: flex-end;
-          position: relative;
-
-          &:hover .bar-tooltip {
-            opacity: 1;
-            transform: translateY(-8px);
-          }
-
-          .bar-tooltip {
-            position: absolute;
-            top: -35px;
-            background: #1e293b;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 4px 8px;
-            border-radius: 6px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            opacity: 0;
-            transition: all 0.2s ease;
-            pointer-events: none;
-            z-index: 10;
-
-            .tooltip-price {
-              font-size: 0.78rem;
-              font-weight: bold;
-              color: #38bdf8;
-            }
-            .tooltip-conf {
-              font-size: 0.7rem;
-              color: #94a3b8;
-            }
-          }
-
-          .bar-fill {
-            width: 100%;
-            max-width: 32px;
-            background: linear-gradient(180deg, #38bdf8 0%, #1e40af 100%);
-            border-radius: 6px 6px 0 0;
-            position: relative;
-            transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-
-            .bar-top-glow {
-              position: absolute;
-              top: 0;
-              left: 0;
-              right: 0;
-              height: 4px;
-              background: #60a5fa;
-              box-shadow: 0 0 10px #60a5fa;
-              border-radius: 6px 6px 0 0;
-            }
-          }
-
-          .bar-label {
-            margin-top: 10px;
-            font-size: 0.75rem;
-            color: #94a3b8;
-          }
-        }
+        min-height: 280px;
       }
     }
   }

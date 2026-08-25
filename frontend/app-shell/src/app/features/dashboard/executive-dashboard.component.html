@@ -79,20 +79,9 @@
         </div>
       </div>
 
-      <!-- Custom Visual Bar Graph with Glow -->
+      <!-- Apache ECharts Container -->
       <div class="chart-body">
-        <div class="bars-container">
-          <div class="bar-wrapper" *ngFor="let item of forecastData">
-            <div class="bar-tooltip">
-              <span class="tooltip-price">R$ {{ item[selectedSubmarket] }}</span>
-              <span class="tooltip-conf">Conf: {{ item.modelConfidence }}%</span>
-            </div>
-            <div class="bar-fill" [style.height.%]="getBarHeightPercent(item[selectedSubmarket])">
-              <div class="bar-top-glow"></div>
-            </div>
-            <span class="bar-label">{{ item.date }}</span>
-          </div>
-        </div>
+        <div echarts [options]="chartOptions" class="echarts-graph"></div>
       </div>
     </div>
 

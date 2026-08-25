@@ -5,12 +5,15 @@ import { routes } from './app.routes';
 
 import { provideHttpClient } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideEchartsCore } from 'ngx-echarts';
+import * as echarts from 'echarts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(),
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    provideEchartsCore({ echarts })
   ]
 };
