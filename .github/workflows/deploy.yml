@@ -21,7 +21,7 @@ jobs:
       - name: "⚙️ Build & Deploy: ETRM Backend (K8s)"
         run: |
           cd backend/etrm-service
-          docker build -t energysuite/etrm-service:latest .
+          docker build --network=host -t energysuite/etrm-service:latest .
           # IMPORTANTE: Se usar K3s ou Minikube, talvez seja necessário carregar a imagem, ex: k3s ctr images import ou minikube image load
           cd ../../
           kubectl apply -f k8s/apps/etrm-service.yaml
@@ -30,7 +30,7 @@ jobs:
       - name: "🎨 Build & Deploy: App Shell (K8s)"
         run: |
           cd frontend/app-shell
-          docker build -t energysuite/app-shell:latest .
+          docker build --network=host -t energysuite/app-shell:latest .
           cd ../../
           kubectl apply -f k8s/apps/app-shell.yaml
           kubectl rollout restart deployment app-shell
