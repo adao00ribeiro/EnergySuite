@@ -40,8 +40,8 @@ public class Contract
         Submarket = submarket;
         VolumeMwMed = volumeMwMed;
         Price = price;
-        StartDate = startDate;
-        EndDate = endDate;
+        StartDate = DateTime.SpecifyKind(startDate, DateTimeKind.Utc);
+        EndDate = DateTime.SpecifyKind(endDate, DateTimeKind.Utc);
         CreatedAt = DateTime.UtcNow;
     }
 
