@@ -20,6 +20,7 @@
           *ngIf="portfolioData.length > 0; else noData"
           echarts 
           [options]="chartOption" 
+          [theme]="themeService.isDark() ? 'dark' : 'light'"
           class="echarts-container">
         </div>
         <ng-template #noData>

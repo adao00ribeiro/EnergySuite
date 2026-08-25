@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import type { EChartsOption } from 'echarts';
 import { RiskService, CounterpartyRisk } from '../../../core/services/risk.service';
+import { ThemeService } from '../../../core/services/theme.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -19,6 +20,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 })
 export class CounterpartyRiskComponent implements OnInit {
   private riskService = inject(RiskService);
+  public themeService = inject(ThemeService);
   
   public isLoading = true;
   public chartOption: EChartsOption = {};
