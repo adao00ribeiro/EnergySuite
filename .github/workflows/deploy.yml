@@ -21,20 +21,20 @@ jobs:
       - name: "⚙️ Build & Deploy: ETRM Backend (K8s)"
         run: |
           cd backend/etrm-service
-          docker build --network=host -t energysuite/etrm-service:latest .
+          for i in 1 2 3; do docker build --network=host -t energysuite/etrm-service:latest . && break || sleep 10; done
           cd ../../
           kubectl rollout restart deployment etrm-service -n energysuite
 
       - name: "🎨 Build & Deploy: App Shell (K8s)"
         run: |
           cd frontend/app-shell
-          docker build --network=host -t energysuite/app-shell:latest .
+          for i in 1 2 3; do docker build --network=host -t energysuite/app-shell:latest . && break || sleep 10; done
           cd ../../
           kubectl rollout restart deployment app-shell -n energysuite
 
       - name: "🐍 Build & Deploy: Risk Service (K8s)"
         run: |
           cd backend/risk-service
-          docker build --network=host -t energysuite/risk-service:latest .
+          for i in 1 2 3; do docker build --network=host -t energysuite/risk-service:latest . && break || sleep 10; done
           cd ../../
           kubectl rollout restart deployment risk-service -n energysuite
