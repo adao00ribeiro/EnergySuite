@@ -17,6 +17,10 @@ export const routes: Routes = [
         path: 'contracts/new',
         loadComponent: () => import('./contracts/features/contract-create/contract-create.component').then(m => m.ContractCreateComponent)
       },
+      {
+        path: 'risk/counterparty',
+        loadComponent: () => import('./features/risk/counterparty-risk/counterparty-risk.component').then(m => m.CounterpartyRiskComponent)
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }

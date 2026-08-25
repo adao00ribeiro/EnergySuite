@@ -16,6 +16,10 @@ public class ContractMap : IEntityTypeConfiguration<Contract>
                .HasColumnName("id")
                .ValueGeneratedOnAdd();
 
+        builder.Property(x => x.TenantId)
+               .HasColumnName("tenant_id")
+               .IsRequired();
+
         builder.Property(x => x.CounterpartyName)
                .HasColumnName("counterparty_name")
                .IsRequired()

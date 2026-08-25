@@ -10,6 +10,8 @@ import os
 from .kafka_consumer import consume_events
 from .database import engine, Base, get_db
 from .models import RiskMetricModel, RiskMetricResponse
+from .auth import verify_jwt
+from sqlalchemy import func
 
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
@@ -66,3 +68,35 @@ async def get_risk_metric(contract_id: uuid.UUID, db: AsyncSession = Depends(get
         raise HTTPException(status_code=404, detail="Risk metric not found for this contract")
         
     return metric
+
+@app.get("/api/v1/metrics/portfolio")
+async def get_portfolio_risk(db: AsyncSession = Depends(get_db), token_payload: dict = Depends(verify_jwt)):
+    # Simula extração do tenant_id do token, fallback para default dev
+    tenant_claim = token_payload.get("tenant_id", token_payload.get("azp", "00000000-0000-0000-0000-000000000001"))
+    try:
+        tenant_id = uuid.UUID(tenant_claim)
+    except:
+        tenant_id = uuid.UUID("00000000-0000-0000-0000-000000000001")
+        
+    query = select(
+        RiskMetricModel.counterparty_name,
+        func.sum(RiskMetricModel.financial_exposure).label('total_exposure'),
+        func.sum(RiskMetricModel.mark_to_market).label('total_mtm')
+    ).filter(
+        RiskMetricModel.tenant_id == tenant_id
+    ).group_by(
+        RiskMetricModel.counterparty_name
+    )
+    
+    result = await db.execute(query)
+    rows = result.all()
+    
+    portfolio = []
+    for row in rows:
+        portfolio.append({
+            "counterparty_name": row.counterparty_name,
+            "financial_exposure": float(row.total_exposure),
+            "mark_to_market": float(row.total_mtm)
+        })
+        
+    return portfolio

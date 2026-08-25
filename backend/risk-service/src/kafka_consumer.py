@@ -129,6 +129,7 @@ async def process_contract_event(event_data: dict, producer: AIOKafkaProducer):
                 
                 if not existing:
                     new_metric = RiskMetricModel(
+                        tenant_id=event.tenantId,
                         contract_id=event.contractId,
                         counterparty_name=event.counterpartyName,
                         financial_exposure=financial_exposure,
@@ -142,6 +143,7 @@ async def process_contract_event(event_data: dict, producer: AIOKafkaProducer):
                     risk_event = RiskCalculatedEvent(
                         eventId=uuid.uuid4(),
                         contractId=event.contractId,
+                        tenantId=event.tenantId,
                         counterpartyName=event.counterpartyName,
                         financialExposure=financial_exposure,
                         markToMarket=mtm,

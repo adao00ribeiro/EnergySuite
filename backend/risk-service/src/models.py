@@ -10,6 +10,7 @@ class RiskMetricModel(Base):
     __tablename__ = "risk_metrics"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    tenant_id = Column(UUID(as_uuid=True), nullable=False)
     contract_id = Column(UUID(as_uuid=True), unique=True, nullable=False)
     counterparty_name = Column(String(200), nullable=False)
     financial_exposure = Column(Float, nullable=False)
@@ -20,6 +21,7 @@ class RiskMetricModel(Base):
 # Pydantic Schemas for Kafka Event Payload
 class ContractCreatedEvent(BaseModel):
     contractId: uuid.UUID
+    tenantId: uuid.UUID
     counterpartyName: str
     type: str | int
     submarket: str | int
@@ -49,6 +51,7 @@ class RiskMetricResponse(BaseModel):
 class RiskCalculatedEvent(BaseModel):
     eventId: uuid.UUID
     contractId: uuid.UUID
+    tenantId: uuid.UUID
     counterpartyName: str
     financialExposure: float
     markToMarket: float

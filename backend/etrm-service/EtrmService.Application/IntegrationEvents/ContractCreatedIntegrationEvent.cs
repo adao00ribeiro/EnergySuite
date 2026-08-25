@@ -14,6 +14,7 @@ namespace EtrmService.Application.IntegrationEvents
         DateTime EndDate,
         DateTime CreatedAt,
         decimal? StrikePrice = null,
-        decimal? OptionPremium = null
+        decimal? OptionPremium = null,
+        Guid TenantId = default
     );
 }

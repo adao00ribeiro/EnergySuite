@@ -6,6 +6,7 @@ namespace EtrmService.Domain.Entities;
 public class Contract
 {
     public Guid Id { get; private set; }
+    public Guid TenantId { get; private set; }
     public string CounterpartyName { get; private set; } = string.Empty;
     public ContractType Type { get; private set; }
     public EnergySubmarket Submarket { get; private set; }
@@ -38,9 +39,11 @@ public class Contract
         DateTime startDate, 
         DateTime endDate,
         decimal? strikePrice = null,
-        decimal? optionPremium = null)
+        decimal? optionPremium = null,
+        Guid tenantId = default)
     {
         Id = Guid.NewGuid();
+        TenantId = tenantId == default ? Guid.Parse("00000000-0000-0000-0000-000000000001") : tenantId;
         CounterpartyName = counterpartyName;
         Type = type;
         Submarket = submarket;

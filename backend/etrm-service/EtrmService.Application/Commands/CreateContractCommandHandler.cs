@@ -13,11 +13,13 @@ public class CreateContractCommandHandler : IRequestHandler<CreateContractComman
 {
     private readonly IContractRepository _repository;
     private readonly IEventPublisher _eventPublisher;
+    private readonly ICurrentUserService _currentUserService;
 
-    public CreateContractCommandHandler(IContractRepository repository, IEventPublisher eventPublisher)
+    public CreateContractCommandHandler(IContractRepository repository, IEventPublisher eventPublisher, ICurrentUserService currentUserService)
     {
         _repository = repository;
         _eventPublisher = eventPublisher;
+        _currentUserService = currentUserService;
     }
 
     public async Task<Guid> Handle(CreateContractCommand request, CancellationToken cancellationToken)
@@ -31,7 +33,8 @@ public class CreateContractCommandHandler : IRequestHandler<CreateContractComman
             request.StartDate,
             request.EndDate,
             request.StrikePrice,
-            request.OptionPremium
+            request.OptionPremium,
+            _currentUserService.TenantId
         );
 
         await _repository.AddAsync(contract, cancellationToken);
@@ -48,7 +51,8 @@ public class CreateContractCommandHandler : IRequestHandler<CreateContractComman
             contract.EndDate,
             DateTime.UtcNow,
             contract.StrikePrice,
-            contract.OptionPremium
+            contract.OptionPremium,
+            contract.TenantId
         );
         
         await _eventPublisher.PublishAsync(integrationEvent, cancellationToken);
