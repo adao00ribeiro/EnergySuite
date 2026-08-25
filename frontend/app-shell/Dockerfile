@@ -4,7 +4,10 @@ WORKDIR /app
 
 # Install dependencies
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm config set fetch-retries 5 \
+    && npm config set fetch-retry-mintimeout 20000 \
+    && npm config set fetch-retry-maxtimeout 120000 \
+    && npm ci --maxsockets 5 --fetch-timeout=600000
 
 # Copy source and build
 COPY . .
