@@ -4,8 +4,8 @@ import { HttpClient } from '@angular/common/http';
 export interface Contract {
   id: string;
   counterpartyName: string;
-  type: number;
-  submarket: number;
+  type: string;
+  submarket: string;
   volumeMwMed: number;
   price: number;
   startDate: string;
@@ -15,8 +15,8 @@ export interface Contract {
 
 export interface CreateContractPayload {
   counterpartyName: string;
-  type: number;
-  submarket: number;
+  type: string;
+  submarket: string;
   volumeMwMed: number;
   price: number;
   startDate: string;

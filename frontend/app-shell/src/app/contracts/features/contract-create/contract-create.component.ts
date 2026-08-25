@@ -36,8 +36,8 @@ export class ContractCreateComponent {
 
   public contractForm = this.fb.nonNullable.group({
     counterpartyName: ['', Validators.required],
-    type: [1, Validators.required],
-    submarket: [1, Validators.required],
+    type: ['Purchase', Validators.required],
+    submarket: ['SE_CO', Validators.required],
     volumeMwMed: [0, [Validators.required, Validators.min(0.1)]],
     price: [0, [Validators.required, Validators.min(0.1)]],
     startDate: [new Date(), Validators.required],
@@ -45,15 +45,15 @@ export class ContractCreateComponent {
   });
 
   public contractTypes = [
-    { value: 1, label: 'Compra' },
-    { value: 2, label: 'Venda' }
+    { value: 'Purchase', label: 'Compra' },
+    { value: 'Sale', label: 'Venda' }
   ];
 
   public submarkets = [
-    { value: 1, label: 'Sudeste/Centro-Oeste' },
-    { value: 2, label: 'Sul' },
-    { value: 3, label: 'Nordeste' },
-    { value: 4, label: 'Norte' }
+    { value: 'SE_CO', label: 'Sudeste/Centro-Oeste' },
+    { value: 'SUL', label: 'Sul' },
+    { value: 'NORDESTE', label: 'Nordeste' },
+    { value: 'NORTE', label: 'Norte' }
   ];
 
   onSubmit() {
