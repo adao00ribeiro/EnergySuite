@@ -14,31 +14,27 @@ jobs:
       - name: 📥 Checkout do Repositório
         uses: actions/checkout@v4
 
-      - name: 🏗️ Deploy da Infraestrutura (K8s)
+      - name: 🏗️ Deploy da Infraestrutura & Aplicações (K8s via Kustomize)
         run: |
-          kubectl apply -f k8s/infra/
+          kubectl apply -k infra/k8s/overlays/prod
           
       - name: "⚙️ Build & Deploy: ETRM Backend (K8s)"
         run: |
           cd backend/etrm-service
           docker build --network=host -t energysuite/etrm-service:latest .
-          # IMPORTANTE: Se usar K3s ou Minikube, talvez seja necessário carregar a imagem, ex: k3s ctr images import ou minikube image load
           cd ../../
-          kubectl apply -f k8s/apps/etrm-service.yaml
-          kubectl rollout restart deployment etrm-service
+          kubectl rollout restart deployment etrm-service -n energysuite
 
       - name: "🎨 Build & Deploy: App Shell (K8s)"
         run: |
           cd frontend/app-shell
           docker build --network=host -t energysuite/app-shell:latest .
           cd ../../
-          kubectl apply -f k8s/apps/app-shell.yaml
-          kubectl rollout restart deployment app-shell
+          kubectl rollout restart deployment app-shell -n energysuite
 
       - name: "🐍 Build & Deploy: Risk Service (K8s)"
         run: |
           cd backend/risk-service
           docker build --network=host -t energysuite/risk-service:latest .
           cd ../../
-          kubectl apply -f k8s/apps/risk-service.yaml
-          kubectl rollout restart deployment risk-service
+          kubectl rollout restart deployment risk-service -n energysuite
