@@ -53,13 +53,16 @@ builder.Services.AddLogging();
 builder.Services.AddApiVersioningSetup();
 builder.Services.AddSwaggerSetup();
 
+builder.Services.AddSignalR();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.SetIsOriginAllowed(_ => true)
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
@@ -96,5 +99,6 @@ app.UseRateLimiter();
 
 app.MapControllers();
 app.MapHealthChecks("/health");
+app.MapHub<EtrmService.API.Hubs.RiskHub>("/hubs/risk");
 
 app.Run();

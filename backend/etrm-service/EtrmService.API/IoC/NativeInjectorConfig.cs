@@ -55,11 +55,17 @@ public static class NativeInjectorConfig
 
             x.AddRider(rider =>
             {
+                rider.AddConsumer<EtrmService.API.Consumers.RiskCalculatedEventConsumer>();
                 rider.AddProducer<ContractCreatedIntegrationEvent>("contract-events");
 
                 rider.UsingKafka((context, k) =>
                 {
                     k.Host(kafkaBootstrapServers);
+
+                    k.TopicEndpoint<RiskCalculatedIntegrationEvent>("risk-events", "etrm-group", e =>
+                    {
+                        e.ConfigureConsumer<EtrmService.API.Consumers.RiskCalculatedEventConsumer>(context);
+                    });
                 });
             });
         });
