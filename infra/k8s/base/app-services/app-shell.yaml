@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-shell
+  namespace: energysuite
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: app-shell
+  template:
+    metadata:
+      labels:
+        app: app-shell
+    spec:
+      containers:
+        - name: app-shell
+          image: energysuite/app-shell:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-shell
+  namespace: energysuite
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: app-shell

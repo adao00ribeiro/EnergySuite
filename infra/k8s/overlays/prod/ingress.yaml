@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: energysuite-ingress
+  namespace: energysuite
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/websocket-services: "risk-service"
+spec:
+  rules:
+    - host: energysuite.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app-shell
+                port:
+                  number: 80
+          - path: /api/v1/contracts
+            pathType: Prefix
+            backend:
+              service:
+                name: etrm-service
+                port:
+                  number: 8080
+          - path: /hubs/risk
+            pathType: Prefix
+            backend:
+              service:
+                name: risk-service
+                port:
+                  number: 8000
