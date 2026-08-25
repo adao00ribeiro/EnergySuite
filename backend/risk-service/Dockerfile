@@ -7,9 +7,13 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
+# Configure pip timeout and retries for large packages (e.g. pyarrow, pandas)
+ENV PIP_DEFAULT_TIMEOUT=100 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
 # Copy requirements and install
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --default-timeout=100 --retries 5 -r requirements.txt
 
 # Copy application code
 COPY src/ /app/src/

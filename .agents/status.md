@@ -34,8 +34,10 @@
   - Angular Material instalado (`@angular/material`).
   - Configurar interface inicial (Sidenav, Toolbar).
   - Configurar Webpack Module Federation para os Micro-frontends.
+  - Integrar o App Shell com a API (Serviço `ContractService` com Signals e HttpClient para `ContractsController`).
+  - Implementar telas de listagem (`ContractListComponent`) e criação (`ContractCreateComponent`) com formulários reativos Material.
 - **Próximos Passos (To-Do):**
-  - Integrar o App Shell com a API (chamadas HTTP ao ETRM Service).
+  - Desenvolver o microsserviço de Risco (`Risk Service` em Python) para consumir eventos Kafka e prover o dashboard de risco no frontend.
 
 ---
 
