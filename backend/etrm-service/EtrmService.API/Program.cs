@@ -58,6 +58,17 @@ builder.Services.AddSwaggerSetup();
 
 builder.Services.AddSignalR();
 
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer(options =>
+    {
+        options.Authority = builder.Configuration["KEYCLOAK_AUTHORITY"] ?? "http://keycloak:8080/realms/EnergySuite";
+        options.RequireHttpsMetadata = false;
+        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidateAudience = false
+        };
+    });
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -118,6 +129,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Middleware Global de Tratamento de Erros (incluindo Validações)
 app.UseMiddleware<ExceptionHandlingMiddleware>();

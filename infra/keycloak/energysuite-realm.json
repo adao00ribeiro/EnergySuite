@@ -1,0 +1,91 @@
+{
+  "realm": "EnergySuite",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "roles": {
+    "realm": [
+      {
+        "name": "Trader",
+        "description": "Energy Trader Role"
+      },
+      {
+        "name": "RiskAnalyst",
+        "description": "Risk Analyst Role"
+      },
+      {
+        "name": "Executive",
+        "description": "Executive Portfolio View Role"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "energysuite-frontend",
+      "name": "EnergySuite Frontend MFE",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "redirectUris": [
+        "http://localhost:8080/*",
+        "http://localhost:4200/*"
+      ],
+      "webOrigins": [
+        "*"
+      ],
+      "fullScopeAllowed": true
+    },
+    {
+      "clientId": "energysuite-backend",
+      "name": "EnergySuite Backend APIs",
+      "enabled": true,
+      "bearerOnly": true
+    }
+  ],
+  "users": [
+    {
+      "username": "trader@energysuite.com",
+      "email": "trader@energysuite.com",
+      "firstName": "Energy",
+      "lastName": "Trader",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "Trader",
+        "Executive"
+      ]
+    },
+    {
+      "username": "risk@energysuite.com",
+      "email": "risk@energysuite.com",
+      "firstName": "Risk",
+      "lastName": "Analyst",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "RiskAnalyst",
+        "Executive"
+      ]
+    }
+  ]
+}
