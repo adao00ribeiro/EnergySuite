@@ -38,7 +38,7 @@ async def consume_events():
     consumer = AIOKafkaConsumer(
         TOPIC_CONSUME,
         bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
-        group_id="risk-service-group",
+        group_id="risk-service-group-v2",
         value_deserializer=lambda m: json.loads(m.decode("utf-8")),
         auto_offset_reset="earliest"
     )
@@ -166,7 +166,11 @@ async def process_contract_event(event_data: dict, producer: AIOKafkaProducer):
                     logger.info(f"Published RiskCalculatedEvent to topic {TOPIC_PRODUCE}")
                     
                 else:
-                    logger.info(f"Risk metric already exists for contract {event.contractId}")
+                    existing.mark_to_market = mtm
+                    existing.risk_category = risk_category
+                    existing.financial_exposure = financial_exposure
+                    await session.commit()
+                    logger.info(f"Risk metric updated for contract {event.contractId}")
                 
     except ValidationError as ve:
         logger.error(f"Validation Error parsing event: {ve}")
