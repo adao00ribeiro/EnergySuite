@@ -1,3 +1,5 @@
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using EtrmService.API.Extensions;
 using EtrmService.API.IoC;
 using EtrmService.Infrastructure.Data;
@@ -65,6 +67,22 @@ builder.Services.AddCors(options =>
               .AllowCredentials();
     });
 });
+
+// Configuração OpenTelemetry
+builder.Services.AddOpenTelemetry()
+    .ConfigureResource(resource => resource.AddService("EtrmService"))
+    .WithTracing(tracing =>
+    {
+        tracing.AddAspNetCoreInstrumentation();
+        tracing.AddHttpClientInstrumentation();
+        tracing.AddSource("Npgsql");
+        tracing.AddSource("MassTransit");
+        tracing.AddOtlpExporter(opt =>
+        {
+            var endpoint = builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"] ?? "http://jaeger:4317";
+            opt.Endpoint = new Uri(endpoint);
+        });
+    });
 
 // Registrar serviços via NativeInjectorConfig
 builder.Services.RegisterServices(builder.Configuration);

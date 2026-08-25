@@ -6,9 +6,25 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 import uuid
 
+import os
 from .kafka_consumer import consume_events
 from .database import engine, Base, get_db
 from .models import RiskMetricModel, RiskMetricResponse
+
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.sdk.resources import Resource
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
+
+resource = Resource.create({"service.name": "risk-service"})
+trace.set_tracer_provider(TracerProvider(resource=resource))
+otlp_exporter = OTLPSpanExporter(endpoint=os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://jaeger:4317"), insecure=True)
+trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(otlp_exporter))
+
+SQLAlchemyInstrumentor().instrument(engine=engine.sync_engine)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -27,6 +43,7 @@ async def lifespan(app: FastAPI):
         pass
 
 app = FastAPI(title="Risk & Prospec Service", lifespan=lifespan)
+FastAPIInstrumentor.instrument_app(app)
 
 app.add_middleware(
     CORSMiddleware,

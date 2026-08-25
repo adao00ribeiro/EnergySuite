@@ -8,11 +8,16 @@ from aiokafka import AIOKafkaConsumer, AIOKafkaProducer
 from pydantic import ValidationError
 from sqlalchemy.future import select
 
+from opentelemetry import trace
+from opentelemetry.propagate import extract, inject
+
 from .database import AsyncSessionLocal
 from .models import ContractCreatedEvent, RiskMetricModel, RiskCalculatedEvent
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+tracer = trace.get_tracer(__name__)
 
 KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092")
 TOPIC_CONSUME = "contract-events"
@@ -32,7 +37,6 @@ async def consume_events():
         value_serializer=lambda m: json.dumps(m).encode("utf-8")
     )
 
-    # Retry loop to wait for Kafka to be ready
     while True:
         try:
             await consumer.start()
@@ -46,7 +50,17 @@ async def consume_events():
     try:
         async for msg in consumer:
             logger.info(f"Received message on {msg.topic}")
-            await process_contract_event(msg.value, producer)
+            
+            # Extract OpenTelemetry context from Kafka headers
+            headers_dict = {}
+            if msg.headers:
+                headers_dict = {k: v.decode('utf-8') if isinstance(v, bytes) else v for k, v in msg.headers}
+            
+            ctx = extract(headers_dict)
+            
+            with tracer.start_as_current_span(f"{msg.topic} receive", context=ctx):
+                await process_contract_event(msg.value, producer)
+                
     except asyncio.CancelledError:
         logger.info("Consumer task cancelled.")
     finally:
@@ -57,58 +71,63 @@ async def process_contract_event(event_data: dict, producer: AIOKafkaProducer):
     try:
         event = ContractCreatedEvent(**event_data)
         
-        financial_exposure = event.volumeMwMed * event.price * 720
-        
-        if financial_exposure > 5000000:
-            risk_category = "HIGH"
-        elif financial_exposure > 1000000:
-            risk_category = "MEDIUM"
-        else:
-            risk_category = "LOW"
+        with tracer.start_as_current_span("calculate_risk") as span:
+            financial_exposure = event.volumeMwMed * event.price * 720
             
-        logger.info(f"Calculated Risk for {event.counterpartyName}: {financial_exposure} ({risk_category})")
+            if financial_exposure > 5000000:
+                risk_category = "HIGH"
+            elif financial_exposure > 1000000:
+                risk_category = "MEDIUM"
+            else:
+                risk_category = "LOW"
+                
+            span.set_attribute("risk.financial_exposure", float(financial_exposure))
+            span.set_attribute("risk.category", risk_category)
+            
+            logger.info(f"Calculated Risk for {event.counterpartyName}: {financial_exposure} ({risk_category})")
         
         async with AsyncSessionLocal() as session:
-            result = await session.execute(
-                select(RiskMetricModel).filter_by(contract_id=event.contractId)
-            )
-            existing = result.scalars().first()
-            
-            if not existing:
-                new_metric = RiskMetricModel(
-                    contract_id=event.contractId,
-                    counterparty_name=event.counterpartyName,
-                    financial_exposure=financial_exposure,
-                    risk_category=risk_category
+            with tracer.start_as_current_span("db_save_risk"):
+                result = await session.execute(
+                    select(RiskMetricModel).filter_by(contract_id=event.contractId)
                 )
-                session.add(new_metric)
-                await session.commit()
-                logger.info(f"Risk metric saved for contract {event.contractId} in risk_db")
+                existing = result.scalars().first()
                 
-                # Publish Event to Kafka for BI
-                risk_event = RiskCalculatedEvent(
-                    eventId=uuid.uuid4(),
-                    contractId=event.contractId,
-                    counterpartyName=event.counterpartyName,
-                    financialExposure=financial_exposure,
-                    riskCategory=risk_category,
-                    calculatedAt=datetime.utcnow()
-                )
-                
-                await producer.send_and_wait(
-                    TOPIC_PRODUCE,
-                    # We serialize dict with json compatible format (e.g. stringify uuids and datetimes)
-                    # Pydantic's model_dump() doesn't auto-convert datetimes to str unless we use jsonable_encoder or custom serialize.
-                    # Pydantic V2 allows model_dump_json() which returns a string, then we can parse it back to dict for the producer's serializer, 
-                    # OR we can just pass the string to the producer if we change the serializer to expect str.
-                    # Let's just use model_dump_json() and pass it directly.
-                    # Wait, the producer expects dict and uses json.dumps. So we can use model_dump(mode='json').
-                    risk_event.model_dump(mode='json')
-                )
-                logger.info(f"Published RiskCalculatedEvent to topic {TOPIC_PRODUCE}")
-                
-            else:
-                logger.info(f"Risk metric already exists for contract {event.contractId}")
+                if not existing:
+                    new_metric = RiskMetricModel(
+                        contract_id=event.contractId,
+                        counterparty_name=event.counterpartyName,
+                        financial_exposure=financial_exposure,
+                        risk_category=risk_category
+                    )
+                    session.add(new_metric)
+                    await session.commit()
+                    logger.info(f"Risk metric saved for contract {event.contractId} in risk_db")
+                    
+                    risk_event = RiskCalculatedEvent(
+                        eventId=uuid.uuid4(),
+                        contractId=event.contractId,
+                        counterpartyName=event.counterpartyName,
+                        financialExposure=financial_exposure,
+                        riskCategory=risk_category,
+                        calculatedAt=datetime.utcnow()
+                    )
+                    
+                    with tracer.start_as_current_span(f"{TOPIC_PRODUCE} publish"):
+                        # Inject OpenTelemetry context into Kafka headers
+                        out_headers = {}
+                        inject(out_headers)
+                        header_list = [(k, v.encode('utf-8')) for k, v in out_headers.items()]
+                        
+                        await producer.send_and_wait(
+                            TOPIC_PRODUCE,
+                            risk_event.model_dump(mode='json'),
+                            headers=header_list
+                        )
+                    logger.info(f"Published RiskCalculatedEvent to topic {TOPIC_PRODUCE}")
+                    
+                else:
+                    logger.info(f"Risk metric already exists for contract {event.contractId}")
                 
     except ValidationError as ve:
         logger.error(f"Validation Error parsing event: {ve}")
