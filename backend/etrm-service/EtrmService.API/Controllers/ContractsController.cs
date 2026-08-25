@@ -5,11 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using EtrmService.Application.Commands;
 using EtrmService.Application.Queries;
 
+using EtrmService.API.Controllers.Shared;
+using Asp.Versioning;
+
 namespace EtrmService.API.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class ContractsController : ControllerBase
+[ApiVersion("1.0")]
+public class ContractsController : ApiControllerBase
 {
     private readonly IMediator _mediator;
 

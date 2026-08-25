@@ -17,6 +17,7 @@ O código DEVE ser dividido em 4 camadas:
 
 ## 3. Configurações de API e Serialização
 - **Versionamento de API:** Obrigatório o uso do pacote `Asp.Versioning`. Defina a versão padrão (ex: `1.0`), assuma a versão padrão quando não especificada e substitua a versão na URL.
+- **Classe Base para Controllers:** Crie uma classe abstrata `ApiControllerBase` herdando de `ControllerBase` na pasta `Controllers/Shared`. Essa classe deve possuir o atributo `[ApiController]` e a rota padrão de versionamento: `[Route("api/v{version:apiVersion}/[controller]")]`. Todos os outros controllers devem herdar de `ApiControllerBase` e usar apenas o atributo `[ApiVersion("1.0")]`.
 - **Respostas de Erro:** Utilize o padrão do `ProblemDetails` globalmente (`builder.Services.AddApiProblemDetails()`).
 - **Serialização JSON:** Configure o `JsonSerializerOptions` para:
   - Usar CamelCase (`JsonNamingPolicy.CamelCase`).
