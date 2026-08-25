@@ -13,6 +13,7 @@ from opentelemetry.propagate import extract, inject
 
 from .database import AsyncSessionLocal
 from .models import ContractCreatedEvent, RiskMetricModel, RiskCalculatedEvent
+from .risk_engine import RiskEngine
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -72,19 +73,29 @@ async def process_contract_event(event_data: dict, producer: AIOKafkaProducer):
         event = ContractCreatedEvent(**event_data)
         
         with tracer.start_as_current_span("calculate_risk") as span:
-            financial_exposure = event.volumeMwMed * event.price * 720
+            # Basic financial exposure calculation
+            days = (event.endDate - event.startDate).days + 1
+            if days <= 0: days = 1
+            hours = days * 24
+            financial_exposure = event.volumeMwMed * event.price * hours
             
-            if financial_exposure > 5000000:
-                risk_category = "HIGH"
-            elif financial_exposure > 1000000:
-                risk_category = "MEDIUM"
-            else:
-                risk_category = "LOW"
+            # Advanced Mark-to-Market calculation using RiskEngine
+            mtm = RiskEngine.calculate_mtm(
+                contract_price=event.price,
+                volume_mw=event.volumeMwMed,
+                contract_type=event.type,
+                submarket=event.submarket,
+                start_date=event.startDate,
+                end_date=event.endDate
+            )
+            
+            risk_category = RiskEngine.determine_risk_category(mtm)
                 
             span.set_attribute("risk.financial_exposure", float(financial_exposure))
+            span.set_attribute("risk.mark_to_market", float(mtm))
             span.set_attribute("risk.category", risk_category)
             
-            logger.info(f"Calculated Risk for {event.counterpartyName}: {financial_exposure} ({risk_category})")
+            logger.info(f"Calculated Risk for {event.counterpartyName}: MtM {mtm:.2f} ({risk_category})")
         
         async with AsyncSessionLocal() as session:
             with tracer.start_as_current_span("db_save_risk"):
@@ -98,6 +109,7 @@ async def process_contract_event(event_data: dict, producer: AIOKafkaProducer):
                         contract_id=event.contractId,
                         counterparty_name=event.counterpartyName,
                         financial_exposure=financial_exposure,
+                        mark_to_market=mtm,
                         risk_category=risk_category
                     )
                     session.add(new_metric)
@@ -109,6 +121,7 @@ async def process_contract_event(event_data: dict, producer: AIOKafkaProducer):
                         contractId=event.contractId,
                         counterpartyName=event.counterpartyName,
                         financialExposure=financial_exposure,
+                        markToMarket=mtm,
                         riskCategory=risk_category,
                         calculatedAt=datetime.utcnow()
                     )

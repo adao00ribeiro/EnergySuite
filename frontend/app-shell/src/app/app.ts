@@ -19,7 +19,7 @@ export class App implements OnInit {
     
     this.riskSignalrService.riskCalculated$.subscribe(risk => {
       this.snackBar.open(
-        `Risco calculado para ${risk.counterpartyName}: ${risk.riskCategory} (R$ ${risk.financialExposure.toLocaleString()})`, 
+        `Risco calculado para ${risk.counterpartyName}: MtM R$ ${risk.markToMarket.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} [${risk.riskCategory}]`, 
         'Fechar', 
         {
           duration: 5000,

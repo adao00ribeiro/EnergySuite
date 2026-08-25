@@ -6,6 +6,7 @@ export interface RiskCalculatedEvent {
   contractId: string;
   counterpartyName: string;
   financialExposure: number;
+  markToMarket: number;
   riskCategory: string;
   calculatedAt: string;
 }

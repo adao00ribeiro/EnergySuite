@@ -13,6 +13,7 @@ class RiskMetricModel(Base):
     contract_id = Column(UUID(as_uuid=True), unique=True, nullable=False)
     counterparty_name = Column(String(200), nullable=False)
     financial_exposure = Column(Float, nullable=False)
+    mark_to_market = Column(Float, nullable=False, default=0.0)
     risk_category = Column(String(50), nullable=False)
     calculated_at = Column(DateTime, default=datetime.utcnow)
 
@@ -20,8 +21,8 @@ class RiskMetricModel(Base):
 class ContractCreatedEvent(BaseModel):
     contractId: uuid.UUID
     counterpartyName: str
-    type: str
-    submarket: str
+    type: int
+    submarket: int
     volumeMwMed: float
     price: float
     startDate: datetime
@@ -34,6 +35,7 @@ class RiskMetricResponse(BaseModel):
     contract_id: uuid.UUID
     counterparty_name: str
     financial_exposure: float
+    mark_to_market: float
     risk_category: str
     calculated_at: datetime
 
@@ -47,5 +49,6 @@ class RiskCalculatedEvent(BaseModel):
     contractId: uuid.UUID
     counterpartyName: str
     financialExposure: float
+    markToMarket: float
     riskCategory: str
     calculatedAt: datetime

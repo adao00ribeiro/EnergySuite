@@ -6,6 +6,7 @@ namespace EtrmService.Application.IntegrationEvents
         Guid ContractId,
         string CounterpartyName,
         decimal FinancialExposure,
+        decimal MarkToMarket,
         string RiskCategory,
         DateTime CalculatedAt
     );
