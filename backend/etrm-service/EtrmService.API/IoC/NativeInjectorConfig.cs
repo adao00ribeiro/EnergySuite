@@ -43,7 +43,15 @@ public static class NativeInjectorConfig
         var kafkaBootstrapServers = configuration.GetSection("Kafka:BootstrapServers").Value ?? "localhost:9092";
         services.AddMassTransit(x =>
         {
-            x.UsingInMemory((context, cfg) => cfg.ConfigureEndpoints(context));
+            x.UsingInMemory((context, cfg) => 
+            {
+                cfg.ConfigureJsonSerializerOptions(options =>
+                {
+                    options.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+                    return options;
+                });
+                cfg.ConfigureEndpoints(context);
+            });
 
             x.AddRider(rider =>
             {
