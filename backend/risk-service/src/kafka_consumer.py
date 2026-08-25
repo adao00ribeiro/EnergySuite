@@ -15,6 +15,12 @@ from .database import AsyncSessionLocal
 from .models import ContractCreatedEvent, RiskMetricModel, RiskCalculatedEvent
 from .risk_engine import RiskEngine
 
+from prometheus_client import Gauge, Counter, start_http_server
+
+# Prometheus Metrics
+RISK_MTM = Gauge('risk_mtm_value', 'Mark-to-Market value', ['submarket'])
+CONTRACTS_PROCESSED = Counter('risk_contracts_processed_total', 'Total contracts processed', ['submarket'])
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -25,6 +31,10 @@ TOPIC_CONSUME = "contract-events"
 TOPIC_PRODUCE = "risk-events"
 
 async def consume_events():
+    # Start Prometheus Metrics Server
+    start_http_server(8001)
+    logger.info("Prometheus metrics server started on port 8001")
+
     consumer = AIOKafkaConsumer(
         TOPIC_CONSUME,
         bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
@@ -79,12 +89,23 @@ async def process_contract_event(event_data: dict, producer: AIOKafkaProducer):
             hours = days * 24
             financial_exposure = event.volumeMwMed * event.price * hours
             
+            # Map string to int for RiskEngine
+            type_str = str(event.type).upper()
+            contract_type_mapped = 0 if type_str == "PURCHASE" else 1
+
+            submarket_str = str(event.submarket).upper()
+            if submarket_str == "SE_CO": submarket_mapped = 0
+            elif submarket_str == "SUL": submarket_mapped = 1
+            elif submarket_str == "NORDESTE": submarket_mapped = 2
+            elif submarket_str == "NORTE": submarket_mapped = 3
+            else: submarket_mapped = 0
+
             # Advanced Mark-to-Market calculation using RiskEngine
             mtm = RiskEngine.calculate_mtm(
                 contract_price=event.price,
                 volume_mw=event.volumeMwMed,
-                contract_type=event.type,
-                submarket=event.submarket,
+                contract_type=contract_type_mapped,
+                submarket=submarket_mapped,
                 start_date=event.startDate,
                 end_date=event.endDate
             )
@@ -94,6 +115,11 @@ async def process_contract_event(event_data: dict, producer: AIOKafkaProducer):
             span.set_attribute("risk.financial_exposure", float(financial_exposure))
             span.set_attribute("risk.mark_to_market", float(mtm))
             span.set_attribute("risk.category", risk_category)
+            
+            # Update Prometheus Metrics
+            submarket_name = event.submarket.name if hasattr(event.submarket, 'name') else str(event.submarket)
+            RISK_MTM.labels(submarket=submarket_name).set(float(mtm))
+            CONTRACTS_PROCESSED.labels(submarket=submarket_name).inc()
             
             logger.info(f"Calculated Risk for {event.counterpartyName}: MtM {mtm:.2f} ({risk_category})")
         

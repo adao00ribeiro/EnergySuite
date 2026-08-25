@@ -21,8 +21,8 @@ class RiskMetricModel(Base):
 class ContractCreatedEvent(BaseModel):
     contractId: uuid.UUID
     counterpartyName: str
-    type: int
-    submarket: int
+    type: str | int
+    submarket: str | int
     volumeMwMed: float
     price: float
     startDate: datetime

@@ -1,5 +1,6 @@
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using OpenTelemetry.Metrics;
 using EtrmService.API.Extensions;
 using EtrmService.API.IoC;
 using EtrmService.Infrastructure.Data;
@@ -82,6 +83,13 @@ builder.Services.AddOpenTelemetry()
             var endpoint = builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"] ?? "http://jaeger:4317";
             opt.Endpoint = new Uri(endpoint);
         });
+    })
+    .WithMetrics(metrics =>
+    {
+        metrics.AddAspNetCoreInstrumentation();
+        metrics.AddHttpClientInstrumentation();
+        metrics.AddRuntimeInstrumentation();
+        metrics.AddPrometheusExporter();
     });
 
 // Registrar serviços via NativeInjectorConfig
@@ -117,6 +125,7 @@ app.UseRateLimiter();
 
 app.MapControllers();
 app.MapHealthChecks("/health");
+app.MapPrometheusScrapingEndpoint();
 app.MapHub<EtrmService.API.Hubs.RiskHub>("/hubs/risk");
 
 app.Run();

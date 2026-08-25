@@ -11,3 +11,4 @@ opentelemetry-instrumentation-fastapi
 opentelemetry-instrumentation-sqlalchemy
 pandas
 numpy
+prometheus-client
