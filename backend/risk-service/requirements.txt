@@ -12,3 +12,7 @@ opentelemetry-instrumentation-sqlalchemy
 pandas
 numpy
 prometheus-client
+boto3
+s3fs
+pyarrow
+fastparquet

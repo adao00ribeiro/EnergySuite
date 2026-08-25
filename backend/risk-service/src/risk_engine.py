@@ -11,6 +11,43 @@ class RiskEngine:
         3: {"name": "N",   "base_price": 100.0, "volatility": 0.30},
     }
 
+    MINIO_URL = "http://minio:9000"
+    AWS_ACCESS_KEY_ID = "minioadmin"
+    AWS_SECRET_ACCESS_KEY = "minioadmin"
+
+    @classmethod
+    def load_configs_from_datalake(cls):
+        import s3fs
+        import pandas as pd
+        import logging
+
+        logger = logging.getLogger(__name__)
+        s3_path = "s3://datalake/prices/latest_prices.parquet"
+        
+        try:
+            fs = s3fs.S3FileSystem(
+                client_kwargs={'endpoint_url': cls.MINIO_URL},
+                key=cls.AWS_ACCESS_KEY_ID,
+                secret=cls.AWS_SECRET_ACCESS_KEY
+            )
+            if fs.exists(s3_path):
+                with fs.open(s3_path, 'rb') as f:
+                    df = pd.read_parquet(f)
+                    
+                # Update cls.SUBMARKET_CONFIGS
+                for _, row in df.iterrows():
+                    sub_id = int(row['submarket_id'])
+                    cls.SUBMARKET_CONFIGS[sub_id] = {
+                        "name": row['submarket_name'],
+                        "base_price": float(row['base_price']),
+                        "volatility": float(row['volatility'])
+                    }
+                logger.info("RiskEngine loaded dynamic configs from Data Lake.")
+            else:
+                logger.info("Data Lake parquet not found yet. Using default configs.")
+        except Exception as e:
+            logger.warning(f"Failed to load configs from Data Lake: {e}")
+
     @classmethod
     def generate_forward_curve(cls, submarket: int, start_date: datetime, end_date: datetime) -> pd.DataFrame:
         """
@@ -24,6 +61,8 @@ class RiskEngine:
             dates = pd.date_range(start=start_date, end=end_date, freq='D')
             
         n_days = len(dates)
+            
+        cls.load_configs_from_datalake()
         
         config = cls.SUBMARKET_CONFIGS.get(submarket, cls.SUBMARKET_CONFIGS[0])
         S0 = config["base_price"]
