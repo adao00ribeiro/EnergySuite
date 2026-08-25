@@ -19,6 +19,10 @@ public class Contract
     public DateTime StartDate { get; private set; }
     public DateTime EndDate { get; private set; }
     
+    // Propriedades Específicas de Derivativos
+    public decimal? StrikePrice { get; private set; }
+    public decimal? OptionPremium { get; private set; }
+    
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
 
@@ -32,7 +36,9 @@ public class Contract
         decimal volumeMwMed, 
         decimal price, 
         DateTime startDate, 
-        DateTime endDate)
+        DateTime endDate,
+        decimal? strikePrice = null,
+        decimal? optionPremium = null)
     {
         Id = Guid.NewGuid();
         CounterpartyName = counterpartyName;
@@ -42,6 +48,8 @@ public class Contract
         Price = price;
         StartDate = DateTime.SpecifyKind(startDate, DateTimeKind.Utc);
         EndDate = DateTime.SpecifyKind(endDate, DateTimeKind.Utc);
+        StrikePrice = strikePrice;
+        OptionPremium = optionPremium;
         CreatedAt = DateTime.UtcNow;
     }
 

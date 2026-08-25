@@ -15,7 +15,7 @@ import { ContractService } from '../../data-access/contract.service';
 })
 export class ContractListComponent implements OnInit {
   public contractService = inject(ContractService);
-  public displayedColumns: string[] = ['counterpartyName', 'volumeMwMed', 'price', 'period'];
+  public displayedColumns: string[] = ['type', 'counterpartyName', 'volumeMwMed', 'price', 'strikePrice', 'period'];
 
   ngOnInit() {
     this.contractService.loadContracts();

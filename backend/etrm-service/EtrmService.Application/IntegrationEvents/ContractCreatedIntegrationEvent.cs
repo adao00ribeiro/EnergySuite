@@ -12,6 +12,8 @@ namespace EtrmService.Application.IntegrationEvents
         decimal Price,
         DateTime StartDate,
         DateTime EndDate,
-        DateTime CreatedAt
+        DateTime CreatedAt,
+        decimal? StrikePrice = null,
+        decimal? OptionPremium = null
     );
 }

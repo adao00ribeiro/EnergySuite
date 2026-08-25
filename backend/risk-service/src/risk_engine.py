@@ -3,8 +3,12 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 import logging
+import math
 
 logger = logging.getLogger(__name__)
+
+def norm_cdf(x: float) -> float:
+    return (1.0 + math.erf(x / math.sqrt(2.0))) / 2.0
 
 class RiskEngine:
     # Submarket configurations: Base Price (R$/MWh) and Volatility (std dev)
@@ -96,31 +100,62 @@ class RiskEngine:
         return curve
 
     @classmethod
-    def calculate_mtm(cls, contract_price: float, volume_mw: float, contract_type: int, submarket: int, start_date: datetime, end_date: datetime) -> float:
+    def calculate_mtm(cls, contract_price: float, volume_mw: float, contract_type: int | str, submarket: int, start_date: datetime, end_date: datetime, strike_price: float | None = None) -> float:
         """
         Calcula o Mark-to-Market (MtM) do contrato.
-        Type 0: COMPRA (Long) -> Ganha se Preço de Mercado > Preço do Contrato
-        Type 1: VENDA (Short) -> Ganha se Preço de Mercado < Preço do Contrato
+        Tipos de Contrato:
+        1 / 'Purchase': COMPRA (Long Forward)
+        2 / 'Sale': VENDA (Short Forward)
+        3 / 'Swap': Swap de Preço
+        4 / 'OptionCall': Opção de Compra (Black-Scholes)
+        5 / 'OptionPut': Opção de Venda (Black-Scholes)
         """
-        # 1 MWm significa 1 MW gerado em todas as horas do mês/período.
-        # Aproximação: volume_mw * 24 horas * dias.
-        
         curve = cls.generate_forward_curve(submarket, start_date, end_date)
-        
-        # Para cada dia, o volume diário é volume_mw * 24
         daily_volume = volume_mw * 24
         
-        # Vetorização do cálculo diário de MtM
-        # Se for COMPRA (0), pago fixo e recebo spot: (MarketPrice - ContractPrice) * Volume
-        # Se for VENDA (1), recebo fixo e pago spot: (ContractPrice - MarketPrice) * Volume
-        
-        if contract_type == 0:
-            curve["DailyMtM"] = (curve["MarketPrice"] - contract_price) * daily_volume
+        # Converte para int se vier como string
+        type_map = {'Purchase': 1, 'Sale': 2, 'Swap': 3, 'OptionCall': 4, 'OptionPut': 5}
+        if isinstance(contract_type, str):
+            c_type = type_map.get(contract_type, 1)
         else:
-            curve["DailyMtM"] = (contract_price - curve["MarketPrice"]) * daily_volume
+            c_type = contract_type
             
-        total_mtm = float(curve["DailyMtM"].sum())
-        return total_mtm
+        config = cls.SUBMARKET_CONFIGS.get(submarket, cls.SUBMARKET_CONFIGS[0])
+        sigma = config["volatility"]
+        
+        daily_mtm = []
+        # Para Black-Scholes simplificado, time to maturity em anos para cada dia da curva
+        # Assumiremos T como o tempo do dia atual até o final do contrato.
+        total_days = (end_date - start_date).days
+        if total_days <= 0: total_days = 1
+        
+        for i, row in curve.iterrows():
+            S = row["MarketPrice"]
+            T = (total_days - i) / 365.0
+            if T <= 0: T = 1/365.0 # Previne divisão por zero
+            
+            if c_type == 1 or c_type == 3: # Purchase ou Swap (Long)
+                daily_mtm.append((S - contract_price) * daily_volume)
+            elif c_type == 2: # Sale (Short)
+                daily_mtm.append((contract_price - S) * daily_volume)
+            elif c_type == 4: # OptionCall (Black-Scholes)
+                K = strike_price if strike_price else contract_price
+                r = 0.10 # Taxa livre de risco simplificada 10%
+                d1 = (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+                d2 = d1 - sigma * math.sqrt(T)
+                call_price = S * norm_cdf(d1) - K * math.exp(-r * T) * norm_cdf(d2)
+                daily_mtm.append(call_price * daily_volume)
+            elif c_type == 5: # OptionPut (Black-Scholes)
+                K = strike_price if strike_price else contract_price
+                r = 0.10
+                d1 = (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+                d2 = d1 - sigma * math.sqrt(T)
+                put_price = K * math.exp(-r * T) * norm_cdf(-d2) - S * norm_cdf(-d1)
+                daily_mtm.append(put_price * daily_volume)
+            else:
+                daily_mtm.append(0.0)
+                
+        return float(sum(daily_mtm))
         
     @classmethod
     def determine_risk_category(cls, mtm: float) -> str:

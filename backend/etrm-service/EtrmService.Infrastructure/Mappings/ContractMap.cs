@@ -47,6 +47,16 @@ public class ContractMap : IEntityTypeConfiguration<Contract>
                .HasColumnName("end_date")
                .IsRequired();
 
+        builder.Property(x => x.StrikePrice)
+               .HasColumnName("strike_price")
+               .HasColumnType("decimal(18,2)")
+               .IsRequired(false);
+
+        builder.Property(x => x.OptionPremium)
+               .HasColumnName("option_premium")
+               .HasColumnType("decimal(18,2)")
+               .IsRequired(false);
+
         builder.Property(x => x.CreatedAt)
                .HasColumnName("created_at")
                .IsRequired()

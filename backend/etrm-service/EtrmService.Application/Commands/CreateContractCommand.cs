@@ -13,4 +13,6 @@ public class CreateContractCommand : IRequest<Guid>
     public decimal Price { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
+    public decimal? StrikePrice { get; set; }
+    public decimal? OptionPremium { get; set; }
 }

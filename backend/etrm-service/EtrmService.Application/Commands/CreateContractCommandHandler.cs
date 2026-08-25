@@ -29,7 +29,9 @@ public class CreateContractCommandHandler : IRequestHandler<CreateContractComman
             request.VolumeMwMed,
             request.Price,
             request.StartDate,
-            request.EndDate
+            request.EndDate,
+            request.StrikePrice,
+            request.OptionPremium
         );
 
         await _repository.AddAsync(contract, cancellationToken);
@@ -44,7 +46,9 @@ public class CreateContractCommandHandler : IRequestHandler<CreateContractComman
             contract.Price,
             contract.StartDate,
             contract.EndDate,
-            DateTime.UtcNow
+            DateTime.UtcNow,
+            contract.StrikePrice,
+            contract.OptionPremium
         );
         
         await _eventPublisher.PublishAsync(integrationEvent, cancellationToken);

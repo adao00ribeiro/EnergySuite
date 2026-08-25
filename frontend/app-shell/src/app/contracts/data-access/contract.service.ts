@@ -11,6 +11,8 @@ export interface Contract {
   startDate: string;
   endDate: string;
   createdAt: string;
+  strikePrice?: number;
+  optionPremium?: number;
 }
 
 export interface CreateContractPayload {
@@ -21,6 +23,8 @@ export interface CreateContractPayload {
   price: number;
   startDate: string;
   endDate: string;
+  strikePrice?: number;
+  optionPremium?: number;
 }
 
 import { environment } from '../../../environments/environment';

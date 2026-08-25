@@ -41,12 +41,16 @@ export class ContractCreateComponent {
     volumeMwMed: [0, [Validators.required, Validators.min(0.1)]],
     price: [0, [Validators.required, Validators.min(0.1)]],
     startDate: [new Date(), Validators.required],
-    endDate: [new Date(), Validators.required]
+    endDate: [new Date(), Validators.required],
+    strikePrice: [{ value: 0, disabled: true }, [Validators.min(0.1)]]
   });
 
   public contractTypes = [
     { value: 'Purchase', label: 'Compra' },
-    { value: 'Sale', label: 'Venda' }
+    { value: 'Sale', label: 'Venda' },
+    { value: 'Swap', label: 'Swap de Preço' },
+    { value: 'OptionCall', label: 'Opção de Compra (Call)' },
+    { value: 'OptionPut', label: 'Opção de Venda (Put)' }
   ];
 
   public submarkets = [
@@ -56,11 +60,26 @@ export class ContractCreateComponent {
     { value: 'NORTE', label: 'Norte' }
   ];
 
+  ngOnInit() {
+    this.contractForm.controls.type.valueChanges.subscribe(type => {
+      const strikeControl = this.contractForm.controls.strikePrice;
+      if (type === 'OptionCall' || type === 'OptionPut') {
+        strikeControl.enable();
+        strikeControl.setValidators([Validators.required, Validators.min(0.1)]);
+      } else {
+        strikeControl.disable();
+        strikeControl.clearValidators();
+      }
+      strikeControl.updateValueAndValidity();
+    });
+  }
+
   onSubmit() {
     if (this.contractForm.valid) {
       const formValue = this.contractForm.getRawValue();
       const payload: CreateContractPayload = {
         ...formValue,
+        strikePrice: formValue.type.startsWith('Option') ? formValue.strikePrice : undefined,
         startDate: formValue.startDate.toISOString().split('T')[0],
         endDate: formValue.endDate.toISOString().split('T')[0]
       };

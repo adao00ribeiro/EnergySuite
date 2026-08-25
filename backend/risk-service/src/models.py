@@ -25,6 +25,8 @@ class ContractCreatedEvent(BaseModel):
     submarket: str | int
     volumeMwMed: float
     price: float
+    strikePrice: float | None = None
+    optionPremium: float | None = None
     startDate: datetime
     endDate: datetime
     createdAt: datetime

@@ -89,25 +89,22 @@ async def process_contract_event(event_data: dict, producer: AIOKafkaProducer):
             hours = days * 24
             financial_exposure = event.volumeMwMed * event.price * hours
             
-            # Map string to int for RiskEngine
-            type_str = str(event.type).upper()
-            contract_type_mapped = 0 if type_str == "PURCHASE" else 1
-
             submarket_str = str(event.submarket).upper()
-            if submarket_str == "SE_CO": submarket_mapped = 0
-            elif submarket_str == "SUL": submarket_mapped = 1
-            elif submarket_str == "NORDESTE": submarket_mapped = 2
-            elif submarket_str == "NORTE": submarket_mapped = 3
+            if submarket_str == "SE_CO" or submarket_str == "0": submarket_mapped = 0
+            elif submarket_str == "SUL" or submarket_str == "1": submarket_mapped = 1
+            elif submarket_str == "NORDESTE" or submarket_str == "2": submarket_mapped = 2
+            elif submarket_str == "NORTE" or submarket_str == "3": submarket_mapped = 3
             else: submarket_mapped = 0
 
-            # Advanced Mark-to-Market calculation using RiskEngine
+            # Advanced Mark-to-Market calculation using RiskEngine (supports Swap, Options)
             mtm = RiskEngine.calculate_mtm(
                 contract_price=event.price,
                 volume_mw=event.volumeMwMed,
-                contract_type=contract_type_mapped,
+                contract_type=event.type,
                 submarket=submarket_mapped,
                 start_date=event.startDate,
-                end_date=event.endDate
+                end_date=event.endDate,
+                strike_price=event.strikePrice
             )
             
             risk_category = RiskEngine.determine_risk_category(mtm)
