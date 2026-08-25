@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: energysuite
 
 resources:
-  - ../namespace.yaml
+  - namespace.yaml
   - configmaps/env-configmap.yaml
   - secrets/db-secrets.yaml
   - infra-services/postgres.yaml
