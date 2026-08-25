@@ -34,3 +34,11 @@ jobs:
           cd ../../
           kubectl apply -f k8s/apps/app-shell.yaml
           kubectl rollout restart deployment app-shell
+
+      - name: "🐍 Build & Deploy: Risk Service (K8s)"
+        run: |
+          cd backend/risk-service
+          docker build --network=host -t energysuite/risk-service:latest .
+          cd ../../
+          kubectl apply -f k8s/apps/risk-service.yaml
+          kubectl rollout restart deployment risk-service

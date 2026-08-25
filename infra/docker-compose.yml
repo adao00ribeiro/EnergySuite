@@ -115,6 +115,50 @@ services:
     networks:
       - energysuite-net
 
+  # ==========================================
+  # MICROSERVICES (EnergySuite)
+  # ==========================================
+  etrm-service:
+    build:
+      context: ../backend/etrm-service
+      dockerfile: Dockerfile
+    container_name: energysuite-etrm-service
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=etrm_db;Username=root;Password=rootpassword
+      - Kafka__BootstrapServers=kafka:19092
+    depends_on:
+      - postgres
+      - kafka
+    networks:
+      - energysuite-net
+
+  risk-service:
+    build:
+      context: ../backend/risk-service
+      dockerfile: Dockerfile
+    container_name: energysuite-risk-service
+    ports:
+      - "8000:8000"
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:19092
+    depends_on:
+      - kafka
+    networks:
+      - energysuite-net
+
+  app-shell:
+    build:
+      context: ../frontend/app-shell
+      dockerfile: Dockerfile
+    container_name: energysuite-app-shell
+    ports:
+      - "4200:80"
+    networks:
+      - energysuite-net
+
 volumes:
   postgres_data:
   kafka_data:

@@ -20,8 +20,9 @@
   - `ContractsController` exposto.
   - Configurar Kafka Producer para disparar evento quando contrato for criado (MassTransit).
   - Adicionar as validações com `FluentValidation` no pipeline do MediatR.
-- **Próximos Passos (To-Do):**
   - Implementar Queries de Leitura (`GetContractByIdQuery`, `GetContractsList`).
+- **Próximos Passos (To-Do):**
+  - Configurar testes de integração para Endpoints (API).
 
 ---
 
@@ -31,9 +32,10 @@
   - `Dockerfile` (Multi-stage com NGINX).
   - Repositório App Shell gerado via `ng new` (SCSS, Routing).
   - Angular Material instalado (`@angular/material`).
-- **Próximos Passos (To-Do):**
   - Configurar interface inicial (Sidenav, Toolbar).
   - Configurar Webpack Module Federation para os Micro-frontends.
+- **Próximos Passos (To-Do):**
+  - Integrar o App Shell com a API (chamadas HTTP ao ETRM Service).
 
 ---
 
@@ -41,6 +43,7 @@
 - **Status:** Apenas Dockerfile criado.
 - **Concluído:**
   - `Dockerfile` (FastAPI).
-- **Próximos Passos (To-Do):**
   - Iniciar projeto base do FastAPI.
   - Criar consumidor base do Kafka (`aiokafka`).
+- **Próximos Passos (To-Do):**
+  - Implementar lógica de cálculo de risco ao receber o evento de contrato e expor métricas.
