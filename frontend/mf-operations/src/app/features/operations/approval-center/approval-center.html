@@ -1,0 +1,60 @@
+<div class="dashboard-layout animate-fade-in">
+  <header class="dashboard-header">
+    <div>
+      <h1 class="page-title text-gradient">Central de Aprovação</h1>
+      <p class="page-subtitle">Revisão gerencial de operações e contratos pendentes</p>
+    </div>
+  </header>
+
+  <main class="dashboard-content">
+    <div class="glass-panel p-0">
+      <table mat-table [dataSource]="dataSource()" matSort class="w-full bg-transparent">
+        
+        <ng-container matColumnDef="ticketRef">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Boleta Ref </th>
+          <td mat-cell *matCellDef="let element" class="font-bold text-amber-500"> {{element.ticketRef}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="status-badge" [ngClass]="{'status-purchase': element.type === 'Purchase', 'status-sale': element.type === 'Sale'}">
+              {{element.type === 'Purchase' ? 'Compra' : 'Venda'}}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="counterparty">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Contraparte </th>
+          <td mat-cell *matCellDef="let element" style="color: var(--color-text);"> {{element.counterparty}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="details">
+          <th mat-header-cell *matHeaderCellDef> Detalhes </th>
+          <td mat-cell *matCellDef="let element"> {{element.volume | number:'1.2-2'}} MWm &#64; {{element.price | currency:'BRL'}} </td>
+        </ng-container>
+        
+        <ng-container matColumnDef="requested">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Solicitante </th>
+          <td mat-cell *matCellDef="let element"> {{element.requestedBy}} <br><small class="text-gray-500">{{element.requestedAt | date:'short'}}</small> </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="text-right"> Decisão </th>
+          <td mat-cell *matCellDef="let element" class="text-right">
+            <button mat-icon-button color="primary" class="text-emerald-500 mx-1" (click)="approve(element.id)">
+              <mat-icon>check_circle</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" class="text-red-500 mx-1" (click)="reject(element.id)">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover-row"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons class="bg-transparent"></mat-paginator>
+    </div>
+  </main>
+</div>

@@ -12,5 +12,13 @@ export const routes: Routes = [
   {
     path: 'portfolios',
     loadComponent: () => import('./features/portfolios/portfolio-list/portfolio-list').then(m => m.PortfolioListComponent)
+  },
+  {
+    path: 'tickets',
+    loadComponent: () => import('./features/operations/tickets-list/tickets-list').then(m => m.TicketsListComponent)
+  },
+  {
+    path: 'approvals',
+    loadComponent: () => import('./features/operations/approval-center/approval-center').then(m => m.ApprovalCenterComponent)
   }
 ];

@@ -21,12 +21,12 @@ Este documento detalha o roteiro de implementação para o produto **Energy Back
 **Objetivo:** Implementar o núcleo do sistema transacional, permitindo a criação de boletas, operações de compra e venda, e o ciclo de vida (rascunho -> oficial).
 
 ### Tarefas
-- [ ] Implementar as entidades `Ticket` (Boleta) e `Operation` (Compra, Venda), conectando-as a partes e contrapartes. *(Agente: backend_dotnet)*
-- [ ] Implementar a **Máquina de Estados (State Machine)** da operação (Rascunho, Validação, Aguardando Aprovação, Aprovada, Publicada, Oficial). *(Agente: backend_dotnet)*
-- [ ] Desenvolver a entidade e lógica de log de auditoria `AuditLog` para rastrear qualquer mudança em operações publicadas. *(Agente: backend_dotnet)*
-- [ ] Implementar motor de regras para aprovação (Rápida, Restrita, via Aprovação). *(Agente: backend_dotnet)*
-- [ ] Desenvolver telas de listagem e criação de Boletas e Operações no frontend. *(Agente: frontend_angular)*
-- [ ] Desenvolver tela da **Central de Aprovação** para usuários com perfil gerencial. *(Agente: frontend_angular)*
+- [x] Implementar as entidades `Ticket` (Boleta) e `Operation` (Compra, Venda), conectando-as a partes e contrapartes. *(Agente: backend_dotnet)*
+- [x] Implementar a **Máquina de Estados (State Machine)** da operação (Rascunho, Validação, Aguardando Aprovação, Aprovada, Publicada, Oficial). *(Agente: backend_dotnet)*
+- [x] Desenvolver a entidade e lógica de log de auditoria `AuditLog` para rastrear qualquer mudança em operações publicadas. *(Agente: backend_dotnet)*
+- [x] Implementar motor de regras para aprovação (Rápida, Restrita, via Aprovação). *(Agente: backend_dotnet)*
+- [x] Desenvolver telas de listagem e criação de Boletas e Operações no frontend. *(Agente: frontend_angular)*
+- [x] Desenvolver tela da **Central de Aprovação** para usuários com perfil gerencial. *(Agente: frontend_angular)*
 
 ---
 

@@ -17,6 +17,9 @@ public class EtrmDbContext : DbContext, IEtrmDbContext
     public DbSet<Company> Companies { get; set; }
     public DbSet<Person> Persons { get; set; }
     public DbSet<EconomicGroup> EconomicGroups { get; set; }
+    public DbSet<Ticket> Tickets { get; set; }
+    public DbSet<Operation> Operations { get; set; }
+    public DbSet<AuditLog> AuditLogs { get; set; }
     public DbSet<Portfolio> Portfolios { get; set; }
     public DbSet<PrecipitationScenario> PrecipitationScenarios { get; set; }
     public DbSet<ModelExecution> ModelExecutions { get; set; }
@@ -33,6 +36,9 @@ public class EtrmDbContext : DbContext, IEtrmDbContext
         modelBuilder.Entity<Company>().HasQueryFilter(c => c.TenantId == _currentUserService.TenantId);
         modelBuilder.Entity<Person>().HasQueryFilter(c => c.TenantId == _currentUserService.TenantId);
         modelBuilder.Entity<EconomicGroup>().HasQueryFilter(c => c.TenantId == _currentUserService.TenantId);
+        modelBuilder.Entity<Ticket>().HasQueryFilter(c => c.TenantId == _currentUserService.TenantId);
+        modelBuilder.Entity<Operation>().HasQueryFilter(c => c.TenantId == _currentUserService.TenantId);
+        modelBuilder.Entity<AuditLog>().HasQueryFilter(c => c.TenantId == _currentUserService.TenantId);
         modelBuilder.Entity<Portfolio>().HasQueryFilter(c => c.TenantId == _currentUserService.TenantId);
         
         base.OnModelCreating(modelBuilder);

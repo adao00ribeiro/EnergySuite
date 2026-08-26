@@ -11,6 +11,9 @@ public interface IEtrmDbContext
     DbSet<Company> Companies { get; }
     DbSet<Person> Persons { get; }
     DbSet<EconomicGroup> EconomicGroups { get; }
+    DbSet<Ticket> Tickets { get; }
+    DbSet<Operation> Operations { get; }
+    DbSet<AuditLog> AuditLogs { get; }
     DbSet<Portfolio> Portfolios { get; }
     DbSet<PrecipitationScenario> PrecipitationScenarios { get; }
     DbSet<ModelExecution> ModelExecutions { get; }
