@@ -33,13 +33,13 @@
         </div>
       </mat-tab>
 
-      <mat-tab label="Análises ENA">
+      <mat-tab label="Análises ENA" *ngIf="auth.hasPermission('CanViewENA')">
         <div class="charts-grid mt-4">
           <app-reservoir-levels-chart></app-reservoir-levels-chart>
         </div>
       </mat-tab>
       
-      <mat-tab label="Arquivos Setoriais (GEVAZP)">
+      <mat-tab label="Arquivos Setoriais (GEVAZP)" *ngIf="auth.hasPermission('CanViewENA')">
         <div class="mt-4">
           <app-exports-dashboard></app-exports-dashboard>
         </div>

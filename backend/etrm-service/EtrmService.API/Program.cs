@@ -28,6 +28,19 @@ builder.Services.AddRateLimiter(options =>
             }
         )
     );
+    
+    // B2B Strict Rate Limiter (Task 7.3)
+    options.AddPolicy("b2b", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "anon",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 2,
+                AutoReplenishment = true
+            }));
+
     options.OnRejected = async (context, cancellationToken) =>
     {
         context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
@@ -51,6 +64,7 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddProblemDetails();
 builder.Services.AddHealthChecks();
 builder.Services.AddLogging();
+builder.Services.AddHttpClient(); // For Webhooks
 
 // Configuração de Versionamento e Swagger
 builder.Services.AddApiVersioningSetup();
@@ -68,6 +82,13 @@ builder.Services.AddAuthentication("Bearer")
             ValidateAudience = false
         };
     });
+
+// Authorization Policies (Task 7.4)
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("EnaPolicy", policy => 
+        policy.RequireClaim("permissions", "CanViewENA"));
+});
 
 builder.Services.AddCors(options =>
 {

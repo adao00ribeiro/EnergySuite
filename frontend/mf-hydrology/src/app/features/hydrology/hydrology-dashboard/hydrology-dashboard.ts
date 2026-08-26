@@ -6,6 +6,8 @@ import { MlopsStatusComponent } from '../components/mlops-status/mlops-status';
 import { PrecipitationMapComponent } from '../components/precipitation-map/precipitation-map.component';
 import { CustomScenariosComponent } from '../components/custom-scenarios/custom-scenarios';
 import { ExportsDashboardComponent } from '../components/exports-dashboard/exports-dashboard';
+import { AuthService } from '../../../core/services/auth.service';
+import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-hydrology-dashboard',
@@ -16,4 +18,5 @@ import { ExportsDashboardComponent } from '../components/exports-dashboard/expor
 })
 export class HydrologyDashboardComponent {
   currentDate = new Date();
+  auth = inject(AuthService);
 }
