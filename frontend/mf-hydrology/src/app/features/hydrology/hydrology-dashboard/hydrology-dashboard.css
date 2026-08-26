@@ -49,3 +49,30 @@
   grid-template-columns: 1fr;
   gap: 24px;
 }
+.tab-content-placeholder {
+  padding: 32px 0;
+  color: var(--text-secondary);
+}
+.tab-content-placeholder h3 {
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.mt-4 {
+  margin-top: 24px;
+}
+::ng-deep .custom-tabs .mat-mdc-tab-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+::ng-deep .custom-tabs .mdc-tab__text-label {
+  color: var(--text-secondary) !important;
+  font-family: var(--font-sans) !important;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+::ng-deep .custom-tabs .mdc-tab--active .mdc-tab__text-label {
+  color: var(--text-primary) !important;
+}
+::ng-deep .custom-tabs .mdc-tab-indicator__content--underline {
+  border-color: var(--accent-teal) !important;
+}

@@ -10,10 +10,36 @@
   </header>
 
   <main class="dashboard-content">
-    <app-mlops-status></app-mlops-status>
-    
-    <div class="charts-grid">
-      <app-reservoir-levels-chart></app-reservoir-levels-chart>
-    </div>
+    <mat-tab-group animationDuration="200ms" color="accent" class="custom-tabs">
+      <mat-tab label="Precipitação">
+        <div class="tab-content-placeholder">
+          <h3>Mapas de Precipitação</h3>
+          <p>Visualização de modelos meteorológicos ETA, GEFS, ECMWF. (Em breve)</p>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Modelos Hidrológicos">
+        <div class="tab-content-placeholder">
+          <h3>Execução de Modelos</h3>
+          <p>Acompanhamento de execuções SMAP e ML via EKS Spot.</p>
+          <div class="mt-4">
+            <app-mlops-status></app-mlops-status>
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Cenários Customizados">
+        <div class="tab-content-placeholder">
+          <h3>Meus Mapas</h3>
+          <p>Upload de arquivos CSV e Combinação de Mapas. (Em breve)</p>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Análises ENA">
+        <div class="charts-grid mt-4">
+          <app-reservoir-levels-chart></app-reservoir-levels-chart>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
   </main>
 </div>

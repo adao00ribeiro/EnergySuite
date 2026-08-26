@@ -32,6 +32,7 @@ export class ShellLayoutComponent implements OnInit {
   expandedGroups: Record<string, boolean> = {};
 
   navGroups: NavGroup[] = [];
+  currentTheme = '';
 
   // Global Contexts mapped to the new NavGroup structure
   private moduleMenus: Record<string, NavGroup[]> = {
