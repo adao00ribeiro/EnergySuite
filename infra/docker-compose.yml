@@ -194,6 +194,36 @@ services:
     networks:
       - energysuite-net
 
+  mf-operations:
+    build:
+      context: ../frontend/mf-operations
+      dockerfile: Dockerfile
+    container_name: energysuite-mf-operations
+    ports:
+      - "4202:80"
+    networks:
+      - energysuite-net
+
+  mf-pricing:
+    build:
+      context: ../frontend/mf-pricing
+      dockerfile: Dockerfile
+    container_name: energysuite-mf-pricing
+    ports:
+      - "4203:80"
+    networks:
+      - energysuite-net
+
+  mf-hydrology:
+    build:
+      context: ../frontend/mf-hydrology
+      dockerfile: Dockerfile
+    container_name: energysuite-mf-hydrology
+    ports:
+      - "4204:80"
+    networks:
+      - energysuite-net
+
   # ==========================================
   # DATA LAKE & MLOPS (Caminho 2)
   # ==========================================
