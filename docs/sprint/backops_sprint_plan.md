@@ -34,12 +34,12 @@ Este documento detalha o roteiro de implementação para o produto **Energy Back
 **Objetivo:** Permitir versionamento de contratos, lógica avançada de reajustes, além de operações intercompany e SWAP.
 
 ### Tarefas
-- [ ] Refatorar a entidade existente de `Contract` para o novo modelo completo (Vigência, Limites de Volume, Indexadores). *(Agente: backend_dotnet)*
-- [ ] Implementar entidades para `ContractAmendment` (Aditivos), `PriceIndex` e histórico de versionamento. *(Agente: backend_dotnet)*
-- [ ] Criar o Motor de **Reajustes** automáticos baseado em indexadores (IPCA, IGP-M). *(Agente: backend_dotnet)*
-- [ ] Implementar a inteligência de **SWAP** (criação automática e sincronizada de Compra/Venda inter-submercado) e **Intercompany** (geração de operação espelho). *(Agente: backend_dotnet)*
-- [ ] Integrar armazenamento MinIO para upload/download de documentos (anexos) em operações e contratos. *(Agente: backend_dotnet)*
-- [ ] Desenvolver interface visual para Vínculos (Links) de Operações e visualização de Aditivos no frontend. *(Agente: frontend_angular)*
+- [x] Refatorar a entidade existente de `Contract` para o novo modelo completo (Vigência, Limites de Volume, Indexadores). *(Agente: backend_dotnet)*
+- [x] Implementar entidades para `ContractAmendment` (Aditivos), `PriceIndex` e histórico de versionamento. *(Agente: backend_dotnet)*
+- [x] Criar o Motor de **Reajustes** automáticos baseado em indexadores (IPCA, IGP-M). *(Agente: backend_dotnet)*
+- [x] Implementar a inteligência de **SWAP** (criação automática e sincronizada de Compra/Venda inter-submercado) e **Intercompany** (geração de operação espelho). *(Agente: backend_dotnet)*
+- [x] Integrar armazenamento MinIO para upload/download de documentos (anexos) em operações e contratos. *(Agente: backend_dotnet)*
+- [x] Desenvolver interface visual para Vínculos (Links) de Operações e visualização de Aditivos no frontend. *(Agente: frontend_angular)*
 
 ---
 

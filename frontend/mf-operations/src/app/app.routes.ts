@@ -20,5 +20,9 @@ export const routes: Routes = [
   {
     path: 'approvals',
     loadComponent: () => import('./features/operations/approval-center/approval-center').then(m => m.ApprovalCenterComponent)
+  },
+  {
+    path: 'contracts/:id',
+    loadComponent: () => import('./features/operations/contract-details/contract-details').then(m => m.ContractDetailsComponent)
   }
 ];

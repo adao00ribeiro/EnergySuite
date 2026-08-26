@@ -34,6 +34,7 @@ public static class NativeInjectorConfig
         };
         services.AddSingleton<Amazon.S3.IAmazonS3>(sp => new Amazon.S3.AmazonS3Client("minioadmin", "minioadmin", s3Config));
         services.AddScoped<IBlobStorageService, S3BlobStorageService>();
+        services.AddScoped<IDocumentStorageService, EtrmService.Infrastructure.Storage.MinioDocumentStorageService>();
 
         // Domain
         services.AddScoped<IEtrmDbContext>(provider => provider.GetRequiredService<EtrmDbContext>());

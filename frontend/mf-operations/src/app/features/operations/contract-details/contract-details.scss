@@ -1,0 +1,149 @@
+.page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  
+  .title-area {
+    h1 {
+      font-size: 28px;
+      margin-bottom: 4px;
+      color: var(--text-primary);
+    }
+    .subtitle {
+      color: var(--text-secondary);
+      margin: 0;
+      font-size: 14px;
+    }
+  }
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.detail-card {
+  padding: 20px;
+  
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 12px;
+    
+    h3 {
+      margin: 0;
+      font-size: 16px;
+      color: var(--text-primary);
+    }
+    
+    mat-icon {
+      color: var(--accent-indigo);
+    }
+  }
+  
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    .label {
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+    
+    .value {
+      font-weight: 500;
+      color: var(--text-primary);
+      
+      &.highlight {
+        color: var(--accent-amber);
+        font-size: 16px;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+.amendments-panel {
+  padding: 24px;
+  
+  .panel-header {
+    margin-bottom: 20px;
+    h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+  }
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.operations-table {
+  width: 100%;
+  background: transparent !important;
+  
+  th.mat-header-cell {
+    color: var(--text-secondary);
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  td.mat-cell {
+    color: var(--text-primary);
+    border-bottom-color: rgba(255, 255, 255, 0.02);
+  }
+
+  .text-success {
+    color: var(--status-success);
+    font-weight: 500;
+  }
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-block;
+  
+  &.info {
+    background: rgba(14, 165, 233, 0.15);
+    color: #0ea5e9;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  color: var(--text-secondary);
+  
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+}

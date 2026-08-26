@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using EtrmService.Domain.Entities;
+using EtrmService.Domain.Enums;
 
 namespace EtrmService.Infrastructure.Mappings;
 
@@ -24,6 +25,10 @@ public class OperationMap : IEntityTypeConfiguration<Operation>
         builder.Property(o => o.StartDate).HasColumnName("start_date").IsRequired();
         builder.Property(o => o.EndDate).HasColumnName("end_date").IsRequired();
         builder.Property(o => o.TenantId).HasColumnName("tenant_id").IsRequired();
+        
+        // Sprint 3: Operações Estruturadas
+        builder.Property(o => o.Category).HasColumnName("category").HasConversion<string>().IsRequired().HasDefaultValue(OperationCategory.Standard);
+        builder.Property(o => o.LinkedOperationId).HasColumnName("linked_operation_id").IsRequired(false);
 
         builder.HasOne(o => o.Portfolio)
                .WithMany()

@@ -28,6 +28,7 @@ public class EtrmDbContext : DbContext, IEtrmDbContext
     public DbSet<CustomScenario> CustomScenarios { get; set; }
     public DbSet<ContractAmendment> ContractAmendments { get; set; }
     public DbSet<PriceIndexValue> PriceIndexValues { get; set; }
+    public DbSet<DocumentAttachment> DocumentAttachments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
