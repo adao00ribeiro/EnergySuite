@@ -1,0 +1,24 @@
+<div class="portal-container animate-fade-in">
+  <header class="portal-header animate-slide-up">
+    <h1 class="portal-title">EnergySuite Super App</h1>
+    <p class="portal-subtitle">Selecione o módulo para iniciar sua sessão</p>
+  </header>
+
+  <main class="modules-grid">
+    <div *ngFor="let mod of modules; let i = index" 
+         class="glass-panel module-card animate-slide-up"
+         [ngStyle]="{'animation-delay': (i * 0.1) + 's'}"
+         (click)="navigateTo(mod.path)">
+      <div class="card-bg-glow" [ngClass]="mod.color"></div>
+      <div class="icon-wrapper" [ngClass]="mod.color">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path [attr.d]="mod.icon" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h3 class="module-name">{{ mod.name }}</h3>
+      <div class="card-arrow">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+    </div>
+  </main>
+</div>

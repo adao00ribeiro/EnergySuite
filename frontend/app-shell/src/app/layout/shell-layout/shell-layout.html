@@ -1,0 +1,44 @@
+<mat-sidenav-container class="shell-container">
+  <!-- Sidebar -->
+  <mat-sidenav mode="side" opened class="shell-sidebar">
+    <div class="sidebar-header">
+      <div class="logo-box" (click)="goHome()" matTooltip="Voltar à Home">
+        <mat-icon>bolt</mat-icon>
+      </div>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <a *ngFor="let item of navItems"
+         [routerLink]="item.path"
+         routerLinkActive="active"
+         class="nav-item"
+         [matTooltip]="item.label"
+         matTooltipPosition="right">
+        <mat-icon [ngClass]="item.color">{{ item.icon }}</mat-icon>
+      </a>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <button class="nav-item user-btn" matTooltip="Perfil">
+        <mat-icon>person</mat-icon>
+      </button>
+    </div>
+  </mat-sidenav>
+
+  <!-- Main Content -->
+  <mat-sidenav-content class="shell-content">
+    <div class="topbar">
+      <div class="breadcrumbs">
+        <!-- Optional Breadcrumbs -->
+      </div>
+      <div class="topbar-actions">
+        <mat-icon class="action-icon">notifications</mat-icon>
+      </div>
+    </div>
+    
+    <!-- This is where the Micro-frontends get injected -->
+    <main class="mf-wrapper">
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

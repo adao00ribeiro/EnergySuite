@@ -4,12 +4,13 @@ import { loadRemoteModule } from '@angular-architects/native-federation';
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./layout/app-layout/app-layout.component').then(m => m.AppLayoutComponent),
+    loadComponent: () => import('./features/portal/portal-home/portal-home.ts').then(m => m.PortalHomeComponent),
+    pathMatch: 'full'
+  },
+  {
+    path: '',
+    loadComponent: () => import('./layout/shell-layout/shell-layout.ts').then(m => m.ShellLayoutComponent),
     children: [
-      {
-        path: 'dashboard',
-        loadComponent: () => import('./features/dashboard/executive-dashboard.component').then(m => m.ExecutiveDashboardComponent)
-      },
       {
         path: 'portfolio',
         loadComponent: () => loadRemoteModule('mf-portfolio', './Component').then(m => m.App)
@@ -26,6 +27,11 @@ export const routes: Routes = [
         path: 'hydrology',
         loadComponent: () => loadRemoteModule('mf-hydrology', './Component').then(m => m.App)
       },
+      // Legacy monolithic routes for fallback
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./features/dashboard/executive-dashboard.component').then(m => m.ExecutiveDashboardComponent)
+      },
       {
         path: 'contracts',
         loadComponent: () => import('./contracts/features/contract-list/contract-list.component').then(m => m.ContractListComponent)
@@ -37,8 +43,7 @@ export const routes: Routes = [
       {
         path: 'risk/counterparty',
         loadComponent: () => import('./features/risk/counterparty-risk/counterparty-risk.component').then(m => m.CounterpartyRiskComponent)
-      },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+      }
     ]
   }
 ];
