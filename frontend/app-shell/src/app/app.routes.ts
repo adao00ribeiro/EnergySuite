@@ -4,12 +4,12 @@ import { loadRemoteModule } from '@angular-architects/native-federation';
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./features/portal/portal-home/portal-home.ts').then(m => m.PortalHomeComponent),
+    loadComponent: () => import('./features/portal/portal-home/portal-home').then(m => m.PortalHomeComponent),
     pathMatch: 'full'
   },
   {
     path: '',
-    loadComponent: () => import('./layout/shell-layout/shell-layout.ts').then(m => m.ShellLayoutComponent),
+    loadComponent: () => import('./layout/shell-layout/shell-layout').then(m => m.ShellLayoutComponent),
     children: [
       {
         path: 'portfolio',
