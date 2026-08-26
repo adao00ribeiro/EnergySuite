@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using EtrmService.Domain.Enums;
 
 namespace EtrmService.Domain.Entities;
@@ -26,6 +27,14 @@ public class Contract
     
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
+    
+    // Sprint 3: Reajustes e Aditivos
+    public int Version { get; private set; } = 1;
+    public PriceIndexType PriceIndexType { get; private set; }
+    public decimal FlexibilityMargin { get; private set; }
+    
+    private readonly List<ContractAmendment> _amendments = new();
+    public IReadOnlyCollection<ContractAmendment> Amendments => _amendments.AsReadOnly();
 
     // Construtor vazio necessário pelo Entity Framework
     protected Contract() { }
@@ -40,7 +49,9 @@ public class Contract
         DateTime endDate,
         decimal? strikePrice = null,
         decimal? optionPremium = null,
-        Guid tenantId = default)
+        Guid tenantId = default,
+        PriceIndexType priceIndexType = PriceIndexType.None,
+        decimal flexibilityMargin = 0m)
     {
         Id = Guid.NewGuid();
         TenantId = tenantId == default ? Guid.Parse("00000000-0000-0000-0000-000000000001") : tenantId;
@@ -53,7 +64,33 @@ public class Contract
         EndDate = DateTime.SpecifyKind(endDate, DateTimeKind.Utc);
         StrikePrice = strikePrice;
         OptionPremium = optionPremium;
+        PriceIndexType = priceIndexType;
+        FlexibilityMargin = flexibilityMargin;
+        Version = 1;
         CreatedAt = DateTime.UtcNow;
+    }
+
+    public void ApplyReadjustment(decimal newPrice, string description, DateTime effectiveDate)
+    {
+        if (newPrice <= 0)
+            throw new ArgumentException("O novo preço deve ser maior que zero.");
+
+        var amendment = new ContractAmendment(
+            Id,
+            Version + 1,
+            description,
+            effectiveDate,
+            Price,
+            newPrice,
+            VolumeMwMed,
+            VolumeMwMed
+        );
+
+        _amendments.Add(amendment);
+        
+        Price = newPrice;
+        Version++;
+        UpdatedAt = DateTime.UtcNow;
     }
 
     public void UpdatePrice(decimal newPrice)

@@ -172,3 +172,6 @@
 /media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/Microsoft.Extensions.Logging.dll
 /media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/Microsoft.Extensions.Options.dll
 /media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/Microsoft.Extensions.Primitives.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/MockQueryable.Core.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/MockQueryable.EntityFrameworkCore.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/MockQueryable.Moq.dll

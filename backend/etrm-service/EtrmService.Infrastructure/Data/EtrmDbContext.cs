@@ -26,6 +26,8 @@ public class EtrmDbContext : DbContext, IEtrmDbContext
     public DbSet<HydrologicalResult> HydrologicalResults { get; set; }
     public DbSet<ForecastMetadata> ForecastMetadatas { get; set; }
     public DbSet<CustomScenario> CustomScenarios { get; set; }
+    public DbSet<ContractAmendment> ContractAmendments { get; set; }
+    public DbSet<PriceIndexValue> PriceIndexValues { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

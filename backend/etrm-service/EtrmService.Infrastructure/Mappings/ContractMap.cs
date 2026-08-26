@@ -69,5 +69,26 @@ public class ContractMap : IEntityTypeConfiguration<Contract>
         builder.Property(x => x.UpdatedAt)
                .HasColumnName("updated_at")
                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+        // Sprint 3: Reajustes e Aditivos
+        builder.Property(x => x.Version)
+               .HasColumnName("version")
+               .IsRequired()
+               .HasDefaultValue(1);
+
+        builder.Property(x => x.PriceIndexType)
+               .HasColumnName("price_index_type")
+               .IsRequired();
+
+        builder.Property(x => x.FlexibilityMargin)
+               .HasColumnName("flexibility_margin")
+               .HasColumnType("decimal(18,4)")
+               .IsRequired()
+               .HasDefaultValue(0m);
+
+        builder.HasMany(x => x.Amendments)
+               .WithOne(a => a.Contract)
+               .HasForeignKey(a => a.ContractId)
+               .OnDelete(DeleteBehavior.Cascade);
     }
 }
