@@ -24,5 +24,9 @@ export const routes: Routes = [
   {
     path: 'contracts/:id',
     loadComponent: () => import('./features/operations/contract-details/contract-details').then(m => m.ContractDetailsComponent)
+  },
+  {
+    path: 'finance',
+    loadComponent: () => import('./features/finance/financial-dashboard/financial-dashboard').then(m => m.FinancialDashboardComponent)
   }
 ];
