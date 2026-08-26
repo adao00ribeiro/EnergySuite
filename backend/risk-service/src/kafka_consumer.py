@@ -3,7 +3,8 @@ import os
 import asyncio
 import logging
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
+import random
 from aiokafka import AIOKafkaConsumer, AIOKafkaProducer
 from pydantic import ValidationError
 from sqlalchemy.future import select
@@ -12,7 +13,7 @@ from opentelemetry import trace
 from opentelemetry.propagate import extract, inject
 
 from .database import AsyncSessionLocal
-from .models import ContractCreatedEvent, RiskMetricModel, RiskCalculatedEvent
+from .models import ContractCreatedEvent, RiskMetricModel, RiskCalculatedEvent, EnaCalculatedIntegrationEvent
 from .risk_engine import RiskEngine
 
 from prometheus_client import Gauge, Counter, start_http_server
@@ -29,23 +30,62 @@ tracer = trace.get_tracer(__name__)
 KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092")
 TOPICS_CONSUME = ["contract-events", "pluvia-events"]
 TOPIC_PRODUCE = "risk-events"
+TOPIC_ENA_PRODUCE = "ena-events"
 
-async def process_pluvia_event(event_data: dict):
+async def process_pluvia_event(event_data: dict, producer: AIOKafkaProducer):
     try:
         with tracer.start_as_current_span("simulate_hydrological_model") as span:
             sim_id = event_data.get("SimulationId")
             scenario_id = event_data.get("ScenarioId")
             model = event_data.get("ModelName")
             
-            logger.info(f"Starting {model} simulation for scenario {scenario_id}")
+            # If this was triggered by BlendCustomMapCommand, the payload will have blendConfig
+            blend_config = event_data.get("BlendConfig")
+            
+            if blend_config:
+                logger.info(f"Simulating Hydrological Model with Blend Config: {blend_config}")
+                # Parse JSON string {"GEFS": 0.5, "ETA": 0.3, "ECMWF": 0.2}
+                try:
+                    weights = json.loads(blend_config)
+                    for mod, weight in weights.items():
+                        logger.info(f" -> Blending model {mod} with weight {weight*100}%")
+                except Exception as ex:
+                    logger.warning(f"Failed to parse blend config: {ex}")
+            else:
+                logger.info(f"Starting {model} simulation for scenario {scenario_id}")
             
             # Simulate heavy SMAP calculation
             await asyncio.sleep(2)
             
             logger.info(f"Hydrological simulation {sim_id} completed successfully!")
             
-            # In real scenario, we would save the resulting Parquet/JSON to MinIO lakehouse here.
-            # e.g., s3://datalake/bronze/hydrology/result_{sim_id}.json
+            # Simulating ENA calculation per submarket for the next 12 months
+            submarkets = [("SE/CO", "Parana"), ("SUL", "Iguacu"), ("NE", "Sao Francisco"), ("N", "Tocantins")]
+            
+            with tracer.start_as_current_span(f"{TOPIC_ENA_PRODUCE} publish"):
+                for sm, basin in submarkets:
+                    for month_offset in range(12):
+                        target_date = datetime.utcnow() + timedelta(days=30*month_offset)
+                        
+                        ena_event = EnaCalculatedIntegrationEvent(
+                            ExecutionId=sim_id,
+                            Submarket=sm,
+                            Basin=basin,
+                            ValueMwMed=round(random.uniform(1000, 50000), 2),
+                            ValuePercentageMlt=round(random.uniform(70, 130), 2),
+                            TargetDate=target_date
+                        )
+                        
+                        out_headers = {}
+                        inject(out_headers)
+                        header_list = [(k, v.encode('utf-8')) for k, v in out_headers.items()]
+                        
+                        await producer.send_and_wait(
+                            TOPIC_ENA_PRODUCE,
+                            ena_event.model_dump(mode='json'),
+                            headers=header_list
+                        )
+                logger.info(f"Published 48 ENA records for simulation {sim_id} to {TOPIC_ENA_PRODUCE}")
             
     except Exception as e:
         logger.error(f"Error processing pluvia event: {e}")
@@ -93,7 +133,7 @@ async def consume_events():
                 if msg.topic == "contract-events":
                     await process_contract_event(msg.value, producer)
                 elif msg.topic == "pluvia-events":
-                    await process_pluvia_event(msg.value)
+                    await process_pluvia_event(msg.value, producer)
                 
     except asyncio.CancelledError:
         logger.info("Consumer task cancelled.")

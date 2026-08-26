@@ -1,0 +1,90 @@
+<div class="custom-scenarios-container">
+  
+  <mat-card class="action-card">
+    <mat-card-header>
+      <mat-card-title>Upload de Mapa Customizado (CSV/GRIB)</mat-card-title>
+      <mat-card-subtitle>Insira sua própria matriz pluviométrica no Lakehouse</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form [formGroup]="uploadForm" class="form-layout mt-4">
+        <mat-form-field appearance="outline">
+          <mat-label>Nome do Cenário</mat-label>
+          <input matInput formControlName="scenarioName" placeholder="Ex: Chuva Intensa Sul">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Horizonte (Dias)</mat-label>
+          <input matInput type="number" formControlName="horizonDays">
+        </mat-form-field>
+
+        <div class="file-upload">
+          <input type="file" #fileInput (change)="onFileSelected($event)" accept=".csv,.grib2" style="display: none">
+          <button mat-stroked-button type="button" (click)="fileInput.click()">
+            Selecionar Arquivo
+          </button>
+          <span class="file-name" *ngIf="selectedFile">{{ selectedFile.name }}</span>
+        </div>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-raised-button color="primary" [disabled]="!uploadForm.valid || !selectedFile || isUploading" (click)="onUpload()">
+        {{ isUploading ? 'Enviando...' : 'Fazer Upload' }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card class="action-card">
+    <mat-card-header>
+      <mat-card-title>Combinação de Modelos (Blending)</mat-card-title>
+      <mat-card-subtitle>Crie um cenário combinando diferentes mapas meteorológicos</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="blendForm" class="form-layout mt-4">
+        <mat-form-field appearance="outline">
+          <mat-label>Nome do Cenário Combinado</mat-label>
+          <input matInput formControlName="scenarioName" placeholder="Ex: Blend Especial GEFS+ECMWF">
+        </mat-form-field>
+
+        <div class="sliders-container">
+          <div class="slider-row">
+            <span class="model-label">GEFS ({{ blendForm.value.gefsWeight }}%)</span>
+            <mat-slider min="0" max="100" step="1">
+              <input matSliderThumb formControlName="gefsWeight">
+            </mat-slider>
+          </div>
+
+          <div class="slider-row">
+            <span class="model-label">ETA ({{ blendForm.value.etaWeight }}%)</span>
+            <mat-slider min="0" max="100" step="1">
+              <input matSliderThumb formControlName="etaWeight">
+            </mat-slider>
+          </div>
+
+          <div class="slider-row">
+            <span class="model-label">ECMWF ({{ blendForm.value.ecmwfWeight }}%)</span>
+            <mat-slider min="0" max="100" step="1">
+              <input matSliderThumb formControlName="ecmwfWeight">
+            </mat-slider>
+          </div>
+        </div>
+        
+        <div class="total-weight" [class.invalid]="blendForm.value.gefsWeight + blendForm.value.etaWeight + blendForm.value.ecmwfWeight !== 100">
+          Total: {{ blendForm.value.gefsWeight + blendForm.value.etaWeight + blendForm.value.ecmwfWeight }}%
+          <small *ngIf="blendForm.value.gefsWeight + blendForm.value.etaWeight + blendForm.value.ecmwfWeight !== 100">
+            (A soma deve ser 100%)
+          </small>
+        </div>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-raised-button color="accent" [disabled]="!blendForm.valid || isBlending" (click)="onBlend()">
+        {{ isBlending ? 'Processando...' : 'Salvar e Misturar' }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+</div>

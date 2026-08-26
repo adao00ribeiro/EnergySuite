@@ -1,43 +1,60 @@
 .chart-container {
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
   width: 100%;
+  height: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+  background-color: rgba(30, 41, 59, 0.4);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
+
 .chart-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 24px;
 }
-.chart-title {
-  color: var(--text-primary);
-  font-size: 18px;
+
+.header-titles h3 {
   margin: 0;
-  font-weight: 500;
+  color: #e2e8f0;
+  font-size: 1.1rem;
 }
-.btn-icon {
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 8px;
-  color: var(--text-secondary);
-  width: 36px;
-  height: 36px;
+
+.header-titles .subtitle {
+  margin: 4px 0 0 0;
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.forecast-evolution {
   display: flex;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
+  gap: 12px;
 }
-.btn-icon:hover {
-  background: rgba(255,255,255,0.05);
-  color: var(--text-primary);
+
+.evolution-label {
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
-.chart-wrapper {
-  height: 400px;
+
+mat-button-toggle-group {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+}
+
+mat-button-toggle {
+  color: #94a3b8;
+}
+
+mat-button-toggle.mat-button-toggle-checked {
+  background-color: #38bdf8;
+  color: #0f172a;
+  font-weight: 500;
+}
+
+.echarts-wrapper {
   width: 100%;
-}
-.echarts-instance {
-  height: 100%;
-  width: 100%;
+  height: 350px;
 }

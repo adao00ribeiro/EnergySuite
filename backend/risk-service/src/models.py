@@ -57,3 +57,11 @@ class RiskCalculatedEvent(BaseModel):
     markToMarket: float
     riskCategory: str
     calculatedAt: datetime
+
+class EnaCalculatedIntegrationEvent(BaseModel):
+    ExecutionId: str
+    Submarket: str
+    Basin: str
+    ValueMwMed: float
+    ValuePercentageMlt: float
+    TargetDate: datetime

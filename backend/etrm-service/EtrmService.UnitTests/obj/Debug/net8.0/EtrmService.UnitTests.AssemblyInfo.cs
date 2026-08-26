@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EtrmService.UnitTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2500848ac1a2c95689a93483ea03f35180c4e700")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5a31e276e19e3b8082e965568cd198f87538e0b9")]
 [assembly: System.Reflection.AssemblyProductAttribute("EtrmService.UnitTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EtrmService.UnitTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

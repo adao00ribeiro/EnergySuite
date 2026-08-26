@@ -1,11 +1,20 @@
-<div class="glass-panel chart-container animate-fade-in" style="animation-delay: 0.4s">
+<div class="chart-container">
   <div class="chart-header">
-    <h3 class="chart-title">Energia Natural Afluente (ENA) - % MLT</h3>
-    <button class="btn-icon" title="Ajustar Cenário">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-    </button>
+    <div class="header-titles">
+      <h3>Análise de ENA</h3>
+      <p class="subtitle">%MLT e MWmed Consolidado</p>
+    </div>
+    
+    <div class="forecast-evolution">
+      <span class="evolution-label">Evolução da Previsão:</span>
+      <mat-button-toggle-group [(ngModel)]="selectedOffset" (change)="selectedOffset.set($event.value)" aria-label="Evolução da Previsão">
+        <mat-button-toggle [value]="0">Hoje</mat-button-toggle>
+        <mat-button-toggle [value]="-1">-1 Dia</mat-button-toggle>
+        <mat-button-toggle [value]="-2">-2 Dias</mat-button-toggle>
+        <mat-button-toggle [value]="-3">-3 Dias</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
   </div>
-  <div class="chart-wrapper">
-    <div echarts [options]="chartOptions" class="echarts-instance"></div>
-  </div>
+
+  <div echarts [options]="chartOptions()" class="echarts-wrapper"></div>
 </div>

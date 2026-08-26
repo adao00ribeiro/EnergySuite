@@ -10,8 +10,9 @@ public interface IEtrmDbContext
     DbSet<Contract> Contracts { get; }
     DbSet<PrecipitationScenario> PrecipitationScenarios { get; }
     DbSet<ModelExecution> ModelExecutions { get; }
-    DbSet<HydrologicalResult> HydrologicalResults { get; }
-    DbSet<ForecastMetadata> ForecastMetadatas { get; }
+    DbSet<HydrologicalResult> HydrologicalResults { get; set; }
+    DbSet<ForecastMetadata> ForecastMetadatas { get; set; }
+    DbSet<CustomScenario> CustomScenarios { get; set; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

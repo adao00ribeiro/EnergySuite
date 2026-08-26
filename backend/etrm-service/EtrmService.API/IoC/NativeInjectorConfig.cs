@@ -5,6 +5,7 @@ using EtrmService.Application.Interfaces;
 using EtrmService.Infrastructure.Messaging;
 using EtrmService.Infrastructure.Data;
 using EtrmService.Infrastructure.Repositories;
+using EtrmService.Infrastructure.Services;
 using EtrmService.Domain.Interfaces;
 using EtrmService.Application.IntegrationEvents;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,17 @@ public static class NativeInjectorConfig
             
         services.AddDbContext<EtrmDbContext>(options =>
             options.UseNpgsql(connectionString));
+
+        // Amazon S3 (MinIO)
+        var s3Config = new Amazon.S3.AmazonS3Config
+        {
+            ServiceURL = Environment.GetEnvironmentVariable("MINIO_ENDPOINT") ?? "http://localhost:9000",
+            ForcePathStyle = true
+        };
+        services.AddSingleton<Amazon.S3.IAmazonS3>(sp => new Amazon.S3.AmazonS3Client("minioadmin", "minioadmin", s3Config));
+        services.AddScoped<IBlobStorageService, S3BlobStorageService>();
+
+        // Domain
         services.AddScoped<IEtrmDbContext>(provider => provider.GetRequiredService<EtrmDbContext>());
 
         // Autenticação e Multi-Tenancy
@@ -61,6 +73,7 @@ public static class NativeInjectorConfig
             x.AddRider(rider =>
             {
                 rider.AddConsumer<EtrmService.API.Consumers.RiskCalculatedEventConsumer>();
+                rider.AddConsumer<EtrmService.API.Consumers.EnaCalculatedEventConsumer>();
                 rider.AddProducer<ContractCreatedIntegrationEvent>("contract-events");
                 rider.AddProducer<SimulationRequestedIntegrationEvent>("pluvia-events");
 
@@ -71,6 +84,11 @@ public static class NativeInjectorConfig
                     k.TopicEndpoint<RiskCalculatedIntegrationEvent>("risk-events", "etrm-group", e =>
                     {
                         e.ConfigureConsumer<EtrmService.API.Consumers.RiskCalculatedEventConsumer>(context);
+                    });
+
+                    k.TopicEndpoint<EnaCalculatedIntegrationEvent>("ena-events", "etrm-group", e =>
+                    {
+                        e.ConfigureConsumer<EtrmService.API.Consumers.EnaCalculatedEventConsumer>(context);
                     });
                 });
             });
