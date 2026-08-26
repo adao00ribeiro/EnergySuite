@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgxEchartsDirective, provideEcharts } from 'ngx-echarts';
+import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 
 @Component({
   selector: 'app-forward-curve-chart',
   standalone: true,
   imports: [CommonModule, NgxEchartsDirective],
-  providers: [provideEcharts()],
+  providers: [provideEchartsCore({ echarts: () => import('echarts') })],
   templateUrl: './forward-curve-chart.html',
   styleUrl: './forward-curve-chart.css'
 })
