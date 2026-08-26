@@ -24,9 +24,11 @@ public class CreateContractCommandValidator : AbstractValidator<CreateContractCo
             .NotEmpty().WithMessage("EndDate is required.")
             .GreaterThanOrEqualTo(x => x.StartDate).WithMessage("EndDate must be greater than or equal to StartDate.");
 
-        RuleFor(x => x.StrikePrice)
-            .GreaterThan(0).WithMessage("StrikePrice must be greater than zero when provided.")
-            .When(x => x.Type == EtrmService.Domain.Enums.ContractType.OptionCall || x.Type == EtrmService.Domain.Enums.ContractType.OptionPut)
-            .NotEmpty().WithMessage("StrikePrice is required for Options.");
+        When(x => x.Type == EtrmService.Domain.Enums.ContractType.OptionCall || x.Type == EtrmService.Domain.Enums.ContractType.OptionPut, () =>
+        {
+            RuleFor(x => x.StrikePrice)
+                .NotEmpty().WithMessage("StrikePrice is required for Options.")
+                .GreaterThan(0).WithMessage("StrikePrice must be greater than zero when provided.");
+        });
     }
 }

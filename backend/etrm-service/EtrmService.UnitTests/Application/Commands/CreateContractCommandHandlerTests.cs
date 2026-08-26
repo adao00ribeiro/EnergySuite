@@ -17,13 +17,16 @@ public class CreateContractCommandHandlerTests
 {
     private readonly Mock<IContractRepository> _repositoryMock;
     private readonly Mock<IEventPublisher> _eventPublisherMock;
+    private readonly Mock<ICurrentUserService> _currentUserServiceMock;
     private readonly CreateContractCommandHandler _handler;
 
     public CreateContractCommandHandlerTests()
     {
         _repositoryMock = new Mock<IContractRepository>();
         _eventPublisherMock = new Mock<IEventPublisher>();
-        _handler = new CreateContractCommandHandler(_repositoryMock.Object, _eventPublisherMock.Object, null);
+        _currentUserServiceMock = new Mock<ICurrentUserService>();
+        _currentUserServiceMock.Setup(u => u.TenantId).Returns(Guid.NewGuid());
+        _handler = new CreateContractCommandHandler(_repositoryMock.Object, _eventPublisherMock.Object, _currentUserServiceMock.Object);
     }
 
     [Fact]

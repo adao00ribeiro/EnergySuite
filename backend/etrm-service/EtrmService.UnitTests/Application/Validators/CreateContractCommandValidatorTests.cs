@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Shouldly;
 using Xunit;
 using EtrmService.Application.Commands;
@@ -58,12 +59,14 @@ public class CreateContractCommandValidatorTests
         var command = new CreateContractCommand 
         { 
             CounterpartyName = "Valid Counterparty",
+            Type = ContractType.Sale,
             VolumeMwMed = 10.5m,
             Price = 120.0m,
             StartDate = new DateTime(2026, 6, 1),
             EndDate = new DateTime(2026, 12, 31)
         };
         var result = _validator.Validate(command);
+        if (!result.IsValid) throw new Exception(string.Join(", ", result.Errors.Select(e => e.ErrorMessage)));
         result.IsValid.ShouldBeTrue();
     }
 }
