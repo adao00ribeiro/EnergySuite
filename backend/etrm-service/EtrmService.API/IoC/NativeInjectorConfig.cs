@@ -23,6 +23,7 @@ public static class NativeInjectorConfig
             
         services.AddDbContext<EtrmDbContext>(options =>
             options.UseNpgsql(connectionString));
+        services.AddScoped<IEtrmDbContext>(provider => provider.GetRequiredService<EtrmDbContext>());
 
         // Autenticação e Multi-Tenancy
         services.AddHttpContextAccessor();

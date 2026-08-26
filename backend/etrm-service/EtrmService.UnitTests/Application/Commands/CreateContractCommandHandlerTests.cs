@@ -23,7 +23,7 @@ public class CreateContractCommandHandlerTests
     {
         _repositoryMock = new Mock<IContractRepository>();
         _eventPublisherMock = new Mock<IEventPublisher>();
-        _handler = new CreateContractCommandHandler(_repositoryMock.Object, _eventPublisherMock.Object);
+        _handler = new CreateContractCommandHandler(_repositoryMock.Object, _eventPublisherMock.Object, null);
     }
 
     [Fact]

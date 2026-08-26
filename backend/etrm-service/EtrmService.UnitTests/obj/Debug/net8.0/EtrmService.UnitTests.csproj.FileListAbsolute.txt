@@ -164,3 +164,11 @@
 /media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/obj/Debug/net8.0/ref/EtrmService.UnitTests.dll
 /media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/FluentValidation.dll
 /media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/FluentValidation.DependencyInjectionExtensions.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/Microsoft.EntityFrameworkCore.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/Microsoft.EntityFrameworkCore.Abstractions.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/Microsoft.Extensions.Caching.Abstractions.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/Microsoft.Extensions.Caching.Memory.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/Microsoft.Extensions.DependencyInjection.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/Microsoft.Extensions.Logging.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/Microsoft.Extensions.Options.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/Microsoft.Extensions.Primitives.dll

@@ -1,0 +1,35 @@
+<div class="precipitation-container">
+  <mat-card class="filter-card">
+    <mat-card-header>
+      <mat-card-title>Filtros Meteorológicos (Lakehouse)</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="filter-content">
+      <mat-form-field appearance="outline">
+        <mat-label>Modelo</mat-label>
+        <mat-select [ngModel]="selectedModel()" (ngModelChange)="selectedModel.set($event)">
+          <mat-option value="GEFS">GEFS (NOAA)</mat-option>
+          <mat-option value="ECMWF">ECMWF (OpenData)</mat-option>
+          <mat-option value="ETA">ETA (CPTEC)</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Data de Previsão</mat-label>
+        <input matInput type="date" [ngModel]="selectedDate()" (ngModelChange)="selectedDate.set($event)">
+      </mat-form-field>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="map-card">
+    <mat-card-content>
+      <div *ngIf="isLoading()" class="loading-overlay">
+        <span>Carregando matriz geoespacial do Lakehouse...</span>
+      </div>
+      <div 
+        echarts 
+        [options]="chartOption()" 
+        class="map-chart">
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

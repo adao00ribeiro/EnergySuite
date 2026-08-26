@@ -4,7 +4,7 @@ using EtrmService.Application.Interfaces;
 
 namespace EtrmService.Infrastructure.Data;
 
-public class EtrmDbContext : DbContext
+public class EtrmDbContext : DbContext, IEtrmDbContext
 {
     private readonly ICurrentUserService _currentUserService;
 
@@ -17,6 +17,7 @@ public class EtrmDbContext : DbContext
     public DbSet<PrecipitationScenario> PrecipitationScenarios { get; set; }
     public DbSet<ModelExecution> ModelExecutions { get; set; }
     public DbSet<HydrologicalResult> HydrologicalResults { get; set; }
+    public DbSet<ForecastMetadata> ForecastMetadatas { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

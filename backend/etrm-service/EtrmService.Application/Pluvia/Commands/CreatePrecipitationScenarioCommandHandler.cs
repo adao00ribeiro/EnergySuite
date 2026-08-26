@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using EtrmService.Domain.Entities;
-using EtrmService.Infrastructure.Data;
+using EtrmService.Application.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -10,10 +10,10 @@ namespace EtrmService.Application.Pluvia.Commands;
 
 public class CreatePrecipitationScenarioCommandHandler : IRequestHandler<CreatePrecipitationScenarioCommand, Guid>
 {
-    private readonly EtrmDbContext _context;
+    private readonly IEtrmDbContext _context;
     private readonly ILogger<CreatePrecipitationScenarioCommandHandler> _logger;
 
-    public CreatePrecipitationScenarioCommandHandler(EtrmDbContext context, ILogger<CreatePrecipitationScenarioCommandHandler> logger)
+    public CreatePrecipitationScenarioCommandHandler(IEtrmDbContext context, ILogger<CreatePrecipitationScenarioCommandHandler> logger)
     {
         _context = context;
         _logger = logger;

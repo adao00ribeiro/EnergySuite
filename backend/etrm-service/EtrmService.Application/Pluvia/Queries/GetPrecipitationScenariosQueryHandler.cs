@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EtrmService.Application.Pluvia.DTOs;
-using EtrmService.Infrastructure.Data;
+using EtrmService.Application.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -12,10 +12,10 @@ namespace EtrmService.Application.Pluvia.Queries;
 
 public class GetPrecipitationScenariosQueryHandler : IRequestHandler<GetPrecipitationScenariosQuery, IEnumerable<PrecipitationScenarioDto>>
 {
-    private readonly EtrmDbContext _context;
+    private readonly IEtrmDbContext _context;
     private readonly ILogger<GetPrecipitationScenariosQueryHandler> _logger;
 
-    public GetPrecipitationScenariosQueryHandler(EtrmDbContext context, ILogger<GetPrecipitationScenariosQueryHandler> logger)
+    public GetPrecipitationScenariosQueryHandler(IEtrmDbContext context, ILogger<GetPrecipitationScenariosQueryHandler> logger)
     {
         _context = context;
         _logger = logger;

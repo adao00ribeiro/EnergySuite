@@ -100,3 +100,49 @@ async def get_portfolio_risk(db: AsyncSession = Depends(get_db), token_payload: 
         })
         
     return portfolio
+
+@app.get("/api/v1/pluvia/precipitation-map")
+async def get_precipitation_map(model: str = "GEFS", date: str = ""):
+    """
+    Retorna uma matriz geoespacial de precipitação (mockada para a Sprint 2).
+    Simula o processamento dos arquivos GRIB2 do Data Lakehouse.
+    Bounds do Brasil: Lat -33 a 5, Lon -74 a -34
+    """
+    import random
+    
+    data = []
+    # Grid limits
+    lat_min, lat_max = -33.0, 5.0
+    lon_min, lon_max = -74.0, -34.0
+    
+    # 40x40 grid (1600 points)
+    lat_steps = 40
+    lon_steps = 40
+    
+    lat_step_size = (lat_max - lat_min) / lat_steps
+    lon_step_size = (lon_max - lon_min) / lon_steps
+    
+    # Random seed based on model to show differences when filtering
+    seed_val = hash(model + date)
+    random.seed(seed_val)
+    
+    for i in range(lat_steps):
+        for j in range(lon_steps):
+            lat = lat_min + (i * lat_step_size)
+            lon = lon_min + (j * lon_step_size)
+            
+            # Gerar valores de chuva mais realistas (0 a 100mm)
+            # Maior chance de zero, e bolsões de chuva
+            if random.random() > 0.6:
+                precip = random.uniform(5.0, 100.0)
+            else:
+                precip = 0.0
+                
+            # ECharts scatter format: [lon, lat, value]
+            data.append([round(lon, 2), round(lat, 2), round(precip, 2)])
+            
+    return {
+        "model": model,
+        "date": date,
+        "points": data
+    }
