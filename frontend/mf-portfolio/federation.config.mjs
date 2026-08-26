@@ -4,7 +4,7 @@ export default withNativeFederation({
   name: 'mf-portfolio',
 
   exposes: {
-    './Component': './src/app/app.ts',
+    './Routes': './src/app/app.routes.ts',
   },
 
   shared: {

@@ -10,10 +10,19 @@
   padding: 24px 0;
 }
 
+/* Dynamic Theme Variables */
+.shell-sidebar {
+  --active-accent: #94a3b8; /* default */
+}
+.theme-portfolio { --active-accent: var(--color-portfolio); }
+.theme-operations { --active-accent: var(--color-operations); }
+.theme-pricing { --active-accent: var(--color-pricing); }
+.theme-hydrology { --active-accent: var(--color-hydrology); }
+
 .logo-box {
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, #0ea5e9, #4f46e5);
+  background: linear-gradient(135deg, var(--active-accent), #4f46e5);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -21,10 +30,13 @@
   color: white;
   cursor: pointer;
   margin-bottom: 40px;
-  transition: transform 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   
   &:hover {
-    transform: scale(1.05);
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    filter: drop-shadow(0 0 10px var(--active-accent));
   }
 }
 
@@ -46,20 +58,31 @@
   justify-content: center;
   color: var(--text-secondary);
   text-decoration: none;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   background: transparent;
   border: none;
   cursor: pointer;
+  position: relative;
+
+  mat-icon {
+    transition: all 0.3s ease;
+  }
 
   &:hover {
     background: rgba(255, 255, 255, 0.05);
-    color: var(--text-primary);
+    color: var(--active-accent);
   }
 
   &.active {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-primary);
-    box-shadow: inset 3px 0 0 0 white;
+    background: linear-gradient(90deg, rgba(255,255,255,0.08) 0%, transparent 100%);
+    color: var(--active-accent);
+    box-shadow: inset 4px 0 0 0 var(--active-accent);
+
+    mat-icon {
+      color: var(--active-accent) !important;
+      filter: drop-shadow(0 0 8px var(--active-accent));
+      transform: scale(1.1);
+    }
   }
 }
 
@@ -67,11 +90,11 @@
   margin-top: auto;
 }
 
-/* Colors for icons */
-.text-blue { color: var(--color-portfolio); }
-.text-indigo { color: var(--color-operations); }
-.text-cyan { color: var(--color-pricing); }
-.text-teal { color: var(--color-hydrology); }
+/* Colors for root icons (when no module is active) */
+.text-blue { color: var(--color-portfolio) !important; }
+.text-indigo { color: var(--color-operations) !important; }
+.text-cyan { color: var(--color-pricing) !important; }
+.text-teal { color: var(--color-hydrology) !important; }
 
 .shell-content {
   display: flex;

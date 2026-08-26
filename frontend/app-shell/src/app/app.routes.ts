@@ -13,19 +13,19 @@ export const routes: Routes = [
     children: [
       {
         path: 'portfolio',
-        loadComponent: () => loadRemoteModule('mf-portfolio', './Component').then(m => m.App)
+        loadChildren: () => loadRemoteModule('mf-portfolio', './Routes').then(m => m.routes)
       },
       {
         path: 'operations',
-        loadComponent: () => loadRemoteModule('mf-operations', './Component').then(m => m.App)
+        loadChildren: () => loadRemoteModule('mf-operations', './Routes').then(m => m.routes)
       },
       {
         path: 'pricing',
-        loadComponent: () => loadRemoteModule('mf-pricing', './Component').then(m => m.App)
+        loadChildren: () => loadRemoteModule('mf-pricing', './Routes').then(m => m.routes)
       },
       {
         path: 'hydrology',
-        loadComponent: () => loadRemoteModule('mf-hydrology', './Component').then(m => m.App)
+        loadChildren: () => loadRemoteModule('mf-hydrology', './Routes').then(m => m.routes)
       },
       // Legacy monolithic routes for fallback
       {

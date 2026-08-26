@@ -4,7 +4,7 @@ export default withNativeFederation({
   name: 'mf-hydrology',
 
   exposes: {
-    './Component': './src/app/app.ts',
+    './Routes': './src/app/app.routes.ts',
   },
 
   shared: {

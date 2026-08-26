@@ -23,18 +23,23 @@
       </thead>
       <tbody>
         <tr *ngFor="let contract of contracts">
-          <td class="font-mono text-accent">{{ contract.id }}</td>
-          <td class="font-medium">{{ contract.counterparty }}</td>
+          <td class="font-mono text-accent">{{ contract.id | slice:0:8 }}...</td>
+          <td class="font-medium">{{ contract.counterpartyName }}</td>
           <td>
-            <span class="type-badge" [ngClass]="contract.type === 'Compra' ? 'buy' : 'sell'">
-              {{ contract.type }}
+            <span class="type-badge" [ngClass]="contract.type === 'Purchase' ? 'buy' : 'sell'">
+              {{ contract.type === 'Purchase' ? 'Compra' : 'Venda' }}
             </span>
           </td>
-          <td class="text-right">{{ contract.volumeMWm | number:'1.1-2' }}</td>
+          <td class="text-right">{{ contract.volumeMwMed | number:'1.1-2' }}</td>
           <td class="text-right">{{ contract.price | currency:'BRL':'symbol':'1.2-2' }}</td>
           <td class="text-center">
-            <span class="status-dot" [ngClass]="{'active': contract.status === 'Vigente', 'pending': contract.status === 'Pendente', 'closed': contract.status === 'Encerrado'}"></span>
-            {{ contract.status }}
+            <span class="status-dot active"></span>
+            Vigente
+          </td>
+        </tr>
+        <tr *ngIf="contracts.length === 0">
+          <td colspan="6" class="text-center" style="padding: 24px; color: var(--text-secondary);">
+            Nenhum contrato encontrado.
           </td>
         </tr>
       </tbody>

@@ -1,7 +1,8 @@
 <div class="cards-grid">
   <div *ngFor="let action of actions; let i = index" 
        class="glass-panel action-card animate-slide-up"
-       [ngStyle]="{'animation-delay': (i * 0.1) + 's'}">
+       [ngStyle]="{'animation-delay': (i * 0.1) + 's'}"
+       (click)="handleAction(action)" style="cursor: pointer;">
     <div class="icon-wrapper" [ngClass]="action.color">
       <!-- Minimalist icons using CSS or simple shapes -->
       <div class="icon-placeholder"></div>

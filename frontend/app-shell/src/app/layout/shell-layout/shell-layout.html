@@ -1,6 +1,6 @@
 <mat-sidenav-container class="shell-container">
   <!-- Sidebar -->
-  <mat-sidenav mode="side" opened class="shell-sidebar">
+  <mat-sidenav mode="side" opened class="shell-sidebar" [ngClass]="currentTheme">
     <div class="sidebar-header">
       <div class="logo-box" (click)="goHome()" matTooltip="Voltar à Home">
         <mat-icon>bolt</mat-icon>
@@ -11,6 +11,7 @@
       <a *ngFor="let item of navItems"
          [routerLink]="item.path"
          routerLinkActive="active"
+         [routerLinkActiveOptions]="{exact: item.path.split('/').length <= 2}"
          class="nav-item"
          [matTooltip]="item.label"
          matTooltipPosition="right">
