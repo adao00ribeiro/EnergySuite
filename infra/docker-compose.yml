@@ -184,6 +184,16 @@ services:
     networks:
       - energysuite-net
 
+  mf-portfolio:
+    build:
+      context: ../frontend/mf-portfolio
+      dockerfile: Dockerfile
+    container_name: energysuite-mf-portfolio
+    ports:
+      - "4201:80"
+    networks:
+      - energysuite-net
+
   # ==========================================
   # DATA LAKE & MLOPS (Caminho 2)
   # ==========================================

@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { loadRemoteModule } from '@angular-architects/native-federation';
 
 export const routes: Routes = [
   {
@@ -8,6 +9,22 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () => import('./features/dashboard/executive-dashboard.component').then(m => m.ExecutiveDashboardComponent)
+      },
+      {
+        path: 'portfolio',
+        loadComponent: () => loadRemoteModule('mf-portfolio', './Component').then(m => m.App)
+      },
+      {
+        path: 'operations',
+        loadComponent: () => loadRemoteModule('mf-operations', './Component').then(m => m.App)
+      },
+      {
+        path: 'pricing',
+        loadComponent: () => loadRemoteModule('mf-pricing', './Component').then(m => m.App)
+      },
+      {
+        path: 'hydrology',
+        loadComponent: () => loadRemoteModule('mf-hydrology', './Component').then(m => m.App)
       },
       {
         path: 'contracts',

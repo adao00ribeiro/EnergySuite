@@ -1,1 +1,6 @@
-{}
+{
+  "mf-portfolio": "http://localhost:4201/remoteEntry.json",
+  "mf-operations": "http://localhost:4202/remoteEntry.json",
+  "mf-pricing": "http://localhost:4203/remoteEntry.json",
+  "mf-hydrology": "http://localhost:4204/remoteEntry.json"
+}
