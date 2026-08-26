@@ -1,9 +1,22 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+
+export interface NavItem {
+  label: string;
+  path: string;
+}
+
+export interface NavGroup {
+  label: string;
+  icon: string;
+  path?: string; // Se não tiver path, funciona apenas como um grupo expansível (mas o usuário pediu para Dashboard ter path, e Portfólio ter path E submenus)
+  badge?: number;
+  children?: NavItem[];
+}
 
 @Component({
   selector: 'app-shell-layout',
@@ -15,58 +28,131 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 export class ShellLayoutComponent implements OnInit {
   private router = inject(Router);
 
-  // Global Contexts
-  private moduleMenus: Record<string, any[]> = {
-    '/portfolio': [
-      { label: 'Balanço Geral', path: '/portfolio', icon: 'account_balance_wallet', color: 'text-blue' },
-      { label: 'Exposição', path: '/portfolio/exposure', icon: 'pie_chart', color: 'text-blue' }
-    ],
-    '/operations': [
-      { label: 'Dashboard', path: '/operations', icon: 'dashboard', color: 'text-indigo' },
-      { label: 'Contratos', path: '/operations/contracts', icon: 'description', color: 'text-indigo' },
-      { label: 'Liquidações', path: '/operations/settlements', icon: 'receipt_long', color: 'text-indigo' }
-    ],
-    '/pricing': [
-      { label: 'Painel de Risco', path: '/pricing', icon: 'trending_up', color: 'text-cyan' },
-      { label: 'Curva Forward', path: '/pricing/curves', icon: 'show_chart', color: 'text-cyan' },
-      { label: 'Cenários', path: '/pricing/scenarios', icon: 'science', color: 'text-cyan' }
-    ],
-    '/hydrology': [
-      { label: 'Reservatórios', path: '/hydrology', icon: 'water_drop', color: 'text-teal' },
-      { label: 'Modelos MLOps', path: '/hydrology/models', icon: 'memory', color: 'text-teal' }
-    ]
-  };
+  isCollapsed = false;
+  expandedGroups: Record<string, boolean> = {};
 
-  // Default menu if somehow we aren't in a recognized module
-  defaultMenu = [
-    { label: 'Portfólio', path: '/portfolio', icon: 'dashboard', color: 'text-blue' },
-    { label: 'Operações', path: '/operations', icon: 'sync_alt', color: 'text-indigo' },
-    { label: 'Precificação', path: '/pricing', icon: 'trending_up', color: 'text-cyan' },
-    { label: 'Hidrologia', path: '/hydrology', icon: 'water_drop', color: 'text-teal' }
+  navGroups: NavGroup[] = [
+    {
+      label: 'Dashboard',
+      icon: 'dashboard',
+      path: '/'
+    },
+    {
+      label: 'Portfólio',
+      icon: 'work',
+      children: [
+        { label: 'Visão Geral', path: '/portfolio' },
+        { label: 'Ativos', path: '/portfolio/assets' },
+        { label: 'Contratos', path: '/portfolio/contracts' },
+        { label: 'Alocação', path: '/portfolio/allocation' }
+      ]
+    },
+    {
+      label: 'Energia',
+      icon: 'bolt',
+      children: [
+        { label: 'Geração', path: '/hydrology/generation' },
+        { label: 'Consumo', path: '/hydrology/consumption' },
+        { label: 'Balanço Energético', path: '/hydrology' }
+      ]
+    },
+    {
+      label: 'Mercado',
+      icon: 'bar_chart',
+      children: [
+        { label: 'Preços', path: '/pricing' },
+        { label: 'Exposição', path: '/pricing/exposure' },
+        { label: 'Posição de Mercado', path: '/pricing/position' }
+      ]
+    },
+    {
+      label: 'Contratos',
+      icon: 'description',
+      children: [
+        { label: 'Bilaterais', path: '/operations/contracts' },
+        { label: 'PPA', path: '/operations/ppa' },
+        { label: 'Obrigações', path: '/operations/obligations' }
+      ]
+    },
+    {
+      label: 'Relatórios',
+      icon: 'assessment',
+      children: [
+        { label: 'Relatórios Executivos', path: '/reports/executive' },
+        { label: 'Performance', path: '/reports/performance' },
+        { label: 'Exportações', path: '/reports/exports' }
+      ]
+    },
+    {
+      label: 'Alertas',
+      icon: 'notifications',
+      path: '/alerts',
+      badge: 3
+    }
   ];
 
-  navItems = this.defaultMenu;
-  currentTheme = '';
+  managementGroups: NavGroup[] = [
+    {
+      label: 'Configurações',
+      icon: 'settings',
+      path: '/settings'
+    },
+    {
+      label: 'Usuários e Permissões',
+      icon: 'people',
+      path: '/users'
+    }
+  ];
 
   ngOnInit() {
-    this.updateMenu(this.router.url);
-    this.router.events.subscribe((event: any) => {
-      if (event.urlAfterRedirects || event.url) {
-        this.updateMenu(event.urlAfterRedirects || event.url);
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.autoExpandActiveGroup(event.urlAfterRedirects);
       }
     });
+    
+    // Initial expansion check
+    setTimeout(() => this.autoExpandActiveGroup(this.router.url), 100);
   }
 
-  private updateMenu(url: string) {
-    const baseRoute = Object.keys(this.moduleMenus).find(route => url.startsWith(route));
-    this.navItems = baseRoute ? this.moduleMenus[baseRoute] : this.defaultMenu;
-    
-    // Define active theme
-    if (url.startsWith('/portfolio')) this.currentTheme = 'theme-portfolio';
-    else if (url.startsWith('/operations')) this.currentTheme = 'theme-operations';
-    else if (url.startsWith('/pricing')) this.currentTheme = 'theme-pricing';
-    else if (url.startsWith('/hydrology')) this.currentTheme = 'theme-hydrology';
-    else this.currentTheme = '';
+  toggleSidebar() {
+    this.isCollapsed = !this.isCollapsed;
+  }
+
+  toggleGroup(groupLabel: string) {
+    if (this.isCollapsed) {
+      this.isCollapsed = false; // Expande o sidebar se clicar no grupo estando fechado
+    }
+    this.expandedGroups[groupLabel] = !this.expandedGroups[groupLabel];
+  }
+
+  isGroupActive(group: NavGroup): boolean {
+    if (group.path && this.router.url === group.path) return true;
+    if (group.children) {
+      return group.children.some(child => this.router.url.startsWith(child.path));
+    }
+    return false;
+  }
+
+  private autoExpandActiveGroup(url: string) {
+    for (const group of this.navGroups) {
+      if (group.children && group.children.some(c => url.startsWith(c.path))) {
+        this.expandedGroups[group.label] = true;
+      }
+    }
+    for (const group of this.managementGroups) {
+      if (group.children && group.children.some(c => url.startsWith(c.path))) {
+        this.expandedGroups[group.label] = true;
+      }
+    }
+  }
+
+  handleGroupClick(group: NavGroup) {
+    if (group.children && group.children.length > 0) {
+      this.toggleGroup(group.label);
+    } else if (group.path) {
+      this.router.navigate([group.path]);
+    }
   }
 
   goHome() {

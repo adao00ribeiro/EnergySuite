@@ -1,29 +1,110 @@
 <mat-sidenav-container class="shell-container">
   <!-- Sidebar -->
-  <mat-sidenav mode="side" opened class="shell-sidebar" [ngClass]="currentTheme">
+  <mat-sidenav mode="side" opened class="shell-sidebar" [class.collapsed]="isCollapsed">
+    
+    <!-- Top Header -->
     <div class="sidebar-header">
-      <div class="logo-box" (click)="goHome()" matTooltip="Voltar à Home">
-        <mat-icon>bolt</mat-icon>
+      <div class="logo-area" (click)="goHome()">
+        <div class="logo-box">
+          <mat-icon>bolt</mat-icon>
+        </div>
+        <div class="logo-text" *ngIf="!isCollapsed">
+          <h2>Energy Portfolio</h2>
+        </div>
+      </div>
+      <button class="toggle-btn" (click)="toggleSidebar()" [matTooltip]="isCollapsed ? 'Expandir Menu' : 'Recolher Menu'">
+        <mat-icon>{{ isCollapsed ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+      </button>
+    </div>
+    
+    <!-- Main Navigation -->
+    <div class="sidebar-scroll-area">
+      <nav class="sidebar-nav">
+        
+        <!-- Main Groups -->
+        <div class="nav-section">
+          <div class="nav-section-title" *ngIf="!isCollapsed">Geral</div>
+          
+          <div class="nav-group" *ngFor="let group of navGroups">
+            
+            <!-- Group Header (Clickable) -->
+            <div class="group-header" 
+                 [class.active]="isGroupActive(group)" 
+                 [class.has-children]="group.children && group.children.length > 0"
+                 (click)="handleGroupClick(group)"
+                 [matTooltip]="isCollapsed ? group.label : ''"
+                 matTooltipPosition="right">
+                 
+              <div class="group-header-content">
+                <mat-icon class="group-icon">{{ group.icon }}</mat-icon>
+                <span class="group-label" *ngIf="!isCollapsed">{{ group.label }}</span>
+              </div>
+              
+              <div class="group-actions" *ngIf="!isCollapsed">
+                <span class="badge" *ngIf="group.badge">{{ group.badge }}</span>
+                <mat-icon class="expand-icon" *ngIf="group.children && group.children.length > 0">
+                  {{ expandedGroups[group.label] ? 'expand_more' : 'chevron_right' }}
+                </mat-icon>
+              </div>
+            </div>
+
+            <!-- Group Children (Submenu) -->
+            <div class="submenu" *ngIf="group.children && expandedGroups[group.label] && !isCollapsed">
+              <a *ngFor="let child of group.children"
+                 [routerLink]="child.path"
+                 routerLinkActive="active"
+                 [routerLinkActiveOptions]="{exact: true}"
+                 class="submenu-item">
+                <span class="submenu-dot"></span>
+                <span class="submenu-label">{{ child.label }}</span>
+              </a>
+            </div>
+            
+          </div>
+        </div>
+
+        <div class="nav-divider"></div>
+
+        <!-- Management Groups -->
+        <div class="nav-section">
+          <div class="nav-section-title" *ngIf="!isCollapsed">Gestão</div>
+          
+          <div class="nav-group" *ngFor="let group of managementGroups">
+            <div class="group-header" 
+                 [class.active]="isGroupActive(group)" 
+                 (click)="handleGroupClick(group)"
+                 [matTooltip]="isCollapsed ? group.label : ''"
+                 matTooltipPosition="right">
+                 
+              <div class="group-header-content">
+                <mat-icon class="group-icon">{{ group.icon }}</mat-icon>
+                <span class="group-label" *ngIf="!isCollapsed">{{ group.label }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </nav>
+    </div>
+
+    <!-- User Footer -->
+    <div class="sidebar-footer">
+      <div class="user-card" [class.collapsed]="isCollapsed">
+        <div class="avatar">
+          <img src="https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff" alt="User Avatar">
+        </div>
+        
+        <div class="user-info" *ngIf="!isCollapsed">
+          <div class="user-name">Administrador</div>
+          <div class="user-role">Portfolio Manager</div>
+        </div>
+        
+        <button class="more-btn" *ngIf="!isCollapsed">
+          <mat-icon>more_vert</mat-icon>
+        </button>
       </div>
     </div>
     
-    <nav class="sidebar-nav">
-      <a *ngFor="let item of navItems"
-         [routerLink]="item.path"
-         routerLinkActive="active"
-         [routerLinkActiveOptions]="{exact: item.path.split('/').length <= 2}"
-         class="nav-item"
-         [matTooltip]="item.label"
-         matTooltipPosition="right">
-        <mat-icon [ngClass]="item.color">{{ item.icon }}</mat-icon>
-      </a>
-    </nav>
-    
-    <div class="sidebar-footer">
-      <button class="nav-item user-btn" matTooltip="Perfil">
-        <mat-icon>person</mat-icon>
-      </button>
-    </div>
   </mat-sidenav>
 
   <!-- Main Content -->
@@ -33,11 +114,11 @@
         <!-- Optional Breadcrumbs -->
       </div>
       <div class="topbar-actions">
-        <mat-icon class="action-icon">notifications</mat-icon>
+        <!-- Global Search or Profile could go here if needed -->
       </div>
     </div>
     
-    <!-- This is where the Micro-frontends get injected -->
+    <!-- Micro-frontends get injected here -->
     <main class="mf-wrapper">
       <router-outlet></router-outlet>
     </main>

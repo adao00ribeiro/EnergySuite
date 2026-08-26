@@ -2,104 +2,393 @@
   height: 100vh;
 }
 
+/* ---------------------------------------------------
+   SIDEBAR BASE
+----------------------------------------------------- */
 .shell-sidebar {
-  width: 72px;
+  width: 260px;
+  background-color: #0b1121; /* Slightly different from the deep black/blue of the app shell */
+  border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 24px 0;
+  transition: width 0.3s cubic-bezier(0.2, 0, 0, 1);
+  overflow-x: hidden;
+  color: var(--text-secondary);
+  
+  &.collapsed {
+    width: 72px;
+  }
 }
 
-/* Dynamic Theme Variables */
-.shell-sidebar {
-  --active-accent: #94a3b8; /* default */
+/* ---------------------------------------------------
+   HEADER
+----------------------------------------------------- */
+.sidebar-header {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  flex-shrink: 0;
 }
-.theme-portfolio { --active-accent: var(--color-portfolio); }
-.theme-operations { --active-accent: var(--color-operations); }
-.theme-pricing { --active-accent: var(--color-pricing); }
-.theme-hydrology { --active-accent: var(--color-hydrology); }
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  overflow: hidden;
+}
 
 .logo-box {
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, var(--active-accent), #4f46e5);
-  border-radius: 12px;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  background: linear-gradient(135deg, #0ea5e9, #2563eb);
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  cursor: pointer;
-  margin-bottom: 40px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   
-  &:hover {
-    transform: scale(1.05) translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-    filter: drop-shadow(0 0 10px var(--active-accent));
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
   }
 }
 
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  flex: 1;
-  width: 100%;
-  align-items: center;
+.logo-text {
+  white-space: nowrap;
+  
+  h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    letter-spacing: -0.2px;
+  }
 }
 
-.nav-item {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+.toggle-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-secondary);
-  text-decoration: none;
-  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  position: relative;
-
-  mat-icon {
-    transition: all 0.3s ease;
-  }
+  transition: background 0.2s;
 
   &:hover {
     background: rgba(255, 255, 255, 0.05);
-    color: var(--active-accent);
+    color: var(--text-primary);
+  }
+}
+
+/* ---------------------------------------------------
+   NAVIGATION SCROLL AREA
+----------------------------------------------------- */
+.sidebar-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 0;
+  
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+}
+
+.nav-section {
+  margin-bottom: 8px;
+}
+
+.nav-section-title {
+  padding: 0 24px;
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.3);
+  white-space: nowrap;
+}
+
+.nav-divider {
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.05);
+  margin: 16px 20px;
+}
+
+/* ---------------------------------------------------
+   GROUPS AND ITEMS
+----------------------------------------------------- */
+.nav-group {
+  margin-bottom: 4px;
+  padding: 0 12px;
+}
+
+.group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-secondary);
+  border-left: 3px solid transparent;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-primary);
   }
 
   &.active {
-    background: linear-gradient(90deg, rgba(255,255,255,0.08) 0%, transparent 100%);
-    color: var(--active-accent);
-    box-shadow: inset 4px 0 0 0 var(--active-accent);
-
-    mat-icon {
-      color: var(--active-accent) !important;
-      filter: drop-shadow(0 0 8px var(--active-accent));
-      transform: scale(1.1);
+    background: rgba(14, 165, 233, 0.12); /* Subtle blue translucent */
+    color: white;
+    border-left: 3px solid #0ea5e9; /* Bright blue indicator */
+    
+    .group-icon {
+      color: #0ea5e9;
     }
   }
 }
 
-.sidebar-footer {
-  margin-top: auto;
+.group-header-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow: hidden;
 }
 
-/* Colors for root icons (when no module is active) */
-.text-blue { color: var(--color-portfolio) !important; }
-.text-indigo { color: var(--color-operations) !important; }
-.text-cyan { color: var(--color-pricing) !important; }
-.text-teal { color: var(--color-hydrology) !important; }
+.group-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  transition: color 0.2s;
+}
 
+.group-label {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.group-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge {
+  background: #3b82f6;
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.expand-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  opacity: 0.5;
+}
+
+/* ---------------------------------------------------
+   SUBMENU
+----------------------------------------------------- */
+.submenu {
+  display: flex;
+  flex-direction: column;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  position: relative;
+
+  /* Left vertical guideline for submenus */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 8px;
+    left: 21px; /* Aligned with icon center */
+    width: 1px;
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.submenu-item {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding-left: 44px; /* Indent */
+  padding-right: 12px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s;
+  position: relative;
+  white-space: nowrap;
+
+  .submenu-dot {
+    position: absolute;
+    left: 19px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.2s;
+  }
+
+  &:hover {
+    color: var(--text-primary);
+    .submenu-dot {
+      background: var(--text-primary);
+    }
+  }
+
+  &.active {
+    color: #0ea5e9;
+    font-weight: 500;
+    .submenu-dot {
+      background: #0ea5e9;
+      box-shadow: 0 0 8px rgba(14, 165, 233, 0.6);
+    }
+  }
+}
+
+/* ---------------------------------------------------
+   USER FOOTER
+----------------------------------------------------- */
+.sidebar-footer {
+  flex-shrink: 0;
+  padding: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background 0.2s;
+  cursor: pointer;
+  gap: 12px;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  &.collapsed {
+    padding: 8px 4px;
+    justify-content: center;
+  }
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.user-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.user-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.user-role {
+  font-size: 12px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.more-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    color: var(--text-primary);
+  }
+}
+
+/* ---------------------------------------------------
+   COLLAPSED STATE OVERRIDES
+----------------------------------------------------- */
+.shell-sidebar.collapsed {
+  .nav-group {
+    padding: 0 12px;
+  }
+  .group-header {
+    padding: 0;
+    justify-content: center;
+    border-radius: 12px;
+    border-left: none; /* Remove left border in collapsed state */
+    
+    &.active {
+      /* In collapsed mode, highlight the whole button instead of just the border */
+      background: rgba(14, 165, 233, 0.15);
+      color: #0ea5e9;
+      box-shadow: inset 2px 0 0 0 #0ea5e9; /* Smaller, subtle indicator inside */
+    }
+  }
+  .group-header-content {
+    justify-content: center;
+    margin: 0;
+  }
+}
+
+/* ---------------------------------------------------
+   MAIN CONTENT AREA
+----------------------------------------------------- */
 .shell-content {
   display: flex;
   flex-direction: column;
-  background-color: transparent;
+  background-color: var(--bg-base);
 }
 
 .topbar {
@@ -109,25 +398,16 @@
   align-items: center;
   padding: 0 32px;
   border-bottom: 1px solid rgba(255,255,255,0.05);
-  background: rgba(15, 23, 42, 0.4);
+  background: rgba(2, 6, 23, 0.6);
   backdrop-filter: blur(10px);
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
-.action-icon {
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: color 0.2s;
-  
-  &:hover {
-    color: var(--text-primary);
-  }
-}
-
 .mf-wrapper {
   flex: 1;
   overflow: auto;
   position: relative;
+  padding: 24px;
 }
