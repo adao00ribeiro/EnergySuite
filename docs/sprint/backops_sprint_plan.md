@@ -47,9 +47,9 @@ Este documento detalha o roteiro de implementação para o produto **Energy Back
 **Objetivo:** Conectar a operação transacional ao ciclo de faturamento e liquidação.
 
 ### Tarefas
-- [ ] Implementar entidades para `AccountPayable`, `AccountReceivable` e `Billing` (Faturamento). *(Agente: backend_dotnet)*
-- [ ] Desenvolver a inteligência de cálculo de faturamento (Volume × Preço + Reajustes + Impostos). *(Agente: backend_dotnet)*
-- [ ] Implementar a funcionalidade de **Encontro de Contas** (`AccountOffset`) buscando contrapartes com saldo devedor e credor no mesmo mês. *(Agente: backend_dotnet)*
+- [x] Implementar entidades para `AccountPayable`, `AccountReceivable` e `Billing` (Faturamento). *(Agente: backend_dotnet)*
+- [x] Desenvolver a inteligência de cálculo de faturamento (Volume × Preço + Reajustes + Impostos). *(Agente: backend_dotnet)*
+- [x] Implementar a funcionalidade de **Encontro de Contas** (`AccountOffset`) buscando contrapartes com saldo devedor e credor no mesmo mês. *(Agente: backend_dotnet)*
 - [ ] Desenvolver o grid de Acompanhamento Financeiro e Liberação para Faturamento no frontend. *(Agente: frontend_angular)*
 
 ---

@@ -20,6 +20,15 @@ public interface IEtrmDbContext
     DbSet<HydrologicalResult> HydrologicalResults { get; set; }
     DbSet<ForecastMetadata> ForecastMetadatas { get; set; }
     DbSet<CustomScenario> CustomScenarios { get; set; }
+    
+    // Sprint 3
+    DbSet<ContractAmendment> ContractAmendments { get; set; }
+    DbSet<PriceIndexValue> PriceIndexValues { get; set; }
+    DbSet<DocumentAttachment> DocumentAttachments { get; set; }
+    
+    // Sprint 4
+    DbSet<Billing> Billings { get; set; }
+    DbSet<FinancialSettlement> FinancialSettlements { get; set; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
