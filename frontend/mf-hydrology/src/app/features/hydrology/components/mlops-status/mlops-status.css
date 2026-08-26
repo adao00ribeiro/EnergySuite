@@ -1,0 +1,77 @@
+.mlops-container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.mlops-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding-bottom: 16px;
+}
+.mlops-title {
+  color: var(--text-primary);
+  font-size: 16px;
+  margin: 0;
+}
+.pulse-indicator {
+  width: 10px;
+  height: 10px;
+  background-color: var(--status-success);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--status-success);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+.runs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.run-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+.run-item:hover {
+  background: rgba(255,255,255,0.05);
+}
+.model-name {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  color: var(--accent-teal);
+}
+.last-run {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.run-metrics {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.accuracy {
+  font-size: 13px;
+  font-family: monospace;
+  color: var(--text-primary);
+}
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.status-badge.success { color: var(--status-success); background: rgba(16, 185, 129, 0.1); }
+.status-badge.failed { color: var(--status-danger); background: rgba(239, 68, 68, 0.1); }
+.status-badge.running { color: var(--status-info); background: rgba(14, 165, 233, 0.1); }

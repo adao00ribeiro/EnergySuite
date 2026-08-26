@@ -1,0 +1,19 @@
+<div class="dashboard-layout animate-fade-in">
+  <header class="dashboard-header">
+    <div>
+      <h1 class="page-title text-gradient">Pluvia - Prospecção e Hidrologia</h1>
+      <p class="page-subtitle">Previsões hidrológicas, ENA e integração com MLOps - {{ currentDate | date:'longDate' }}</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-primary">Forçar Rodada MLOps</button>
+    </div>
+  </header>
+
+  <main class="dashboard-content">
+    <app-mlops-status></app-mlops-status>
+    
+    <div class="charts-grid">
+      <app-reservoir-levels-chart></app-reservoir-levels-chart>
+    </div>
+  </main>
+</div>
