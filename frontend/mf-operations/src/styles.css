@@ -25,6 +25,21 @@
   --font-display: 'Outfit', sans-serif;
 }
 
+body.light-theme {
+  --bg-base: #f8fafc; /* Slate 50 */
+  --bg-surface: rgba(255, 255, 255, 0.8);
+  --bg-surface-hover: rgba(255, 255, 255, 0.95);
+  
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  
+  /* Status Colors */
+  --status-success: #059669;
+  --status-warning: #d97706;
+  --status-danger: #dc2626;
+  --status-info: #0284c7;
+}
+
 body {
   margin: 0;
   padding: 0;

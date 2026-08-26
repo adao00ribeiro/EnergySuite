@@ -23,6 +23,13 @@
   --font-display: 'Outfit', sans-serif;
 }
 
+body.light-theme {
+  --bg-base: #f1f5f9; /* Slate 100 */
+  --bg-surface: rgba(255, 255, 255, 0.7);
+  --bg-surface-hover: rgba(255, 255, 255, 0.9);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+}
 body, html {
   margin: 0;
   padding: 0;
