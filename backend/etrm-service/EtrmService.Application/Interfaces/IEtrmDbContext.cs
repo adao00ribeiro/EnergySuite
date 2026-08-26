@@ -8,6 +8,10 @@ namespace EtrmService.Application.Interfaces;
 public interface IEtrmDbContext
 {
     DbSet<Contract> Contracts { get; }
+    DbSet<Company> Companies { get; }
+    DbSet<Person> Persons { get; }
+    DbSet<EconomicGroup> EconomicGroups { get; }
+    DbSet<Portfolio> Portfolios { get; }
     DbSet<PrecipitationScenario> PrecipitationScenarios { get; }
     DbSet<ModelExecution> ModelExecutions { get; }
     DbSet<HydrologicalResult> HydrologicalResults { get; set; }

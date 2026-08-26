@@ -14,6 +14,10 @@ public class EtrmDbContext : DbContext, IEtrmDbContext
     }
 
     public DbSet<Contract> Contracts { get; set; }
+    public DbSet<Company> Companies { get; set; }
+    public DbSet<Person> Persons { get; set; }
+    public DbSet<EconomicGroup> EconomicGroups { get; set; }
+    public DbSet<Portfolio> Portfolios { get; set; }
     public DbSet<PrecipitationScenario> PrecipitationScenarios { get; set; }
     public DbSet<ModelExecution> ModelExecutions { get; set; }
     public DbSet<HydrologicalResult> HydrologicalResults { get; set; }
@@ -26,6 +30,10 @@ public class EtrmDbContext : DbContext, IEtrmDbContext
         
         // Multi-Tenant Global Query Filter
         modelBuilder.Entity<Contract>().HasQueryFilter(c => c.TenantId == _currentUserService.TenantId);
+        modelBuilder.Entity<Company>().HasQueryFilter(c => c.TenantId == _currentUserService.TenantId);
+        modelBuilder.Entity<Person>().HasQueryFilter(c => c.TenantId == _currentUserService.TenantId);
+        modelBuilder.Entity<EconomicGroup>().HasQueryFilter(c => c.TenantId == _currentUserService.TenantId);
+        modelBuilder.Entity<Portfolio>().HasQueryFilter(c => c.TenantId == _currentUserService.TenantId);
         
         base.OnModelCreating(modelBuilder);
     }

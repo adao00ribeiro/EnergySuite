@@ -68,21 +68,54 @@ export class ShellLayoutComponent implements OnInit {
         path: '/operations'
       },
       {
-        label: 'Contratos e Operações',
-        icon: 'description',
+        label: 'Cadastro Comercial',
+        icon: 'domain',
         children: [
-          { label: 'Bilaterais', path: '/operations/contracts' },
-          { label: 'PPA', path: '/operations/ppa' },
-          { label: 'Obrigações', path: '/operations/obligations' },
-          { label: 'Liquidações', path: '/operations/settlements' }
+          { label: 'Grupos Econômicos', path: '/operations/commercial/groups' },
+          { label: 'Empresas', path: '/operations/commercial/companies' },
+          { label: 'Pessoas', path: '/operations/commercial/people' }
         ]
       },
       {
-        label: 'Relatórios',
-        icon: 'assessment',
+        label: 'Operações',
+        icon: 'swap_horiz',
         children: [
-          { label: 'Relatórios Executivos', path: '/operations/reports/executive' },
-          { label: 'Exportações', path: '/operations/reports/exports' }
+          { label: 'Boletas e Operações', path: '/operations/tickets' },
+          { label: 'Vínculos (SWAP/Inter)', path: '/operations/links' },
+          { label: 'Portfólios', path: '/operations/portfolios' }
+        ]
+      },
+      {
+        label: 'Contratos',
+        icon: 'description',
+        children: [
+          { label: 'Gestão de Contratos', path: '/operations/contracts/manage' },
+          { label: 'Aditivos', path: '/operations/contracts/amendments' },
+          { label: 'Reajustes', path: '/operations/contracts/readjustments' }
+        ]
+      },
+      {
+        label: 'Central de Aprovação',
+        icon: 'verified',
+        path: '/operations/approvals'
+      },
+      {
+        label: 'Financeiro',
+        icon: 'attach_money',
+        children: [
+          { label: 'Contas a Pagar', path: '/operations/finance/payables' },
+          { label: 'Contas a Receber', path: '/operations/finance/receivables' },
+          { label: 'Faturamento', path: '/operations/finance/billing' },
+          { label: 'Encontro de Contas', path: '/operations/finance/offset' }
+        ]
+      },
+      {
+        label: 'Integração CCEE',
+        icon: 'electric_bolt',
+        children: [
+          { label: 'Comparador CCEE', path: '/operations/ccee/compare' },
+          { label: 'Exportação XML', path: '/operations/ccee/export' },
+          { label: 'Ajustes e Validação', path: '/operations/ccee/adjustments' }
         ]
       }
     ],
