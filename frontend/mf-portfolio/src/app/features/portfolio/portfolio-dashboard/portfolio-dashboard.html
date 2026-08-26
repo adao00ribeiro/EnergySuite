@@ -1,0 +1,27 @@
+<div class="dashboard-layout animate-fade-in">
+  <header class="dashboard-header">
+    <div>
+      <h1 class="page-title text-gradient">Gestão de Portfólio</h1>
+      <p class="page-subtitle">Visão Executiva Consolidada - {{ currentDate | date:'longDate' }}</p>
+    </div>
+    <div class="header-actions">
+      <div class="kpi-badge">
+        <span class="kpi-label">Exposição MCP</span>
+        <span class="kpi-value text-rose">-15.4 MWm</span>
+      </div>
+      <div class="kpi-badge">
+        <span class="kpi-label">Balanço Total</span>
+        <span class="kpi-value text-blue">+265.0 MWm</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard-content">
+    <div class="top-row">
+      <app-asset-allocation></app-asset-allocation>
+    </div>
+    <div class="charts-row">
+      <app-energy-balance-chart></app-energy-balance-chart>
+    </div>
+  </main>
+</div>

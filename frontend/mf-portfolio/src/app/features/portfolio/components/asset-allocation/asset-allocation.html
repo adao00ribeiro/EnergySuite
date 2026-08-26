@@ -1,0 +1,22 @@
+<div class="glass-panel allocation-container animate-slide-up" style="animation-delay: 0.1s">
+  <div class="allocation-header">
+    <h3 class="allocation-title">Alocação de Portfólio (MWm)</h3>
+  </div>
+  
+  <div class="allocation-list">
+    <div *ngFor="let item of allocations" class="allocation-item">
+      <div class="item-header">
+        <span class="item-title">
+          <span class="color-dot" [ngClass]="item.color"></span>
+          {{ item.title }}
+        </span>
+        <span class="item-value">{{ item.value }}</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" 
+             [ngClass]="item.color" 
+             [style.width.%]="item.percentage"></div>
+      </div>
+    </div>
+  </div>
+</div>

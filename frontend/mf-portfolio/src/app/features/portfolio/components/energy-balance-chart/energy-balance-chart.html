@@ -1,0 +1,11 @@
+<div class="glass-panel chart-container animate-fade-in" style="animation-delay: 0.3s">
+  <div class="chart-header">
+    <h3 class="chart-title">Balanço de Energia Mensal (MWm)</h3>
+    <button class="btn-icon" title="Filtrar">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+    </button>
+  </div>
+  <div class="chart-wrapper">
+    <div echarts [options]="chartOptions" class="echarts-instance"></div>
+  </div>
+</div>
