@@ -31,74 +31,126 @@ export class ShellLayoutComponent implements OnInit {
   isCollapsed = false;
   expandedGroups: Record<string, boolean> = {};
 
-  navGroups: NavGroup[] = [
+  navGroups: NavGroup[] = [];
+
+  // Global Contexts mapped to the new NavGroup structure
+  private moduleMenus: Record<string, NavGroup[]> = {
+    '/portfolio': [
+      {
+        label: 'Dashboard',
+        icon: 'dashboard',
+        path: '/portfolio'
+      },
+      {
+        label: 'Gestão de Portfólio',
+        icon: 'work',
+        children: [
+          { label: 'Visão Geral', path: '/portfolio' },
+          { label: 'Ativos', path: '/portfolio/assets' },
+          { label: 'Contratos', path: '/portfolio/contracts' },
+          { label: 'Alocação', path: '/portfolio/allocation' }
+        ]
+      },
+      {
+        label: 'Relatórios',
+        icon: 'assessment',
+        children: [
+          { label: 'Performance', path: '/portfolio/reports/performance' },
+          { label: 'Extratos', path: '/portfolio/reports/extracts' }
+        ]
+      }
+    ],
+    '/operations': [
+      {
+        label: 'Dashboard',
+        icon: 'dashboard',
+        path: '/operations'
+      },
+      {
+        label: 'Contratos e Operações',
+        icon: 'description',
+        children: [
+          { label: 'Bilaterais', path: '/operations/contracts' },
+          { label: 'PPA', path: '/operations/ppa' },
+          { label: 'Obrigações', path: '/operations/obligations' },
+          { label: 'Liquidações', path: '/operations/settlements' }
+        ]
+      },
+      {
+        label: 'Relatórios',
+        icon: 'assessment',
+        children: [
+          { label: 'Relatórios Executivos', path: '/operations/reports/executive' },
+          { label: 'Exportações', path: '/operations/reports/exports' }
+        ]
+      }
+    ],
+    '/hydrology': [
+      {
+        label: 'Dashboard',
+        icon: 'dashboard',
+        path: '/hydrology'
+      },
+      {
+        label: 'Recursos Hídricos',
+        icon: 'water_drop',
+        children: [
+          { label: 'Geração', path: '/hydrology/generation' },
+          { label: 'Consumo', path: '/hydrology/consumption' },
+          { label: 'Balanço Energético', path: '/hydrology' }
+        ]
+      },
+      {
+        label: 'Modelos',
+        icon: 'memory',
+        children: [
+          { label: 'MLOps', path: '/hydrology/models' }
+        ]
+      }
+    ],
+    '/pricing': [
+      {
+        label: 'Dashboard',
+        icon: 'dashboard',
+        path: '/pricing'
+      },
+      {
+        label: 'Mercado & Risco',
+        icon: 'trending_up',
+        children: [
+          { label: 'Preços', path: '/pricing' },
+          { label: 'Exposição', path: '/pricing/exposure' },
+          { label: 'Posição de Mercado', path: '/pricing/position' },
+          { label: 'Curva Forward', path: '/pricing/curves' },
+          { label: 'Cenários', path: '/pricing/scenarios' }
+        ]
+      }
+    ]
+  };
+
+  // Fallback se estiver na home ou rota não reconhecida
+  private defaultMenu: NavGroup[] = [
     {
-      label: 'Dashboard',
-      icon: 'dashboard',
+      label: 'Home',
+      icon: 'home',
       path: '/'
-    },
-    {
-      label: 'Portfólio',
-      icon: 'work',
-      children: [
-        { label: 'Visão Geral', path: '/portfolio' },
-        { label: 'Ativos', path: '/portfolio/assets' },
-        { label: 'Contratos', path: '/portfolio/contracts' },
-        { label: 'Alocação', path: '/portfolio/allocation' }
-      ]
-    },
-    {
-      label: 'Energia',
-      icon: 'bolt',
-      children: [
-        { label: 'Geração', path: '/hydrology/generation' },
-        { label: 'Consumo', path: '/hydrology/consumption' },
-        { label: 'Balanço Energético', path: '/hydrology' }
-      ]
-    },
-    {
-      label: 'Mercado',
-      icon: 'bar_chart',
-      children: [
-        { label: 'Preços', path: '/pricing' },
-        { label: 'Exposição', path: '/pricing/exposure' },
-        { label: 'Posição de Mercado', path: '/pricing/position' }
-      ]
-    },
-    {
-      label: 'Contratos',
-      icon: 'description',
-      children: [
-        { label: 'Bilaterais', path: '/operations/contracts' },
-        { label: 'PPA', path: '/operations/ppa' },
-        { label: 'Obrigações', path: '/operations/obligations' }
-      ]
-    },
-    {
-      label: 'Relatórios',
-      icon: 'assessment',
-      children: [
-        { label: 'Relatórios Executivos', path: '/reports/executive' },
-        { label: 'Performance', path: '/reports/performance' },
-        { label: 'Exportações', path: '/reports/exports' }
-      ]
-    },
+    }
+  ];
+
+  managementGroups: NavGroup[] = [
     {
       label: 'Alertas',
       icon: 'notifications',
       path: '/alerts',
       badge: 3
-    }
-  ];
-
-  managementGroups: NavGroup[] = [
+    },
     {
       label: 'Configurações',
       icon: 'settings',
       path: '/settings'
     },
     {
-      label: 'Usuários e Permissões',
+      label: 'Usuários',
       icon: 'people',
       path: '/users'
     }
@@ -107,12 +159,28 @@ export class ShellLayoutComponent implements OnInit {
   ngOnInit() {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
+        this.updateMenu(event.urlAfterRedirects);
         this.autoExpandActiveGroup(event.urlAfterRedirects);
       }
     });
     
-    // Initial expansion check
-    setTimeout(() => this.autoExpandActiveGroup(this.router.url), 100);
+    // Initial load
+    setTimeout(() => {
+      this.updateMenu(this.router.url);
+      this.autoExpandActiveGroup(this.router.url);
+    }, 100);
+  }
+
+  private updateMenu(url: string) {
+    const baseRoute = Object.keys(this.moduleMenus).find(route => url.startsWith(route));
+    this.navGroups = baseRoute ? this.moduleMenus[baseRoute] : this.defaultMenu;
+    
+    // Define active theme
+    if (url.startsWith('/portfolio')) this.currentTheme = 'theme-portfolio';
+    else if (url.startsWith('/operations')) this.currentTheme = 'theme-operations';
+    else if (url.startsWith('/pricing')) this.currentTheme = 'theme-pricing';
+    else if (url.startsWith('/hydrology')) this.currentTheme = 'theme-hydrology';
+    else this.currentTheme = '';
   }
 
   toggleSidebar() {
