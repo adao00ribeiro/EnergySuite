@@ -14,6 +14,9 @@ public class EtrmDbContext : DbContext
     }
 
     public DbSet<Contract> Contracts { get; set; }
+    public DbSet<PrecipitationScenario> PrecipitationScenarios { get; set; }
+    public DbSet<ModelExecution> ModelExecutions { get; set; }
+    public DbSet<HydrologicalResult> HydrologicalResults { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
