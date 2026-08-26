@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 interface MlopsRun {
+  id: string;
   modelName: string;
-  status: 'running' | 'success' | 'failed';
+  status: 'running' | 'completed' | 'failed' | 'pending';
   accuracy: string;
-  lastRun: string;
+  startedAt: string;
 }
 
 @Component({
@@ -15,12 +17,35 @@ interface MlopsRun {
   templateUrl: './mlops-status.html',
   styleUrl: './mlops-status.css'
 })
-export class MlopsStatusComponent implements OnInit {
-  runs: MlopsRun[] = [
-    { modelName: 'NEWAVE - Chuva-Vazão', status: 'success', accuracy: 'MSE: 0.042', lastRun: 'Hoje, 04:30 AM' },
-    { modelName: 'DECOMP - Otimização', status: 'success', accuracy: 'RMSE: 0.11', lastRun: 'Hoje, 05:15 AM' },
-    { modelName: 'Rede Neural - ENA Mensal', status: 'running', accuracy: 'Calculando...', lastRun: 'Em andamento' }
-  ];
+export class MlopsStatusComponent implements OnInit, OnDestroy {
+  private http = inject(HttpClient);
+  private intervalId: any;
   
-  ngOnInit(): void {}
+  runs = signal<MlopsRun[]>([]);
+  
+  ngOnInit(): void {
+    this.fetchExecutions();
+    // Poll every 10 seconds for real-time status updates
+    this.intervalId = setInterval(() => this.fetchExecutions(), 10000);
+  }
+  
+  ngOnDestroy(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+  }
+
+  fetchExecutions() {
+    this.http.get<MlopsRun[]>('/api/v1/pluvia/executions').subscribe({
+      next: (data) => {
+        this.runs.set(data);
+      },
+      error: (err) => console.error('Failed to load mlops executions', err)
+    });
+  }
+  
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  }
 }

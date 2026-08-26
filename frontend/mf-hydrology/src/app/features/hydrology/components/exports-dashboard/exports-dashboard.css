@@ -1,0 +1,60 @@
+.exports-container {
+  background-color: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 24px;
+  height: 100%;
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.header h3 {
+  margin: 0;
+  color: #e2e8f0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.subtitle {
+  margin: 8px 0 0 0;
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+.custom-table {
+  width: 100%;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.custom-table th.mat-header-cell {
+  color: #94a3b8;
+  font-weight: 500;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: rgba(15, 23, 42, 0.3);
+}
+
+.custom-table td.mat-cell {
+  color: #e2e8f0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.text-right {
+  text-align: right;
+  padding-right: 16px !important;
+}
+
+.file-badge {
+  background-color: rgba(56, 189, 248, 0.1);
+  color: #38bdf8;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.download-link {
+  text-decoration: none;
+}

@@ -1,21 +1,27 @@
-<div class="glass-panel mlops-container animate-slide-up" style="animation-delay: 0.2s">
-  <div class="mlops-header">
-    <h3 class="mlops-title">MLOps & Pipelines (Airflow)</h3>
-    <span class="pulse-indicator"></span>
+<div class="mlops-container">
+  <div class="header">
+    <h3>Status dos Modelos de ML</h3>
+    <span class="live-indicator"></span>
   </div>
-  
+
   <div class="runs-list">
-    <div *ngFor="let run of runs" class="run-item">
-      <div class="run-info">
-        <h4 class="model-name">{{ run.modelName }}</h4>
-        <span class="last-run">{{ run.lastRun }}</span>
+    <div class="run-item" *ngFor="let run of runs()">
+      <div class="run-icon" [ngClass]="run.status">
+        <i class="fas fa-check-circle" *ngIf="run.status === 'completed'"></i>
+        <i class="fas fa-spinner fa-spin" *ngIf="run.status === 'running'"></i>
+        <i class="fas fa-clock" *ngIf="run.status === 'pending'"></i>
+        <i class="fas fa-times-circle" *ngIf="run.status === 'failed'"></i>
       </div>
-      
-      <div class="run-metrics">
-        <span class="accuracy">{{ run.accuracy }}</span>
-        <div class="status-badge" [ngClass]="run.status">
-          {{ run.status === 'running' ? 'Executando' : (run.status === 'success' ? 'Concluído' : 'Falhou') }}
+      <div class="run-details">
+        <div class="model-name">{{ run.modelName }}</div>
+        <div class="metrics">
+          <span class="accuracy">{{ run.accuracy }}</span>
+          <span class="dot">•</span>
+          <span class="time">{{ formatDate(run.startedAt) }}</span>
         </div>
+      </div>
+      <div class="status-badge" [ngClass]="run.status">
+        {{ run.status | uppercase }}
       </div>
     </div>
   </div>

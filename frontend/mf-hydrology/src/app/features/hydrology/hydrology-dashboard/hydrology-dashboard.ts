@@ -5,11 +5,12 @@ import { ReservoirLevelsChartComponent } from '../components/reservoir-levels-ch
 import { MlopsStatusComponent } from '../components/mlops-status/mlops-status';
 import { PrecipitationMapComponent } from '../components/precipitation-map/precipitation-map.component';
 import { CustomScenariosComponent } from '../components/custom-scenarios/custom-scenarios';
+import { ExportsDashboardComponent } from '../components/exports-dashboard/exports-dashboard';
 
 @Component({
   selector: 'app-hydrology-dashboard',
   standalone: true,
-  imports: [CommonModule, MatTabsModule, ReservoirLevelsChartComponent, MlopsStatusComponent, PrecipitationMapComponent, CustomScenariosComponent],
+  imports: [CommonModule, MatTabsModule, ReservoirLevelsChartComponent, MlopsStatusComponent, PrecipitationMapComponent, CustomScenariosComponent, ExportsDashboardComponent],
   templateUrl: './hydrology-dashboard.html',
   styleUrl: './hydrology-dashboard.css'
 })

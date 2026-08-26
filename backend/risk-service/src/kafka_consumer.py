@@ -15,6 +15,7 @@ from opentelemetry.propagate import extract, inject
 from .database import AsyncSessionLocal
 from .models import ContractCreatedEvent, RiskMetricModel, RiskCalculatedEvent, EnaCalculatedIntegrationEvent
 from .risk_engine import RiskEngine
+from .gevazp_generator import GevazpGenerator
 
 from prometheus_client import Gauge, Counter, start_http_server
 
@@ -86,6 +87,11 @@ async def process_pluvia_event(event_data: dict, producer: AIOKafkaProducer):
                             headers=header_list
                         )
                 logger.info(f"Published 48 ENA records for simulation {sim_id} to {TOPIC_ENA_PRODUCE}")
+                
+            # Sprint 6: Generate and upload GEVAZP files
+            with tracer.start_as_current_span("generate_gevazp_exports"):
+                generator = GevazpGenerator()
+                generator.generate_and_upload(sim_id)
             
     except Exception as e:
         logger.error(f"Error processing pluvia event: {e}")

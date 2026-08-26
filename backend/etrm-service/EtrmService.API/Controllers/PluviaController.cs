@@ -104,6 +104,34 @@ public class PluviaController : ApiControllerBase
         return Ok(results);
     }
 
+    [HttpGet("executions")]
+    [ProducesResponseType(typeof(IEnumerable<ModelExecutionDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetExecutions()
+    {
+        var query = new GetModelExecutionsQuery();
+        var results = await _mediator.Send(query);
+        return Ok(results);
+    }
+
+    [HttpGet("exports/{executionId}")]
+    [ProducesResponseType(typeof(IEnumerable<ExportFileDto>), StatusCodes.Status200OK)]
+    public IActionResult GetExports(Guid executionId)
+    {
+        // Mocking exports for the UI
+        var minioBaseUrl = Environment.GetEnvironmentVariable("MINIO_ENDPOINT") ?? "http://localhost:9000";
+        var bucket = "datalake";
+        
+        var mockExports = new List<ExportFileDto>
+        {
+            new ExportFileDto { FileName = "PREVS.rv0", FileType = "PREVS", SizeBytes = 1024 * 45, DownloadUrl = $"{minioBaseUrl}/{bucket}/exports/{executionId}/PREVS.rv0" },
+            new ExportFileDto { FileName = "ENA.rv0", FileType = "ENA", SizeBytes = 1024 * 12, DownloadUrl = $"{minioBaseUrl}/{bucket}/exports/{executionId}/ENA.rv0" },
+            new ExportFileDto { FileName = "VNA.rv0", FileType = "VNA", SizeBytes = 1024 * 8, DownloadUrl = $"{minioBaseUrl}/{bucket}/exports/{executionId}/VNA.rv0" },
+            new ExportFileDto { FileName = "DADVAZ.rv0", FileType = "DADVAZ", SizeBytes = 1024 * 55, DownloadUrl = $"{minioBaseUrl}/{bucket}/exports/{executionId}/DADVAZ.rv0" }
+        };
+
+        return Ok(mockExports);
+    }
+
     [HttpGet("scenarios")]
     [ProducesResponseType(typeof(IEnumerable<PrecipitationScenarioDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetScenarios()

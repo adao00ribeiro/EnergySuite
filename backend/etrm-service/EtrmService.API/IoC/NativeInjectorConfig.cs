@@ -11,6 +11,7 @@ using EtrmService.Application.IntegrationEvents;
 using Microsoft.EntityFrameworkCore;
 using MassTransit;
 using FluentValidation;
+using Quartz;
 
 namespace EtrmService.API.IoC;
 
@@ -93,5 +94,20 @@ public static class NativeInjectorConfig
                 });
             });
         });
+
+        // Quartz Agendamentos
+        services.AddQuartz(q =>
+        {
+            var jobKey = new JobKey("HydrologicalSimulationJob");
+            q.AddJob<EtrmService.API.Jobs.HydrologicalSimulationJob>(opts => opts.WithIdentity(jobKey));
+
+            // Executa todos os dias as 04:00 AM
+            q.AddTrigger(opts => opts
+                .ForJob(jobKey)
+                .WithIdentity("HydrologicalSimulationJob-trigger")
+                .WithCronSchedule("0 0 4 * * ?"));
+        });
+        
+        services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
     }
 }
