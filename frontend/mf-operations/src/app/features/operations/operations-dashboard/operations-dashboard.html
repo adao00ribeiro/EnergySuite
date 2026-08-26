@@ -1,0 +1,16 @@
+<div class="dashboard-layout animate-fade-in">
+  <header class="dashboard-header">
+    <div>
+      <h1 class="page-title text-gradient">Backops - ETRM e Operações</h1>
+      <p class="page-subtitle">Gestão de Contratos e Faturamento - {{ currentDate | date:'longDate' }}</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-primary">Sincronizar CCEE</button>
+    </div>
+  </header>
+
+  <main class="dashboard-content">
+    <app-quick-action-cards></app-quick-action-cards>
+    <app-contracts-table></app-contracts-table>
+  </main>
+</div>

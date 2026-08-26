@@ -1,0 +1,14 @@
+<div class="cards-grid">
+  <div *ngFor="let action of actions; let i = index" 
+       class="glass-panel action-card animate-slide-up"
+       [ngStyle]="{'animation-delay': (i * 0.1) + 's'}">
+    <div class="icon-wrapper" [ngClass]="action.color">
+      <!-- Minimalist icons using CSS or simple shapes -->
+      <div class="icon-placeholder"></div>
+    </div>
+    <div class="card-content">
+      <h3 class="card-title">{{ action.title }}</h3>
+      <p class="card-description">{{ action.description }}</p>
+    </div>
+  </div>
+</div>
