@@ -27,8 +27,28 @@ logger = logging.getLogger(__name__)
 tracer = trace.get_tracer(__name__)
 
 KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092")
-TOPIC_CONSUME = "contract-events"
+TOPICS_CONSUME = ["contract-events", "pluvia-events"]
 TOPIC_PRODUCE = "risk-events"
+
+async def process_pluvia_event(event_data: dict):
+    try:
+        with tracer.start_as_current_span("simulate_hydrological_model") as span:
+            sim_id = event_data.get("SimulationId")
+            scenario_id = event_data.get("ScenarioId")
+            model = event_data.get("ModelName")
+            
+            logger.info(f"Starting {model} simulation for scenario {scenario_id}")
+            
+            # Simulate heavy SMAP calculation
+            await asyncio.sleep(2)
+            
+            logger.info(f"Hydrological simulation {sim_id} completed successfully!")
+            
+            # In real scenario, we would save the resulting Parquet/JSON to MinIO lakehouse here.
+            # e.g., s3://datalake/bronze/hydrology/result_{sim_id}.json
+            
+    except Exception as e:
+        logger.error(f"Error processing pluvia event: {e}")
 
 async def consume_events():
     # Start Prometheus Metrics Server
@@ -36,7 +56,7 @@ async def consume_events():
     logger.info("Prometheus metrics server started on port 8001")
 
     consumer = AIOKafkaConsumer(
-        TOPIC_CONSUME,
+        *TOPICS_CONSUME,
         bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
         group_id="risk-service-group-v2",
         value_deserializer=lambda m: json.loads(m.decode("utf-8")),
@@ -70,7 +90,10 @@ async def consume_events():
             ctx = extract(headers_dict)
             
             with tracer.start_as_current_span(f"{msg.topic} receive", context=ctx):
-                await process_contract_event(msg.value, producer)
+                if msg.topic == "contract-events":
+                    await process_contract_event(msg.value, producer)
+                elif msg.topic == "pluvia-events":
+                    await process_pluvia_event(msg.value)
                 
     except asyncio.CancelledError:
         logger.info("Consumer task cancelled.")

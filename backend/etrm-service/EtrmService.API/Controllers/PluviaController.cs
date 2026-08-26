@@ -31,6 +31,14 @@ public class PluviaController : ApiControllerBase
         return CreatedAtAction(nameof(GetScenarios), new { id = scenarioId }, scenarioId);
     }
 
+    [HttpPost("simulate")]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status202Accepted)]
+    public async Task<IActionResult> Simulate([FromBody] RunHydrologicalSimulationCommand command)
+    {
+        var executionId = await _mediator.Send(command);
+        return Accepted(new { executionId });
+    }
+
     [HttpGet("metadata")]
     public async Task<IActionResult> GetForecastMetadata()
     {

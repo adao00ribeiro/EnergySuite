@@ -62,6 +62,7 @@ public static class NativeInjectorConfig
             {
                 rider.AddConsumer<EtrmService.API.Consumers.RiskCalculatedEventConsumer>();
                 rider.AddProducer<ContractCreatedIntegrationEvent>("contract-events");
+                rider.AddProducer<SimulationRequestedIntegrationEvent>("pluvia-events");
 
                 rider.UsingKafka((context, k) =>
                 {
