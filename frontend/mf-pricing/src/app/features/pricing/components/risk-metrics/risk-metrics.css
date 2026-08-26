@@ -1,0 +1,72 @@
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  width: 100%;
+}
+
+.metric-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Neon glow effect on hover */
+.metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue), var(--accent-purple));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.metric-card:hover::before {
+  opacity: 1;
+}
+
+.metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.metric-title {
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.trend-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(255,255,255,0.05);
+}
+
+.trend-badge.up { color: var(--status-success); background: rgba(16, 185, 129, 0.1); }
+.trend-badge.down { color: var(--status-danger); background: rgba(239, 68, 68, 0.1); }
+.trend-badge.neutral { color: var(--text-secondary); }
+
+.metric-value {
+  font-size: 36px;
+  margin: 0;
+}
+
+.metric-desc {
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin: 8px 0 0 0;
+}

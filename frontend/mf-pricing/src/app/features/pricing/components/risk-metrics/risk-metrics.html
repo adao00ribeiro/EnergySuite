@@ -1,0 +1,21 @@
+<div class="metrics-grid">
+  <div *ngFor="let metric of metrics; let i = index" 
+       class="glass-panel metric-card animate-slide-up"
+       [style.animation-delay]="i * 0.1 + 's'">
+    
+    <div class="metric-header">
+      <h3 class="metric-title">{{ metric.title }}</h3>
+      <div class="trend-badge" [ngClass]="metric.trend">
+        <span class="trend-icon" *ngIf="metric.trend === 'up'">▲</span>
+        <span class="trend-icon" *ngIf="metric.trend === 'down'">▼</span>
+        <span class="trend-icon" *ngIf="metric.trend === 'neutral'">−</span>
+        {{ metric.trendValue }}
+      </div>
+    </div>
+    
+    <div class="metric-body">
+      <h2 class="metric-value text-gradient">{{ metric.value }}</h2>
+      <p class="metric-desc">{{ metric.description }}</p>
+    </div>
+  </div>
+</div>
