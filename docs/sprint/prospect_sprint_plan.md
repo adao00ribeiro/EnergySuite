@@ -31,11 +31,11 @@ Com base na sua análise técnica profunda e no SPEC fornecido (espelhado no Pro
 **Objetivo:** Criar o core de execução. O usuário manda executar o estudo, e o orquestrador gerencia a fila e envia comandos para os *Workers*.
 
 * **Tarefas:**
-  - [ ] **Backend:** Criar a Máquina de Estados de Execução (QUEUED -> RUNNING -> PROCESSING -> COMPLETED/FAILED).
-  - [ ] **Backend (Mensageria):** Configurar fila `model-execution-jobs` (RabbitMQ/Kafka).
-  - [ ] **Backend (Workers):** Criar `ModelRunnerWorker` que faz Pull da fila, baixa arquivos do S3, "roda" o modelo e reenvia resultados.
-  - [ ] **Frontend:** Monitoramento em Tempo Real via WebSocket (SignalR).
-  - [ ] **Frontend:** Interface de Logs dinâmicos, transmitindo saídas do *stdout/stderr* do worker na UI.
+  - [x] **Backend:** Criar a Máquina de Estados de Execução (QUEUED -> RUNNING -> PROCESSING -> COMPLETED/FAILED).
+  - [x] **Backend (Mensageria):** Configurar fila `model-execution-jobs` (RabbitMQ/Kafka).
+  - [x] **Backend (Workers):** Criar `ModelRunnerWorker` que faz Pull da fila, baixa arquivos do S3, "roda" o modelo e reenvia resultados.
+  - [x] **Frontend:** Monitoramento em Tempo Real via WebSocket (SignalR).
+  - [x] **Frontend:** Interface de Logs dinâmicos, transmitindo saídas do *stdout/stderr* do worker na UI.
 
 ### Sprint 4: Encadeamento e Tratamento de Inviabilidades
 **Objetivo:** Conectar a saída de um modelo na entrada de outro (NW -> DC) e lidar inteligentemente com erros no processo.

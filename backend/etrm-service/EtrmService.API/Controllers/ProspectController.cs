@@ -38,4 +38,17 @@ public class ProspectController : ControllerBase
         var studyId = await _mediator.Send(command);
         return Created($"/api/v1/prospect/studies/{studyId}", new { Id = studyId });
     }
+
+    [HttpPost("studies/{id}/execute")]
+    public async Task<IActionResult> ExecuteStudy(Guid id)
+    {
+        var command = new ExecuteStudyCommand
+        {
+            StudyId = id,
+            TenantId = Guid.Parse("00000000-0000-0000-0000-000000000001") // Mock Tenant
+        };
+
+        await _mediator.Send(command);
+        return Accepted(new { Message = "Execution queued successfully." });
+    }
 }

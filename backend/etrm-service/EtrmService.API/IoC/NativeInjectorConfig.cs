@@ -75,29 +75,22 @@ public static class NativeInjectorConfig
             x.AddRider(rider =>
             {
                 rider.AddConsumer<EtrmService.API.Consumers.RiskCalculatedEventConsumer>();
-                rider.AddConsumer<EtrmService.API.Consumers.EnaCalculatedEventConsumer>();
-                rider.AddConsumer<EtrmService.API.Consumers.OperationPublishedEventConsumer>();
+                rider.AddConsumer<EtrmService.API.Consumers.ProspectModelRunnerConsumer>();
                 rider.AddProducer<ContractCreatedIntegrationEvent>("contract-events");
                 rider.AddProducer<SimulationRequestedIntegrationEvent>("pluvia-events");
-                rider.AddProducer<OperationPublishedIntegrationEvent>("operation-events");
 
                 rider.UsingKafka((context, k) =>
                 {
-                    k.Host(kafkaBootstrapServers);
+                    k.Host(configuration["Kafka:BootstrapServers"] ?? "localhost:9092");
 
-                    k.TopicEndpoint<RiskCalculatedIntegrationEvent>("risk-events", "etrm-group", e =>
+                    k.TopicEndpoint<RiskCalculatedIntegrationEvent>("risk-calculated", "etrm-service-group", e =>
                     {
                         e.ConfigureConsumer<EtrmService.API.Consumers.RiskCalculatedEventConsumer>(context);
                     });
 
-                    k.TopicEndpoint<EnaCalculatedIntegrationEvent>("ena-events", "etrm-group", e =>
+                    k.TopicEndpoint<EtrmService.Application.Prospect.Events.StudyExecutionRequestedEvent>("study-execution-requested", "etrm-service-group", e =>
                     {
-                        e.ConfigureConsumer<EtrmService.API.Consumers.EnaCalculatedEventConsumer>(context);
-                    });
-
-                    k.TopicEndpoint<OperationPublishedIntegrationEvent>("operation-events", "etrm-group", e =>
-                    {
-                        e.ConfigureConsumer<EtrmService.API.Consumers.OperationPublishedEventConsumer>(context);
+                        e.ConfigureConsumer<EtrmService.API.Consumers.ProspectModelRunnerConsumer>(context);
                     });
                 });
             });

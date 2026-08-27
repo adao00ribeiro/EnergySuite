@@ -1,7 +1,14 @@
 <div class="detail-container">
   <div class="header">
-    <h1>Detalhes do Estudo #{{studyId}}</h1>
-    <p>PLD Setembro 2026 - Horizonte de 12 meses</p>
+    <div class="header-title">
+      <h1>Detalhes do Estudo #{{studyId}}</h1>
+      <p>PLD Setembro 2026 - Horizonte de 12 meses</p>
+    </div>
+    <div class="header-actions">
+      <button mat-flat-button color="accent" (click)="executeStudy()">
+        <mat-icon>play_arrow</mat-icon> Executar Estudo
+      </button>
+    </div>
   </div>
 
   <mat-tab-group>
@@ -41,13 +48,27 @@
           <mat-card-content>
             <mat-list>
               <mat-list-item *ngFor="let deck of decks">
-                <mat-icon matListItemIcon color="primary">{{deck.icon}}</mat-icon>
+                <mat-icon matListItemIcon [color]="deck.status === 'Completed' ? 'primary' : (deck.status === 'Running' ? 'accent' : '')">
+                  {{ deck.status === 'Completed' ? 'check_circle' : (deck.status === 'Running' ? 'autorenew' : 'hourglass_empty') }}
+                </mat-icon>
                 <div matListItemTitle>{{ deck.mes }}</div>
-                <div matListItemLine>Status: {{ deck.status }}</div>
+                <div matListItemLine>Status: <strong>{{ deck.status }}</strong></div>
               </mat-list-item>
             </mat-list>
           </mat-card-content>
         </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Aba 3: Console -->
+    <mat-tab label="Console de Execução">
+      <div class="tab-content">
+        <div class="console">
+          <div class="log-line" *ngFor="let log of logs()">
+            {{ log }}
+          </div>
+          <div *ngIf="logs().length === 0" class="log-line muted">Aguardando execução...</div>
+        </div>
       </div>
     </mat-tab>
   </mat-tab-group>

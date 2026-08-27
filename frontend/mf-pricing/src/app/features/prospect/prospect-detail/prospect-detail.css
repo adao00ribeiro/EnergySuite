@@ -4,6 +4,9 @@
 
 .header {
   margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .header h1 {
@@ -23,4 +26,24 @@
 
 .mt-16 {
   margin-top: 16px;
+}
+
+.console {
+  background-color: #1e1e1e;
+  color: #00ff00;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 16px;
+  border-radius: 4px;
+  min-height: 400px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.log-line {
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.log-line.muted {
+  color: #888;
 }
