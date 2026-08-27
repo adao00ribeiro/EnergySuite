@@ -70,6 +70,12 @@
 
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button (click)="close(false)" [disabled]="isLoading">Cancelar</button>
-  <button mat-flat-button color="primary" (click)="close(true)" [disabled]="isLoading">Aprovar para BackOps</button>
+  <button mat-button (click)="close()" [disabled]="isLoading || isSubmitting">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="approve()" [disabled]="isLoading || isSubmitting">
+    <span *ngIf="!isSubmitting">Aprovar para BackOps</span>
+    <span *ngIf="isSubmitting" style="display:flex; align-items:center; gap:8px;">
+      <mat-spinner diameter="20" color="accent"></mat-spinner>
+      Validando Crédito...
+    </span>
+  </button>
 </mat-dialog-actions>

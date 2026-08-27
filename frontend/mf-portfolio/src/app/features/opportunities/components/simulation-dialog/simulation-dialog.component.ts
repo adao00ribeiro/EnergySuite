@@ -4,26 +4,30 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/materia
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 export interface SimulationData {
   opportunityId: string;
   name: string;
+  volumeMwm: number;
 }
 
 @Component({
   selector: 'app-simulation-dialog',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatSnackBarModule],
   templateUrl: './simulation-dialog.component.html',
   styleUrls: ['./simulation-dialog.component.scss']
 })
 export class SimulationDialogComponent implements OnInit {
   isLoading = true;
+  isSubmitting = false;
   result: any = null;
 
   constructor(
     public dialogRef: MatDialogRef<SimulationDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: SimulationData
+    @Inject(MAT_DIALOG_DATA) public data: SimulationData,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -35,13 +39,13 @@ export class SimulationDialogComponent implements OnInit {
     setTimeout(() => {
       this.result = {
         previousVolumeMwm: 30.5,
-        newVolumeMwm: 46.0,
-        volumeDelta: 15.5,
+        newVolumeMwm: 30.5 + this.data.volumeMwm,
+        volumeDelta: this.data.volumeMwm,
         previousEstimatedResult: 450000.00,
-        newEstimatedResult: 438000.00,
+        newEstimatedResult: 450000.00 - 12000.00, // mock spread
         financialDelta: -12000.00,
         copilotAnalysis: {
-          summaryText: "Esta é uma operação de hedge/cobertura. A aquisição de 15.5 MWm terá um custo (redução no resultado estimado) de R$ 12,000.00. O déficit no submercado será reduzido significativamente.",
+          summaryText: `Esta operação de ${this.data.volumeMwm} MWm afeta a exposição do portfólio. Verificamos que o delta financeiro é um custo aceitável de hedge.`,
           recommendation: "Approve"
         }
       };
@@ -49,7 +53,28 @@ export class SimulationDialogComponent implements OnInit {
     }, 1500);
   }
 
-  close(approved: boolean = false) {
-    this.dialogRef.close(approved);
+  approve() {
+    this.isSubmitting = true;
+    
+    // Simulate ApproveOperationCommand -> Imeris Validation
+    setTimeout(() => {
+      this.isSubmitting = false;
+      if (this.data.volumeMwm > 20) {
+        this.snackBar.open(`🚨 Risco de Crédito Reprovado (Imeris): O volume de ${this.data.volumeMwm} MWm ultrapassa o limite pré-aprovado de 20 MWm da contraparte.`, 'Fechar', {
+          duration: 5000,
+          panelClass: ['error-snackbar']
+        });
+      } else {
+        this.snackBar.open('✅ Operação aprovada com sucesso! O BackOps foi notificado.', 'Fechar', {
+          duration: 3000,
+          panelClass: ['success-snackbar']
+        });
+        this.dialogRef.close(true);
+      }
+    }, 2000);
+  }
+
+  close() {
+    this.dialogRef.close(false);
   }
 }

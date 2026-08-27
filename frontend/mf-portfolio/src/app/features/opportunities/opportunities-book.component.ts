@@ -54,7 +54,8 @@ export class OpportunitiesBookComponent implements OnInit {
       width: '600px',
       data: {
         opportunityId: opportunity.id,
-        name: opportunity.name
+        name: opportunity.name,
+        volumeMwm: opportunity.suggestedVolumeMwm
       }
     });
   }
