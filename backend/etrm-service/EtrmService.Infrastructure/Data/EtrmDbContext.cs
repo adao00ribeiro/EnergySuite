@@ -44,6 +44,8 @@ public class EtrmDbContext : DbContext, IEtrmDbContext
     public DbSet<EtrmService.Domain.Entities.Prospect.Study> ProspectStudies { get; set; }
     public DbSet<EtrmService.Domain.Entities.Prospect.StudyTag> ProspectStudyTags { get; set; }
     public DbSet<EtrmService.Domain.Entities.Prospect.StudyFile> ProspectStudyFiles { get; set; }
+    public DbSet<EtrmService.Domain.Entities.Prospect.Deck> ProspectDecks { get; set; }
+    public DbSet<EtrmService.Domain.Entities.Prospect.DeckVersion> ProspectDeckVersions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,0 +1,54 @@
+<div class="detail-container">
+  <div class="header">
+    <h1>Detalhes do Estudo #{{studyId}}</h1>
+    <p>PLD Setembro 2026 - Horizonte de 12 meses</p>
+  </div>
+
+  <mat-tab-group>
+    <!-- Aba 1: Premissas -->
+    <mat-tab label="Premissas (Excel)">
+      <div class="tab-content">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Configurações Globais</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p><strong>Cenário GSF:</strong> {{ premissas.cenarioGsf }}</p>
+            <p><strong>Crescimento de Carga (%):</strong> {{ premissas.crescimentoCarga }}</p>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="mt-16">
+          <mat-card-header>
+            <mat-card-title>Níveis Iniciais de Reservatório (EAR%)</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-list>
+              <mat-list-item *ngFor="let nivel of premissas.niveisIniciais">
+                <span matListItemTitle>{{ nivel.submercado }}</span>
+                <span matListItemLine>{{ nivel.nivel }}%</span>
+              </mat-list-item>
+            </mat-list>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Aba 2: Decks -->
+    <mat-tab label="Decks Gerados (GEVAZP)">
+      <div class="tab-content">
+        <mat-card>
+          <mat-card-content>
+            <mat-list>
+              <mat-list-item *ngFor="let deck of decks">
+                <mat-icon matListItemIcon color="primary">{{deck.icon}}</mat-icon>
+                <div matListItemTitle>{{ deck.mes }}</div>
+                <div matListItemLine>Status: {{ deck.status }}</div>
+              </mat-list-item>
+            </mat-list>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

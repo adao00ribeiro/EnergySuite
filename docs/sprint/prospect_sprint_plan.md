@@ -21,11 +21,11 @@ Com base na sua análise técnica profunda e no SPEC fornecido (espelhado no Pro
 **Objetivo:** Permitir ao analista enviar uma planilha Excel que será validada, processada e convertida na árvore de Decks mensais/semanais.
 
 * **Tarefas:**
-  - [ ] **Backend:** Implementar Parser de Excel (via ClosedXML ou similar) para importar premissas.
-  - [ ] **Backend:** Desenvolver o Gerador de Decks, clonando o Deck base para os N meses do horizonte especificado.
-  - [ ] **Backend:** Integração e geração automática de cenários e arquivos (`vazoes.dat`, simulando GEVAZP).
-  - [ ] **Frontend:** Painel de configuração de Premissas (Modificação de parâmetros) por interface gráfica.
-  - [ ] **Frontend:** Visualização da árvore gerada de Decks Futuros antes da execução.
+  - [x] **Backend:** Implementar Parser de Excel (via ClosedXML ou similar) para importar premissas.
+  - [x] **Backend:** Desenvolver o Gerador de Decks, clonando o Deck base para os N meses do horizonte especificado.
+  - [x] **Backend:** Integração e geração automática de cenários e arquivos (`vazoes.dat`, simulando GEVAZP).
+  - [x] **Frontend:** Painel de configuração de Premissas (Modificação de parâmetros) por interface gráfica.
+  - [x] **Frontend:** Visualização da árvore gerada de Decks Futuros antes da execução.
 
 ### Sprint 3: Orquestração de Execução e Workers Distribuídos
 **Objetivo:** Criar o core de execução. O usuário manda executar o estudo, e o orquestrador gerencia a fila e envia comandos para os *Workers*.

@@ -1,0 +1,26 @@
+.detail-container {
+  padding: 24px;
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.header p {
+  color: #666;
+  margin-top: 8px;
+}
+
+.tab-content {
+  padding: 24px 0;
+}
+
+.mt-16 {
+  margin-top: 16px;
+}

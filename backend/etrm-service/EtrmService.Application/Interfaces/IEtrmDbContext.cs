@@ -40,6 +40,8 @@ public interface IEtrmDbContext
     DbSet<EtrmService.Domain.Entities.Prospect.Study> ProspectStudies { get; set; }
     DbSet<EtrmService.Domain.Entities.Prospect.StudyTag> ProspectStudyTags { get; set; }
     DbSet<EtrmService.Domain.Entities.Prospect.StudyFile> ProspectStudyFiles { get; set; }
+    DbSet<EtrmService.Domain.Entities.Prospect.Deck> ProspectDecks { get; set; }
+    DbSet<EtrmService.Domain.Entities.Prospect.DeckVersion> ProspectDeckVersions { get; set; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

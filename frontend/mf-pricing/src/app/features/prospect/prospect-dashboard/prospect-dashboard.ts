@@ -6,10 +6,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { ProspectService } from '../services/prospect.service';
 
+import { RouterModule } from '@angular/router';
+
 @Component({
   selector: 'app-prospect-dashboard',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatChipsModule],
+  imports: [CommonModule, RouterModule, MatTableModule, MatButtonModule, MatIconModule, MatChipsModule],
   templateUrl: './prospect-dashboard.html',
   styleUrls: ['./prospect-dashboard.css']
 })

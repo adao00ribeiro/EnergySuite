@@ -8,5 +8,9 @@ export const routes: Routes = [
   {
     path: 'prospect',
     loadComponent: () => import('./features/prospect/prospect-dashboard/prospect-dashboard').then(m => m.ProspectDashboardComponent)
+  },
+  {
+    path: 'prospect/:id',
+    loadComponent: () => import('./features/prospect/prospect-detail/prospect-detail').then(m => m.ProspectDetailComponent)
   }
 ];
