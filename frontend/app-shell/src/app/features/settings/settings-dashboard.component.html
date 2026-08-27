@@ -1,0 +1,80 @@
+<div class="dashboard-layout animate-fade-in">
+  <header class="dashboard-header">
+    <div>
+      <h1 class="page-title text-gradient">Configurações</h1>
+      <p class="page-subtitle">Gerencie suas preferências de plataforma e integrações</p>
+    </div>
+  </header>
+
+  <main class="dashboard-content">
+    <mat-card class="glass-panel settings-card">
+      <mat-tab-group>
+        
+        <!-- Tab: Geral -->
+        <mat-tab label="Geral">
+          <div class="tab-content">
+            <form [formGroup]="settingsForm" class="settings-form">
+              <h3>Preferências de Exibição</h3>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Tema</mat-label>
+                <mat-select formControlName="theme">
+                  <mat-option value="dark">Dark Theme (Padrão)</mat-option>
+                  <mat-option value="light">Light Theme</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Idioma</mat-label>
+                <mat-select formControlName="language">
+                  <mat-option value="pt-BR">Português (Brasil)</mat-option>
+                  <mat-option value="en-US">English (US)</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Fuso Horário</mat-label>
+                <mat-select formControlName="timezone">
+                  <mat-option value="America/Sao_Paulo">America/Sao_Paulo (UTC-3)</mat-option>
+                  <mat-option value="UTC">UTC</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <div class="form-actions">
+                <button mat-flat-button color="primary" (click)="saveSettings()">Salvar Preferências</button>
+              </div>
+            </form>
+          </div>
+        </mat-tab>
+        
+        <!-- Tab: Integrações -->
+        <mat-tab label="Integrações (M2M)">
+          <div class="tab-content">
+            <div class="integration-header">
+              <h3>Chaves de API Ativas</h3>
+              <button mat-flat-button color="accent" (click)="generateApiKey()">
+                <mat-icon>add</mat-icon> Gerar Nova Chave
+              </button>
+            </div>
+            
+            <div class="api-keys-list">
+              <mat-card *ngFor="let key of apiKeys" class="api-key-item">
+                <div class="key-info">
+                  <strong>{{ key.name }}</strong>
+                  <span class="key-token">{{ key.token }}</span>
+                  <span class="key-date">Criada em: {{ key.createdAt | date:'short' }}</span>
+                </div>
+                <button mat-icon-button color="warn" (click)="revokeApiKey(key.id)" title="Revogar Chave">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </mat-card>
+              
+              <p *ngIf="apiKeys.length === 0" class="empty-state">Nenhuma chave M2M ativa.</p>
+            </div>
+          </div>
+        </mat-tab>
+
+      </mat-tab-group>
+    </mat-card>
+  </main>
+</div>

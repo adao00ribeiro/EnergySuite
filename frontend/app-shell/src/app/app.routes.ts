@@ -27,6 +27,19 @@ export const routes: Routes = [
         path: 'hydrology',
         loadChildren: () => loadRemoteModule('mf-hydrology', './Routes').then(m => m.routes)
       },
+      // Módulos de Gestão Transversais
+      {
+        path: 'alerts',
+        loadComponent: () => import('./features/alerts/alerts-dashboard.component').then(m => m.AlertsDashboardComponent)
+      },
+      {
+        path: 'settings',
+        loadComponent: () => import('./features/settings/settings-dashboard.component').then(m => m.SettingsDashboardComponent)
+      },
+      {
+        path: 'users',
+        loadComponent: () => import('./features/users/user-management.component').then(m => m.UserManagementComponent)
+      },
       // Legacy monolithic routes for fallback
       {
         path: 'dashboard',

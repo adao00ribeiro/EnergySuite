@@ -1,0 +1,69 @@
+<div class="dashboard-layout animate-fade-in">
+  <header class="dashboard-header">
+    <div>
+      <h1 class="page-title text-gradient">Central de Alertas</h1>
+      <p class="page-subtitle">Monitoramento em tempo real de eventos da plataforma EnergySuite</p>
+    </div>
+    <div class="header-actions">
+      <button mat-button (click)="clearHistory()">Limpar Histórico</button>
+      <button mat-flat-button color="primary" (click)="markAllAsRead()">Marcar Lidos</button>
+    </div>
+  </header>
+
+  <main class="dashboard-content">
+    <mat-card class="glass-panel alerts-card">
+      <mat-tab-group>
+        <!-- Tab: Risco -->
+        <mat-tab label="Risco">
+          <ng-template matTabContent>
+            <mat-list>
+              <ng-container *ngFor="let alert of getAlertsByCategory('Risk')">
+                <mat-list-item [class.unread]="!alert.read">
+                  <mat-icon matListItemIcon [color]="alert.severity === 'Critical' ? 'warn' : 'accent'">
+                    {{ alert.severity === 'Critical' ? 'error' : 'warning' }}
+                  </mat-icon>
+                  <div matListItemTitle>{{ alert.title }}</div>
+                  <div matListItemLine>{{ alert.message }} <span class="time-stamp">- {{ alert.timestamp | date:'short' }}</span></div>
+                </mat-list-item>
+              </ng-container>
+              <p *ngIf="getAlertsByCategory('Risk').length === 0" class="empty-state">Sem alertas de Risco no momento.</p>
+            </mat-list>
+          </ng-template>
+        </mat-tab>
+        
+        <!-- Tab: Operacional -->
+        <mat-tab label="Operacional">
+          <ng-template matTabContent>
+            <mat-list>
+              <ng-container *ngFor="let alert of getAlertsByCategory('Operational')">
+                <mat-list-item [class.unread]="!alert.read">
+                  <mat-icon matListItemIcon color="accent">info</mat-icon>
+                  <div matListItemTitle>{{ alert.title }}</div>
+                  <div matListItemLine>{{ alert.message }} <span class="time-stamp">- {{ alert.timestamp | date:'short' }}</span></div>
+                </mat-list-item>
+              </ng-container>
+              <p *ngIf="getAlertsByCategory('Operational').length === 0" class="empty-state">Sem alertas Operacionais no momento.</p>
+            </mat-list>
+          </ng-template>
+        </mat-tab>
+
+        <!-- Tab: Sistema -->
+        <mat-tab label="Sistema">
+          <ng-template matTabContent>
+            <mat-list>
+              <ng-container *ngFor="let alert of getAlertsByCategory('System')">
+                <mat-list-item [class.unread]="!alert.read">
+                  <mat-icon matListItemIcon color="primary">settings</mat-icon>
+                  <div matListItemTitle>{{ alert.title }}</div>
+                  <div matListItemLine>{{ alert.message }} <span class="time-stamp">- {{ alert.timestamp | date:'short' }}</span></div>
+                </mat-list-item>
+              </ng-container>
+              <p *ngIf="getAlertsByCategory('System').length === 0" class="empty-state">Sem alertas de Sistema no momento.</p>
+            </mat-list>
+          </ng-template>
+        </mat-tab>
+
+      </mat-tab-group>
+    </mat-card>
+  </main>
+</div>

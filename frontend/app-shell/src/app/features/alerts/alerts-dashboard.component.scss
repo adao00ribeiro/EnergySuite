@@ -1,0 +1,67 @@
+.dashboard-layout {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .page-title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  .page-subtitle {
+    margin: 4px 0 0 0;
+    color: var(--text-secondary, #b0bec5);
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 16px;
+  }
+}
+
+.alerts-card {
+  min-height: 400px;
+  padding: 0; /* Let mat-tab-group manage padding */
+  
+  mat-tab-group {
+    height: 100%;
+  }
+
+  mat-list {
+    padding: 16px;
+  }
+
+  mat-list-item {
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: background-color 0.2s ease;
+
+    &.unread {
+      background-color: rgba(255, 255, 255, 0.03);
+      border-left: 3px solid var(--primary-color, #1976d2);
+    }
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  .time-stamp {
+    color: var(--text-secondary, #90a4ae);
+    font-size: 12px;
+  }
+  
+  .empty-state {
+    text-align: center;
+    color: var(--text-secondary, #90a4ae);
+    padding: 32px 0;
+    font-style: italic;
+  }
+}

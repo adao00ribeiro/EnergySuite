@@ -1,0 +1,54 @@
+.dashboard-layout {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .page-title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+  }
+  .page-subtitle {
+    margin: 4px 0 0 0;
+    color: var(--text-secondary, #b0bec5);
+  }
+}
+
+.table-container {
+  border-radius: 8px;
+  overflow: hidden;
+
+  table {
+    width: 100%;
+    background: transparent;
+
+    th.mat-header-cell {
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 14px;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    td.mat-cell {
+      color: var(--text-primary);
+      border-bottom-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  .user-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .avatar-icon {
+      color: var(--accent-color, #ff4081);
+    }
+  }
+}

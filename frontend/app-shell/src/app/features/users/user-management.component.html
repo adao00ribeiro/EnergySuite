@@ -1,0 +1,79 @@
+<div class="dashboard-layout animate-fade-in">
+  <header class="dashboard-header">
+    <div>
+      <h1 class="page-title text-gradient">Gestão de Usuários (IAM)</h1>
+      <p class="page-subtitle">Administração de perfis, auditoria e RBAC via Keycloak</p>
+    </div>
+    <div class="header-actions">
+      <button mat-flat-button color="primary">
+        <mat-icon>person_add</mat-icon> Convidar Usuário
+      </button>
+    </div>
+  </header>
+
+  <main class="dashboard-content">
+    <div class="table-container mat-elevation-z8 glass-panel">
+      <table mat-table [dataSource]="users">
+        
+        <!-- Username Column -->
+        <ng-container matColumnDef="username">
+          <th mat-header-cell *matHeaderCellDef> Usuário </th>
+          <td mat-cell *matCellDef="let element">
+            <div class="user-cell">
+              <mat-icon class="avatar-icon">account_circle</mat-icon>
+              <strong>{{element.username}}</strong>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Email Column -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef> E-mail </th>
+          <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+        </ng-container>
+
+        <!-- Roles Column -->
+        <ng-container matColumnDef="roles">
+          <th mat-header-cell *matHeaderCellDef> Papéis (Roles) </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-chip-set>
+              <mat-chip *ngFor="let role of element.roles" highlighted>{{role}}</mat-chip>
+            </mat-chip-set>
+          </td>
+        </ng-container>
+
+        <!-- Last Access Column -->
+        <ng-container matColumnDef="lastAccess">
+          <th mat-header-cell *matHeaderCellDef> Último Acesso </th>
+          <td mat-cell *matCellDef="let element"> {{element.lastAccess | date:'short'}} </td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef> Status </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-chip-set>
+              <mat-chip [color]="getStatusColor(element.status)" highlighted>{{element.status}}</mat-chip>
+            </mat-chip-set>
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Ações </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button color="accent" (click)="editRoles(element)" title="Editar Papéis (RBAC)">
+              <mat-icon>manage_accounts</mat-icon>
+            </button>
+            <button mat-icon-button (click)="viewLogs(element)" title="Logs de Sessão">
+              <mat-icon>history</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  </main>
+</div>

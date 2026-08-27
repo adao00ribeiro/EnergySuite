@@ -167,5 +167,6 @@ app.MapPrometheusScrapingEndpoint();
 // Map SignalR Hubs
 app.MapHub<EtrmService.API.Hubs.RiskHub>("/hubs/risk");
 app.MapHub<EtrmService.API.Hubs.ProspectHub>("/hubs/prospect");
+app.MapHub<EtrmService.API.Hubs.AlertsHub>("/hubs/alerts");
 
 app.Run();
