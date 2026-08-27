@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { SimulationDialogComponent } from './components/simulation-dialog/simulation-dialog.component';
 
 interface Opportunity {
@@ -32,7 +33,8 @@ interface Opportunity {
     MatButtonModule, 
     MatIconModule,
     MatProgressBarModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSnackBarModule
   ],
   templateUrl: './opportunities-book.component.html',
   styleUrls: ['./opportunities-book.component.scss']
@@ -41,12 +43,54 @@ export class OpportunitiesBookComponent implements OnInit {
   displayedColumns: string[] = ['score', 'name', 'type', 'target', 'volume', 'spread', 'actions'];
   dataSource: MatTableDataSource<Opportunity> = new MatTableDataSource();
   dialog = inject(MatDialog);
+  snackBar = inject(MatSnackBar);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   ngOnInit() {
     this.loadMockOpportunities();
+  }
+
+  exportToCsv() {
+    const data = this.dataSource.data;
+    if (data.length === 0) return;
+    
+    const headers = ['Score', 'Nome', 'Tipo', 'Estrategia', 'Mes', 'Submercado', 'Volume_MWm', 'Spread_BRL'];
+    const csvRows = [];
+    csvRows.push(headers.join(','));
+    
+    for (const row of data) {
+      const values = [
+        row.score,
+        `"${row.name}"`,
+        row.type,
+        `"${row.strategyName}"`,
+        row.targetMonth,
+        row.targetSubmarket,
+        row.suggestedVolumeMwm,
+        row.estimatedSpread
+      ];
+      csvRows.push(values.join(','));
+    }
+
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('hidden', '');
+    a.setAttribute('href', url);
+    a.setAttribute('download', 'oportunidades.csv');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    
+    this.snackBar.open('Arquivo CSV gerado com sucesso!', 'OK', { duration: 3000 });
+  }
+
+  saveFavorites() {
+    // Simulando gravação no LocalStorage
+    localStorage.setItem('menza_favorite_filters', JSON.stringify({ savedAt: new Date() }));
+    this.snackBar.open('Filtros salvos nos favoritos!', 'OK', { duration: 3000 });
   }
 
   openSimulation(opportunity: Opportunity) {

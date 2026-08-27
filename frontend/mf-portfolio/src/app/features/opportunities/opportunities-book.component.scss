@@ -3,8 +3,11 @@
 }
 .header {
   margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.header h1 {
+.title-area h1 {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
@@ -13,6 +16,10 @@
 .subtitle {
   color: #64748b;
   margin-top: 4px;
+}
+.actions-area {
+  display: flex;
+  gap: 12px;
 }
 .table-wrapper {
   border-radius: 8px;

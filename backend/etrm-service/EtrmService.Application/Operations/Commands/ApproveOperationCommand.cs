@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using EtrmService.Application.ImerisIntegration;
+using EtrmService.Application.Operations.Services;
 
 namespace EtrmService.Application.Operations.Commands;
 
@@ -22,10 +23,12 @@ public class ApproveOperationCommand : IRequest<ApproveOperationResponse>
 public class ApproveOperationCommandHandler : IRequestHandler<ApproveOperationCommand, ApproveOperationResponse>
 {
     private readonly IImerisCreditClient _imerisClient;
+    private readonly IWebhookNotifierService _webhookNotifier;
 
-    public ApproveOperationCommandHandler(IImerisCreditClient imerisClient)
+    public ApproveOperationCommandHandler(IImerisCreditClient imerisClient, IWebhookNotifierService webhookNotifier)
     {
         _imerisClient = imerisClient;
+        _webhookNotifier = webhookNotifier;
     }
 
     public async Task<ApproveOperationResponse> Handle(ApproveOperationCommand request, CancellationToken cancellationToken)
@@ -37,6 +40,8 @@ public class ApproveOperationCommandHandler : IRequestHandler<ApproveOperationCo
 
         if (!validationResult.IsApproved)
         {
+            await _webhookNotifier.NotifyRiskViolationAsync(request.OpportunityId, validationResult.Reason);
+
             return new ApproveOperationResponse
             {
                 Success = false,

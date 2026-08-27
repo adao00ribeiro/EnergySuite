@@ -1,7 +1,17 @@
 <div class="opportunities-container">
   <div class="header">
-    <h1>Book de Oportunidades (Rankeadas)</h1>
-    <p class="subtitle">Sugestões automatizadas baseadas em Gaps e Estratégias Ativas</p>
+    <div class="title-area">
+      <h1>Book de Oportunidades (Rankeadas)</h1>
+      <p class="subtitle">Sugestões automatizadas baseadas em Gaps e Estratégias Ativas</p>
+    </div>
+    <div class="actions-area">
+      <button mat-stroked-button (click)="saveFavorites()">
+        <mat-icon>star_border</mat-icon> Favoritar Filtros
+      </button>
+      <button mat-flat-button color="accent" (click)="exportToCsv()">
+        <mat-icon>download</mat-icon> Exportar CSV
+      </button>
+    </div>
   </div>
 
   <div class="table-wrapper mat-elevation-z2">

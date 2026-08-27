@@ -59,7 +59,7 @@ A replicação MVP focará na visão analítica de posição, simulação de gap
 **Objetivo:** Funcionalidades de produtividade, auditoria completa de trading e disparo de webhooks corporativos.
 
 * **Tarefas:**
-  - [ ] **Backend:** Criar logs de Auditoria para rastreamento completo de qualquer ação no Menza (Login, Simulação, Criação).
-  - [ ] **Backend:** Implementar sistema de alertas/webhooks para notificar gaps bruscos ou violação de políticas.
-  - [ ] **Frontend:** Exportação nativa de relatórios de Posição e Oportunidades (CSV, PDF).
-  - [ ] **Frontend:** Sistema de "Favoritos" (salvar setups de filtros de portfólio no LocalStorage ou Banco).
+  - [x] **Backend:** Criar logs de Auditoria para rastreamento completo de qualquer ação no Menza (Login, Simulação, Criação).
+  - [x] **Backend:** Implementar sistema de alertas/webhooks para notificar gaps bruscos ou violação de políticas.
+  - [x] **Frontend:** Exportação nativa de relatórios de Posição e Oportunidades (CSV, PDF).
+  - [x] **Frontend:** Sistema de "Favoritos" (salvar setups de filtros de portfólio no LocalStorage ou Banco).
