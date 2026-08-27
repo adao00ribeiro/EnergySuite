@@ -36,5 +36,10 @@ public interface IEtrmDbContext
     // Sprint 6
     DbSet<WebhookSubscription> WebhookSubscriptions { get; set; }
 
+    // Prospect
+    DbSet<EtrmService.Domain.Entities.Prospect.Study> ProspectStudies { get; set; }
+    DbSet<EtrmService.Domain.Entities.Prospect.StudyTag> ProspectStudyTags { get; set; }
+    DbSet<EtrmService.Domain.Entities.Prospect.StudyFile> ProspectStudyFiles { get; set; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

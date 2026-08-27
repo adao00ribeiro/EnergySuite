@@ -40,6 +40,11 @@ public class EtrmDbContext : DbContext, IEtrmDbContext
     // Sprint 6: B2B Integration & Webhooks
     public DbSet<WebhookSubscription> WebhookSubscriptions { get; set; }
 
+    // Prospect Module
+    public DbSet<EtrmService.Domain.Entities.Prospect.Study> ProspectStudies { get; set; }
+    public DbSet<EtrmService.Domain.Entities.Prospect.StudyTag> ProspectStudyTags { get; set; }
+    public DbSet<EtrmService.Domain.Entities.Prospect.StudyFile> ProspectStudyFiles { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(EtrmDbContext).Assembly);
