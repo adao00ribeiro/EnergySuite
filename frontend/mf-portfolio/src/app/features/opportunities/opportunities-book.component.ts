@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -6,6 +6,8 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { SimulationDialogComponent } from './components/simulation-dialog/simulation-dialog.component';
 
 interface Opportunity {
   id: string;
@@ -29,7 +31,8 @@ interface Opportunity {
     MatSortModule, 
     MatButtonModule, 
     MatIconModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatDialogModule
   ],
   templateUrl: './opportunities-book.component.html',
   styleUrls: ['./opportunities-book.component.scss']
@@ -37,12 +40,23 @@ interface Opportunity {
 export class OpportunitiesBookComponent implements OnInit {
   displayedColumns: string[] = ['score', 'name', 'type', 'target', 'volume', 'spread', 'actions'];
   dataSource: MatTableDataSource<Opportunity> = new MatTableDataSource();
+  dialog = inject(MatDialog);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   ngOnInit() {
     this.loadMockOpportunities();
+  }
+
+  openSimulation(opportunity: Opportunity) {
+    this.dialog.open(SimulationDialogComponent, {
+      width: '600px',
+      data: {
+        opportunityId: opportunity.id,
+        name: opportunity.name
+      }
+    });
   }
 
   loadMockOpportunities() {

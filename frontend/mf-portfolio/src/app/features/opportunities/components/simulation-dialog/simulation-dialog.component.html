@@ -1,0 +1,75 @@
+<h2 mat-dialog-title>Simulação de Operação</h2>
+<mat-dialog-content>
+  
+  <div *ngIf="isLoading" class="loading-state">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>O <strong>AI Copilot</strong> está processando o impacto no portfólio...</p>
+  </div>
+
+  <div *ngIf="!isLoading && result" class="simulation-content">
+    <p class="opp-name">{{data.name}}</p>
+    
+    <div class="metrics-grid">
+      <!-- Volume Card -->
+      <div class="metric-card">
+        <h3>Posição Líquida (MWm)</h3>
+        <div class="metric-values">
+          <div class="value-col">
+            <span>Antes</span>
+            <strong>{{result.previousVolumeMwm | number:'1.1-2'}}</strong>
+          </div>
+          <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+          <div class="value-col">
+            <span>Depois</span>
+            <strong>{{result.newVolumeMwm | number:'1.1-2'}}</strong>
+          </div>
+        </div>
+        <div class="delta" [ngClass]="result.volumeDelta > 0 ? 'positive' : 'negative'">
+          Delta: {{result.volumeDelta > 0 ? '+' : ''}}{{result.volumeDelta | number:'1.1-2'}} MWm
+        </div>
+      </div>
+
+      <!-- Financial Card -->
+      <div class="metric-card">
+        <h3>Resultado Estimado (R$)</h3>
+        <div class="metric-values">
+          <div class="value-col">
+            <span>Antes</span>
+            <strong>{{result.previousEstimatedResult | currency:'BRL'}}</strong>
+          </div>
+          <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+          <div class="value-col">
+            <span>Depois</span>
+            <strong>{{result.newEstimatedResult | currency:'BRL'}}</strong>
+          </div>
+        </div>
+        <div class="delta" [ngClass]="result.financialDelta > 0 ? 'positive' : 'negative'">
+          Delta: {{result.financialDelta > 0 ? '+' : ''}}{{result.financialDelta | currency:'BRL'}}
+        </div>
+      </div>
+    </div>
+
+    <!-- Copilot Analysis -->
+    <div class="copilot-container">
+      <div class="copilot-header">
+        <mat-icon>smart_toy</mat-icon>
+        <span>AI Trading Copilot Insight</span>
+        
+        <span class="rec-badge" [ngClass]="{
+          'rec-approve': result.copilotAnalysis.recommendation === 'Approve',
+          'rec-warning': result.copilotAnalysis.recommendation === 'Warning'
+        }">
+          {{result.copilotAnalysis.recommendation === 'Approve' ? 'Recomendado' : 'Atenção'}}
+        </span>
+      </div>
+      <div class="copilot-body">
+        <p>{{result.copilotAnalysis.summaryText}}</p>
+      </div>
+    </div>
+  </div>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close(false)" [disabled]="isLoading">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="close(true)" [disabled]="isLoading">Aprovar para BackOps</button>
+</mat-dialog-actions>

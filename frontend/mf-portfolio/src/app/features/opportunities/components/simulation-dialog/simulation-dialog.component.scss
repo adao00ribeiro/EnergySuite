@@ -1,0 +1,134 @@
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 250px;
+  color: #64748b;
+  
+  p { margin-top: 16px; font-size: 1.1rem; }
+}
+
+.simulation-content {
+  padding-bottom: 16px;
+}
+
+.opp-name {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #0f172a;
+  margin-bottom: 24px;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.metric-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+
+  h3 {
+    margin: 0 0 16px 0;
+    font-size: 0.9rem;
+    color: #475569;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+}
+
+.metric-values {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+
+  .arrow-icon {
+    color: #94a3b8;
+  }
+}
+
+.value-col {
+  display: flex;
+  flex-direction: column;
+  
+  span {
+    font-size: 0.8rem;
+    color: #64748b;
+  }
+  strong {
+    font-size: 1.1rem;
+    color: #1e293b;
+  }
+}
+
+.delta {
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  
+  &.positive {
+    background: #dcfce3;
+    color: #10b981;
+  }
+  &.negative {
+    background: #fee2e2;
+    color: #ef4444;
+  }
+}
+
+.copilot-container {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.copilot-header {
+  background: #dcfce3;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  
+  mat-icon {
+    color: #166534;
+  }
+  span {
+    font-weight: 600;
+    color: #166534;
+    flex-grow: 1;
+  }
+}
+
+.rec-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+
+  &.rec-approve {
+    background: #166534;
+    color: white;
+  }
+  &.rec-warning {
+    background: #f59e0b;
+    color: white;
+  }
+}
+
+.copilot-body {
+  padding: 16px;
+  color: #14532d;
+  font-size: 1rem;
+  line-height: 1.5;
+  p { margin: 0; }
+}

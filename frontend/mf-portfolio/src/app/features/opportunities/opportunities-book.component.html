@@ -51,7 +51,7 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef> Ações </th>
         <td mat-cell *matCellDef="let row">
-          <button mat-button color="primary">SIMULAR</button>
+          <button mat-flat-button color="primary" (click)="openSimulation(row)">SIMULAR</button>
         </td>
       </ng-container>
 
