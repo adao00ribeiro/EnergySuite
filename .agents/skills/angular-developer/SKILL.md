@@ -1,6 +1,6 @@
 ---
 name: angular-developer
-description: Generates Angular code and provides architectural guidance. Trigger when creating projects, components, services, or HTTP communication, or for best practices on reactivity (signals, linkedSignal, resource, httpResource), forms, dependency injection, routing, SSR, accessibility (ARIA), animations, styling (component styles, Tailwind CSS), testing, naming conventions, or CLI tooling.
+description: Generates Angular code and provides architectural guidance. Trigger when creating projects, components, services, or HTTP communication, or for best practices on reactivity (signals, linkedSignal, resource, httpResource), forms, dependency injection, routing, SSR, accessibility (ARIA), animations, styling (component styles, custom CSS, Angular Material), testing, naming conventions, or CLI tooling.
 license: MIT
 metadata:
   author: Copyright 2026 Google LLC
@@ -117,13 +117,17 @@ When implementing navigation in Angular, consult the following references:
 
 If you require deeper documentation or more context, visit the [official Angular Routing guide](https://angular.dev/guide/routing).
 
-## Styling and Animations
+## Styling and Professional Aesthetics
 
-When implementing styling and animations in Angular, consult the following references:
+When implementing the UI, ensure a highly professional and modern aesthetic:
 
-- **Using Tailwind CSS with Angular**: Integrating Tailwind CSS into Angular projects. Read [tailwind-css.md](references/tailwind-css.md)
+- **Professional Design Standard**: The application must not look basic. Always apply modern UI/UX principles, including proper white space, standard weight and size scales for typography, and visually appealing color contrast.
+- **Typography**: Always use modern web fonts (e.g., Inter, Roboto, or Outfit) with clear hierarchy.
+- **Angular Material Customization**: While strictly using `@angular/material`, override default styles thoughtfully to remove the generic "out-of-the-box" look. Use custom palettes, rounded corners (border-radius), and elevated shadows to create a premium SaaS feel.
+- **Micro-interactions & Animations**: Use smooth CSS transitions (`transition: all 0.2s ease-in-out`) for hover states, active states, and route changes.
+- **Empty States & Loading**: Never leave standard white screens. Always implement skeleton loaders, spinners, and well-designed empty state messages.
+- **Component Styling**: For encapsulating styles within components, follow best practices for component styles. Read [component-styling.md](references/component-styling.md)
 - **Angular Animations**: Using native CSS (recommended) or the legacy DSL for dynamic effects. Read [angular-animations.md](references/angular-animations.md)
-- **Styling components**: Best practices for component styles and encapsulation. Read [component-styling.md](references/component-styling.md)
 
 ## Testing
 

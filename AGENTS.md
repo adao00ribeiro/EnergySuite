@@ -32,6 +32,7 @@ Você está atuando no Portal Unificado da Suite for Energy.
 - **Estado:** Use **Signals** no lugar de `RxJS BehaviorSubject` sempre que possível.
 - **Design System:** Utilize Angular Material (`@angular/material`). Tabelas usam `mat-table`, e formulários DEVEM ser `ReactiveFormsModule`.
 - **Micro-frontends:** Módulos exportam componentes via `webpack.config.js`. A navegação no `app-shell` nunca deve causar *refresh* (use Angular Router).
+- **Excelência Visual (UX/UI):** O frontend DEVE ter uma aparência profissional, premium, moderna e responsiva. Priorize excelência visual com uso de cores harmoniosas, sombras sutis e tipografia moderna, customizando o Angular Material para evitar uma aparência genérica.
 
 ---
 
