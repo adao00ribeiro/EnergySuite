@@ -1,24 +1,78 @@
-<div class="portal-container animate-fade-in">
-  <header class="portal-header animate-slide-up">
-    <h1 class="portal-title">EnergySuite Super App</h1>
-    <p class="portal-subtitle">Selecione o módulo para iniciar sua sessão</p>
-  </header>
-
-  <main class="modules-grid">
-    <div *ngFor="let mod of modules; let i = index" 
-         class="glass-panel module-card animate-slide-up"
-         [ngStyle]="{'animation-delay': (i * 0.1) + 's'}"
-         (click)="navigateTo(mod.path)">
-      <div class="card-bg-glow" [ngClass]="mod.color"></div>
-      <div class="icon-wrapper" [ngClass]="mod.color">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path [attr.d]="mod.icon" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <h3 class="module-name">{{ mod.name }}</h3>
-      <div class="card-arrow">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+<div class="workspace-launcher animate-fade-in">
+  <!-- Top Header -->
+  <header class="top-header">
+    <div class="logo-area">
+      <h2>EnergySuite</h2>
+      <span class="badge-enterprise">Enterprise Platform</span>
+    </div>
+    <div class="user-actions">
+      <button class="icon-btn"><mat-icon>notifications</mat-icon></button>
+      <button class="icon-btn"><mat-icon>help_outline</mat-icon></button>
+      <div class="user-profile">
+        <div class="avatar">AD</div>
+        <span class="user-name">Administrador</span>
+        <mat-icon>expand_more</mat-icon>
       </div>
     </div>
-  </main>
+  </header>
+
+  <!-- Hero & Search -->
+  <section class="hero-section animate-slide-up">
+    <div class="welcome-text">
+      <h1>Olá, Administrador</h1>
+      <p>Acesse seus módulos e operações do EnergySuite.</p>
+    </div>
+    
+    <div class="search-container">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input type="text" placeholder="Buscar módulo, funcionalidade ou operação..." class="search-input">
+      <div class="shortcut-hint">
+        <kbd>⌘</kbd> <kbd>K</kbd>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modules Grid -->
+  <section class="modules-section animate-slide-up" style="animation-delay: 0.1s;">
+    <h3 class="section-title">Módulos</h3>
+    <div class="modules-grid">
+      <div *ngFor="let mod of modules; let i = index" 
+           class="module-card glass-panel"
+           [ngStyle]="{'animation-delay': ((i * 0.1) + 0.2) + 's'}"
+           (click)="navigateTo(mod.path)">
+           
+        <div class="card-icon" [ngClass]="mod.color">
+          <mat-icon>{{ mod.icon }}</mat-icon>
+        </div>
+        
+        <div class="card-content">
+          <div class="card-category" [ngClass]="mod.color + '-text'">{{ mod.category }}</div>
+          <h4 class="card-title">{{ mod.name }}</h4>
+          <p class="card-desc">{{ mod.description }}</p>
+        </div>
+        
+        <div class="card-cta">
+          <span>Abrir módulo</span>
+          <mat-icon>arrow_forward</mat-icon>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Activity -->
+  <section class="activity-section animate-slide-up" style="animation-delay: 0.3s;">
+    <h3 class="section-title">Atividade recente</h3>
+    <div class="activity-list">
+      <div *ngFor="let act of recentActivities" class="activity-item glass-panel">
+        <div class="act-icon" [ngClass]="act.color">
+          <mat-icon>{{ act.icon }}</mat-icon>
+        </div>
+        <div class="act-details">
+          <span class="act-module">{{ act.module }}</span>
+          <span class="act-time">{{ act.time }}</span>
+        </div>
+        <mat-icon class="act-arrow">chevron_right</mat-icon>
+      </div>
+    </div>
+  </section>
 </div>

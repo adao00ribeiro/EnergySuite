@@ -1,68 +1,81 @@
-<div class="dashboard-container">
-  <div class="dashboard-header">
-    <h1>Integração CCEE</h1>
-    <p class="mat-body-1">Gerencie a conciliação de contratos e geração de arquivos no padrão CliqCCEE e CCEAL.</p>
+<div class="dashboard-container animate-fade-in">
+  <div class="dashboard-header animate-slide-up">
+    <div class="title-area">
+      <div class="icon-wrapper operations-bg">
+        <mat-icon>compare_arrows</mat-icon>
+      </div>
+      <div>
+        <h1>Integração CCEE</h1>
+        <p>Gerencie a conciliação de contratos e geração de arquivos no padrão CliqCCEE e CCEAL.</p>
+      </div>
+    </div>
   </div>
 
-  <div class="action-cards">
+  <div class="action-cards animate-slide-up" style="animation-delay: 0.1s">
     <!-- CCEAL Export Card -->
-    <mat-card class="action-card cceal-card">
-      <mat-card-header>
-        <div mat-card-avatar class="card-avatar primary-bg">
+    <div class="glass-panel action-card">
+      <div class="card-header">
+        <div class="card-avatar primary-bg">
           <mat-icon>cloud_download</mat-icon>
         </div>
-        <mat-card-title>Exportar CCEAL</mat-card-title>
-        <mat-card-subtitle>Gere o XML para submissão</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content class="card-content">
+        <div class="header-text">
+          <h3>Exportar CCEAL</h3>
+          <p>Gere o XML para submissão</p>
+        </div>
+      </div>
+      <div class="card-content">
         <form [formGroup]="exportForm" class="date-form">
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" class="dark-input">
             <mat-label>Início</mat-label>
             <input matInput [matDatepicker]="pickerStart" formControlName="start">
             <mat-datepicker-toggle matIconSuffix [for]="pickerStart"></mat-datepicker-toggle>
             <mat-datepicker #pickerStart></mat-datepicker>
           </mat-form-field>
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" class="dark-input">
             <mat-label>Fim</mat-label>
             <input matInput [matDatepicker]="pickerEnd" formControlName="end">
             <mat-datepicker-toggle matIconSuffix [for]="pickerEnd"></mat-datepicker-toggle>
             <mat-datepicker #pickerEnd></mat-datepicker>
           </mat-form-field>
         </form>
-      </mat-card-content>
-      <mat-card-actions align="end">
-        <button mat-flat-button color="primary" (click)="exportCceal()">Gerar XML</button>
-      </mat-card-actions>
-    </mat-card>
+      </div>
+      <div class="card-actions end-align">
+        <button mat-flat-button class="glow-button" (click)="exportCceal()">
+          <mat-icon>file_download</mat-icon>
+          Gerar XML
+        </button>
+      </div>
+    </div>
 
     <!-- CliqCCEE Import Card -->
-    <mat-card class="action-card import-card">
-      <mat-card-header>
-        <div mat-card-avatar class="card-avatar accent-bg">
+    <div class="glass-panel action-card">
+      <div class="card-header">
+        <div class="card-avatar accent-bg">
           <mat-icon>cloud_upload</mat-icon>
         </div>
-        <mat-card-title>Conciliação CliqCCEE</mat-card-title>
-        <mat-card-subtitle>Faça upload do retorno CCEE (.csv)</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content class="card-content">
-        <div class="upload-area">
-          <p>Selecione o arquivo CSV retornado pela CCEE para cruzar os volumes confirmados contra os boletos no BackOps.</p>
+        <div class="header-text">
+          <h3>Conciliação CliqCCEE</h3>
+          <p>Faça upload do retorno CCEE (.csv)</p>
         </div>
-      </mat-card-content>
-      <mat-card-actions align="end">
+      </div>
+      <div class="card-content">
+        <div class="upload-area" (click)="fileInput.click()">
+          <mat-icon>upload_file</mat-icon>
+          <p>Selecione ou arraste o arquivo CSV retornado pela CCEE para cruzar os volumes confirmados contra os boletos no BackOps.</p>
+        </div>
+      </div>
+      <div class="card-actions end-align">
         <input type="file" #fileInput (change)="onFileSelected($event)" accept=".csv" style="display:none">
-        <button mat-flat-button color="accent" (click)="fileInput.click()" [disabled]="isUploading()">
+        <button mat-flat-button class="glow-button accent-glow" (click)="fileInput.click()" [disabled]="isUploading()">
           <mat-icon *ngIf="isUploading()">hourglass_empty</mat-icon>
+          <mat-icon *ngIf="!isUploading()">attach_file</mat-icon>
           {{ isUploading() ? 'Processando...' : 'Selecionar Arquivo' }}
         </button>
-      </mat-card-actions>
-    </mat-card>
+      </div>
+    </div>
   </div>
 
-  <mat-divider class="section-divider"></mat-divider>
-
-  <!-- Comparison Table -->
-  <div class="comparison-section">
+  <div class="comparison-section animate-slide-up" style="animation-delay: 0.2s">
     <app-ccee-comparison-list></app-ccee-comparison-list>
   </div>
 </div>

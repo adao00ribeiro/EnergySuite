@@ -10,6 +10,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
 
 @Component({
@@ -26,6 +27,7 @@ import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
     MatDatepickerModule,
     MatNativeDateModule,
     MatFormFieldModule,
+    MatInputModule,
     ReactiveFormsModule
   ],
   templateUrl: './ccee-dashboard.html',
