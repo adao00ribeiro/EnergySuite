@@ -1,0 +1,53 @@
+.opportunities-container {
+  padding: 0 8px;
+}
+.header {
+  margin-bottom: 24px;
+}
+.header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+.subtitle {
+  color: #64748b;
+  margin-top: 4px;
+}
+.table-wrapper {
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+}
+table {
+  width: 100%;
+}
+.score-container {
+  width: 80px;
+}
+.score-value {
+  font-weight: bold;
+  font-size: 1.1rem;
+  display: block;
+  margin-bottom: 4px;
+}
+.score-high { color: #10b981; }
+.score-med { color: #f59e0b; }
+.score-low { color: #ef4444; }
+
+.badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.badge-buy { background: #fee2e2; color: #ef4444; }
+.badge-sell { background: #dcfce3; color: #10b981; }
+
+.text-green { color: #10b981; font-weight: 500; }
+.text-red { color: #ef4444; font-weight: 500; }
+
+.opportunity-row:hover {
+  background: #f8fafc;
+}

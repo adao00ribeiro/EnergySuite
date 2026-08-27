@@ -1,0 +1,76 @@
+<div class="strategies-container">
+  <div class="header">
+    <h1>Gestão de Estratégias Comerciais</h1>
+    <button mat-flat-button color="primary">
+      <mat-icon>add</mat-icon> Nova Estratégia
+    </button>
+  </div>
+
+  <div class="kanban-board">
+    <div class="column">
+      <h2>Rascunho (Draft)</h2>
+      <div 
+        cdkDropList 
+        #draftList="cdkDropList"
+        [cdkDropListData]="draft"
+        [cdkDropListConnectedTo]="[approvedList, inactiveList]"
+        class="strategy-list" 
+        (cdkDropListDropped)="drop($event)">
+        
+        <mat-card class="strategy-card" *ngFor="let item of draft" cdkDrag>
+          <mat-card-header>
+            <mat-card-title>{{item.name}}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p>{{item.description}}</p>
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+    </div>
+
+    <div class="column">
+      <h2>Ativas (Approved)</h2>
+      <div 
+        cdkDropList 
+        #approvedList="cdkDropList"
+        [cdkDropListData]="approved"
+        [cdkDropListConnectedTo]="[draftList, inactiveList]"
+        class="strategy-list" 
+        (cdkDropListDropped)="drop($event)">
+        
+        <mat-card class="strategy-card approved-card" *ngFor="let item of approved" cdkDrag>
+          <mat-card-header>
+            <mat-card-title>{{item.name}}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p>{{item.description}}</p>
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+    </div>
+
+    <div class="column">
+      <h2>Inativas</h2>
+      <div 
+        cdkDropList 
+        #inactiveList="cdkDropList"
+        [cdkDropListData]="inactive"
+        [cdkDropListConnectedTo]="[draftList, approvedList]"
+        class="strategy-list" 
+        (cdkDropListDropped)="drop($event)">
+        
+        <mat-card class="strategy-card inactive-card" *ngFor="let item of inactive" cdkDrag>
+          <mat-card-header>
+            <mat-card-title>{{item.name}}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p>{{item.description}}</p>
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+    </div>
+  </div>
+</div>

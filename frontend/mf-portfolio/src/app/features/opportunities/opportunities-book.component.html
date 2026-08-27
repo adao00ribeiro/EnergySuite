@@ -1,0 +1,64 @@
+<div class="opportunities-container">
+  <div class="header">
+    <h1>Book de Oportunidades (Rankeadas)</h1>
+    <p class="subtitle">Sugestões automatizadas baseadas em Gaps e Estratégias Ativas</p>
+  </div>
+
+  <div class="table-wrapper mat-elevation-z2">
+    <table mat-table [dataSource]="dataSource" matSort>
+      
+      <ng-container matColumnDef="score">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Score </th>
+        <td mat-cell *matCellDef="let row">
+          <div class="score-container">
+            <span class="score-value" [ngClass]="getScoreClass(row.score)">{{row.score}}</span>
+            <mat-progress-bar mode="determinate" [value]="row.score" [color]="getScoreColor(row.score)"></mat-progress-bar>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Oportunidade </th>
+        <td mat-cell *matCellDef="let row"> <strong>{{row.name}}</strong> <br> <small>{{row.strategyName}}</small> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo </th>
+        <td mat-cell *matCellDef="let row"> 
+          <span class="badge" [ngClass]="row.type === 'Compra' ? 'badge-buy' : 'badge-sell'">
+            {{row.type}}
+          </span> 
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="target">
+        <th mat-header-cell *matHeaderCellDef> Mês / Submercado </th>
+        <td mat-cell *matCellDef="let row"> {{row.targetMonth}} - {{row.targetSubmarket}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="volume">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Vol (MWm) </th>
+        <td mat-cell *matCellDef="let row"> {{row.suggestedVolumeMwm | number:'1.1-2'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="spread">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Spread Est. </th>
+        <td mat-cell *matCellDef="let row" [ngClass]="{'text-green': row.estimatedSpread > 0, 'text-red': row.estimatedSpread < 0}">
+          {{row.estimatedSpread | currency:'BRL'}} / MWh
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Ações </th>
+        <td mat-cell *matCellDef="let row">
+          <button mat-button color="primary">SIMULAR</button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="opportunity-row"></tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[10, 25, 50]" aria-label="Selecione a página"></mat-paginator>
+  </div>
+</div>
