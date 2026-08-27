@@ -175,3 +175,11 @@
 /media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/MockQueryable.Core.dll
 /media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/MockQueryable.EntityFrameworkCore.dll
 /media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/MockQueryable.Moq.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/ClosedXML.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/ClosedXML.Parser.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/DocumentFormat.OpenXml.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/DocumentFormat.OpenXml.Framework.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/ExcelNumberFormat.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/RBush.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/SixLabors.Fonts.dll
+/media/jarvis/Novo volume/AspNetProjects/Energy/EnergySuite/backend/etrm-service/EtrmService.UnitTests/bin/Debug/net8.0/System.IO.Packaging.dll

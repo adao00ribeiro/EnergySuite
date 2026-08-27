@@ -1,0 +1,34 @@
+<div class="dashboard-container">
+  <header class="dashboard-header">
+    <div class="title-section">
+      <h1>Menza <span class="subtitle">| Cockpit de Portfólio</span></h1>
+    </div>
+    <div class="actions-section">
+      <mat-form-field appearance="outline" class="portfolio-selector">
+        <mat-label>Portfólio</mat-label>
+        <mat-select [value]="selectedPortfolio()" (selectionChange)="onPortfolioChange($event.value)">
+          <mat-option value="portfolio_1">Portfólio Principal (Menza Alpha)</mat-option>
+          <mat-option value="portfolio_2">Varejo Sul</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-flat-button color="primary" class="new-opp-btn">Nova Oportunidade</button>
+    </div>
+  </header>
+
+  <main class="dashboard-content" *ngIf="portfolioData() as data; else loading">
+    <app-indicator-cards 
+      [purchased]="data.totalPurchased"
+      [sold]="data.totalSold"
+      [net]="data.netPosition"
+      [estimatedResult]="data.estimatedResult">
+    </app-indicator-cards>
+
+    <app-position-chart [data]="data.monthlyData"></app-position-chart>
+  </main>
+
+  <ng-template #loading>
+    <div class="loading-state">
+      <p>Carregando dados do portfólio...</p>
+    </div>
+  </ng-template>
+</div>

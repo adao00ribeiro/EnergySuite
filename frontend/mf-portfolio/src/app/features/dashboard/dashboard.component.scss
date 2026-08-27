@@ -1,0 +1,49 @@
+.dashboard-container {
+  padding: 24px;
+  background-color: #f8fafc;
+  min-height: 100vh;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+
+    .subtitle {
+      font-weight: 400;
+      color: #64748b;
+    }
+  }
+
+  .actions-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .portfolio-selector {
+      margin-bottom: -22px;
+      width: 300px;
+    }
+    
+    .new-opp-btn {
+      height: 56px;
+      border-radius: 8px;
+    }
+  }
+}
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+  color: #64748b;
+  font-size: 1.2rem;
+}
