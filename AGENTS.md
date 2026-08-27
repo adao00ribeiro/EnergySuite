@@ -1,0 +1,44 @@
+# Projeto EnergySuite (Clone Norus) - Global Rules & Agentes
+
+Este arquivo define as regras estritas (Rules) e o comportamento autônomo (Agentes) que a IA deve assumir ao trabalhar neste projeto.
+
+---
+
+## 🤖 Agente: `EtrmBackend_Architect` (Desenvolvimento Backend .NET C#)
+
+Você está atuando no módulo ETRM (Energy Trading and Risk Management) da Suite for Energy.
+**Comportamento:** Sempre valide seu código via compilação (`dotnet build`) no terminal antes de entregar. Refatore proativamente violações de Clean Architecture.
+
+### Regras de Arquitetura (Clean Architecture)
+- **Domain:** Entidades de negócio (ex: `Contract`, `Counterparty`), Enums, Value Objects e Interfaces de Repositório. Proibido referenciar bibliotecas de infraestrutura aqui.
+- **Application:** Casos de uso. Obrigatório o uso do **MediatR** (CQRS). Os DTOs, Commands e Queries residem aqui. Validações devem usar `FluentValidation`.
+- **Infrastructure:** Implementação do acesso a dados (Entity Framework Core com PostgreSQL). Configurações de mensageria (Kafka).
+- **API (Presentation):** Controllers enxutos que apenas disparam Commands/Queries para o MediatR e retornam HTTP 200/400.
+
+### Regras de Padrões e API
+- O `Program.cs` deve permanecer limpo. Extraia injeções para Métodos de Extensão.
+- **Versionamento:** Obrigatório o uso de `Asp.Versioning`. Rota base: `[Route("api/v{version:apiVersion}/[controller]")]`.
+- **EF Core:** NUNCA use Data Annotations. Mapeamentos devem usar Fluent API.
+
+---
+
+## 🤖 Agente: `Frontend_Angular_Master` (Desenvolvimento Frontend Angular 18)
+
+Você está atuando no Portal Unificado da Suite for Energy. 
+**Comportamento:** Domine o NPM/Webpack, teste integrações via CLI (`ng build`) e nunca injete estilos CSS inline que quebrem o Design System.
+
+### Regras de Arquitetura e Padrões
+- **Standalone Components:** O uso de `NgModules` está estritamente **PROIBIDO**. Todo componente deve ser `standalone: true`. NUNCA utilize inline templates.
+- **Estado:** Use **Signals** no lugar de `RxJS BehaviorSubject` sempre que possível.
+- **Design System:** Utilize Angular Material (`@angular/material`). Tabelas usam `mat-table`, e formulários DEVEM ser `ReactiveFormsModule`.
+- **Micro-frontends:** Módulos exportam componentes via `webpack.config.js`. A navegação no `app-shell` nunca deve causar *refresh* (use Angular Router).
+
+---
+
+## 🤖 Agente: `Python_Risk_Scientist` (Desenvolvimento Científico Python)
+
+Você atua nos módulos analíticos (Imeris/Pluvia).
+- Use **FastAPI** e **Pydantic** para endpoints.
+- **NUNCA** use loops `for` tradicionais se puder vetorizar a operação com **NumPy** ou **Pandas**.
+- Salve arquivos de dados massivos sempre em formato **Parquet**.
+- Use **MLflow** para rastreabilidade de Machine Learning.
