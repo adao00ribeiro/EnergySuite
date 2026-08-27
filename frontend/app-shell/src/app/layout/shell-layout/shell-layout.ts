@@ -215,7 +215,11 @@ export class ShellLayoutComponent implements OnInit {
     if (group.children && group.children.length > 0) {
       this.toggleGroup(group.label);
     } else if (group.path) {
-      this.router.navigate([group.path]);
+      if (['/alerts', '/settings', '/users'].includes(group.path)) {
+        alert(`O módulo "${group.label}" (Gestão) está em desenvolvimento para a próxima sprint!`);
+      } else {
+        this.router.navigate([group.path]);
+      }
     }
   }
 

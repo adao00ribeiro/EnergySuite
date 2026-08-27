@@ -11,10 +11,10 @@
   margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--text-primary);
 }
 .subtitle {
-  color: #64748b;
+  color: var(--text-secondary);
   margin-top: 4px;
 }
 .actions-area {
@@ -24,7 +24,7 @@
 .table-wrapper {
   border-radius: 8px;
   overflow: hidden;
-  background: white;
+  background: transparent;
 }
 table {
   width: 100%;
@@ -56,5 +56,5 @@ table {
 .text-red { color: #ef4444; font-weight: 500; }
 
 .opportunity-row:hover {
-  background: #f8fafc;
+  background: rgba(255,255,255,0.05);
 }

@@ -1,6 +1,6 @@
 .dashboard-container {
   padding: 24px;
-  background-color: #f8fafc;
+  background-color: transparent;
   min-height: 100vh;
 }
 
@@ -13,12 +13,12 @@
   h1 {
     font-size: 28px;
     font-weight: 700;
-    color: #1e293b;
+    color: var(--text-primary);
     margin: 0;
 
     .subtitle {
       font-weight: 400;
-      color: #64748b;
+      color: var(--text-secondary);
     }
   }
 

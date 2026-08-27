@@ -73,6 +73,8 @@ import { MatIconModule } from '@angular/material/icon';
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
       transition: transform 0.2s, box-shadow 0.2s;
+      background: rgba(0, 0, 0, 0.4) !important;
+      color: var(--text-primary) !important;
     }
     .premium-card:hover {
       transform: translateY(-4px);
