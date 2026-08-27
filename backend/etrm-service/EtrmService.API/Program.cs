@@ -127,6 +127,9 @@ builder.Services.AddOpenTelemetry()
 // Registrar serviços via NativeInjectorConfig
 builder.Services.RegisterServices(builder.Configuration);
 
+// Sprint 6: Background Service para sincronizar trades externos
+builder.Services.AddHostedService<EtrmService.Infrastructure.BackgroundServices.ExternalTradeSyncService>();
+
 var app = builder.Build();
 
 // Executa as Migrations no startup

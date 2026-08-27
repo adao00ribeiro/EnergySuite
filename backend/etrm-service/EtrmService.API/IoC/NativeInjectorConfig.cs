@@ -76,8 +76,10 @@ public static class NativeInjectorConfig
             {
                 rider.AddConsumer<EtrmService.API.Consumers.RiskCalculatedEventConsumer>();
                 rider.AddConsumer<EtrmService.API.Consumers.EnaCalculatedEventConsumer>();
+                rider.AddConsumer<EtrmService.API.Consumers.OperationPublishedEventConsumer>();
                 rider.AddProducer<ContractCreatedIntegrationEvent>("contract-events");
                 rider.AddProducer<SimulationRequestedIntegrationEvent>("pluvia-events");
+                rider.AddProducer<OperationPublishedIntegrationEvent>("operation-events");
 
                 rider.UsingKafka((context, k) =>
                 {
@@ -91,6 +93,11 @@ public static class NativeInjectorConfig
                     k.TopicEndpoint<EnaCalculatedIntegrationEvent>("ena-events", "etrm-group", e =>
                     {
                         e.ConfigureConsumer<EtrmService.API.Consumers.EnaCalculatedEventConsumer>(context);
+                    });
+
+                    k.TopicEndpoint<OperationPublishedIntegrationEvent>("operation-events", "etrm-group", e =>
+                    {
+                        e.ConfigureConsumer<EtrmService.API.Consumers.OperationPublishedEventConsumer>(context);
                     });
                 });
             });

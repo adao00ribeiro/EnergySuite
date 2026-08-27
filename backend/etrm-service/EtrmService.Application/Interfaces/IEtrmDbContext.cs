@@ -33,5 +33,8 @@ public interface IEtrmDbContext
     // Sprint 5
     DbSet<CceeComparison> CceeComparisons { get; set; }
 
+    // Sprint 6
+    DbSet<WebhookSubscription> WebhookSubscriptions { get; set; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

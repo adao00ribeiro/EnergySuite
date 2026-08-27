@@ -70,6 +70,6 @@ Este documento detalha o roteiro de implementação para o produto **Energy Back
 **Objetivo:** Conectar o BackOps a plataformas de negociação externas e viabilizar automação programática por parte dos clientes.
 
 ### Tarefas
-- [ ] Desenvolver camada `Integration` com sincronização automática e periódica de boletas originadas na BBCE e N5X. *(Agente: backend_dotnet)*
-- [ ] Criar API Gateway endpoints REST (`POST /operations`, `POST /operations/{id}/publish`) com autenticação M2M. *(Agente: backend_dotnet)*
-- [ ] Implementar sistema de envio de **Webhooks** informando os clientes sobre status de suas operações e contas a pagar/receber. *(Agente: backend_dotnet)*
+- [x] Desenvolver camada `Integration` com sincronização automática e periódica de boletas originadas na BBCE e N5X. *(Agente: backend_dotnet)*
+- [x] Criar API Gateway endpoints REST (`POST /operations`, `POST /operations/{id}/publish`) com autenticação M2M. *(Agente: backend_dotnet)*
+- [x] Implementar sistema de envio de **Webhooks** informando os clientes sobre status de suas operações e contas a pagar/receber. *(Agente: backend_dotnet)*

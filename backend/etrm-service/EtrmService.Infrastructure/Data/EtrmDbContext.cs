@@ -37,6 +37,9 @@ public class EtrmDbContext : DbContext, IEtrmDbContext
     // Sprint 5: CCEE Integration
     public DbSet<CceeComparison> CceeComparisons { get; set; }
 
+    // Sprint 6: B2B Integration & Webhooks
+    public DbSet<WebhookSubscription> WebhookSubscriptions { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(EtrmDbContext).Assembly);
