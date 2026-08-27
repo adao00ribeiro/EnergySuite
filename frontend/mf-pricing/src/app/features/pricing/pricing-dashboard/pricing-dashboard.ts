@@ -12,4 +12,8 @@ import { ForwardCurveChartComponent } from '../components/forward-curve-chart/fo
 })
 export class PricingDashboardComponent {
   currentDate = new Date();
+
+  onNewSimulation() {
+    alert('Funcionalidade "Nova Simulação" abrirá o assistente na próxima release!');
+  }
 }

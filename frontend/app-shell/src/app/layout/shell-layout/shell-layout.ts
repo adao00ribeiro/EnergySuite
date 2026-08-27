@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -27,6 +27,7 @@ export interface NavGroup {
 })
 export class ShellLayoutComponent implements OnInit {
   private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
 
   isCollapsed = false;
   isDarkTheme = true;
@@ -50,25 +51,17 @@ export class ShellLayoutComponent implements OnInit {
       {
         label: 'Dashboard',
         icon: 'dashboard',
-        path: '/portfolio'
+        path: '/portfolio/dashboard'
       },
       {
-        label: 'Gestão de Portfólio',
-        icon: 'work',
-        children: [
-          { label: 'Visão Geral', path: '/portfolio' },
-          { label: 'Ativos', path: '/portfolio/assets' },
-          { label: 'Contratos', path: '/portfolio/contracts' },
-          { label: 'Alocação', path: '/portfolio/allocation' }
-        ]
+        label: 'Estratégias',
+        icon: 'analytics',
+        path: '/portfolio/strategies'
       },
       {
-        label: 'Relatórios',
-        icon: 'assessment',
-        children: [
-          { label: 'Performance', path: '/portfolio/reports/performance' },
-          { label: 'Extratos', path: '/portfolio/reports/extracts' }
-        ]
+        label: 'Oportunidades',
+        icon: 'lightbulb',
+        path: '/portfolio/opportunities'
       }
     ],
     '/operations': [
@@ -81,9 +74,7 @@ export class ShellLayoutComponent implements OnInit {
         label: 'Cadastro Comercial',
         icon: 'domain',
         children: [
-          { label: 'Grupos Econômicos', path: '/operations/commercial/groups' },
-          { label: 'Empresas', path: '/operations/commercial/companies' },
-          { label: 'Pessoas', path: '/operations/commercial/people' }
+          { label: 'Empresas', path: '/operations/commercial/companies' }
         ]
       },
       {
@@ -91,17 +82,7 @@ export class ShellLayoutComponent implements OnInit {
         icon: 'swap_horiz',
         children: [
           { label: 'Boletas e Operações', path: '/operations/tickets' },
-          { label: 'Vínculos (SWAP/Inter)', path: '/operations/links' },
           { label: 'Portfólios', path: '/operations/portfolios' }
-        ]
-      },
-      {
-        label: 'Contratos',
-        icon: 'description',
-        children: [
-          { label: 'Gestão de Contratos', path: '/operations/contracts/manage' },
-          { label: 'Aditivos', path: '/operations/contracts/amendments' },
-          { label: 'Reajustes', path: '/operations/contracts/readjustments' }
         ]
       },
       {
@@ -112,44 +93,19 @@ export class ShellLayoutComponent implements OnInit {
       {
         label: 'Financeiro',
         icon: 'attach_money',
-        children: [
-          { label: 'Contas a Pagar', path: '/operations/finance/payables' },
-          { label: 'Contas a Receber', path: '/operations/finance/receivables' },
-          { label: 'Faturamento', path: '/operations/finance/billing' },
-          { label: 'Encontro de Contas', path: '/operations/finance/offset' }
-        ]
+        path: '/operations/finance'
       },
       {
         label: 'Integração CCEE',
         icon: 'electric_bolt',
-        children: [
-          { label: 'Comparador CCEE', path: '/operations/ccee/compare' },
-          { label: 'Exportação XML', path: '/operations/ccee/export' },
-          { label: 'Ajustes e Validação', path: '/operations/ccee/adjustments' }
-        ]
+        path: '/operations/ccee'
       }
     ],
     '/hydrology': [
       {
-        label: 'Dashboard',
-        icon: 'dashboard',
-        path: '/hydrology'
-      },
-      {
-        label: 'Recursos Hídricos',
+        label: 'Pluvia Dashboard',
         icon: 'water_drop',
-        children: [
-          { label: 'Geração', path: '/hydrology/generation' },
-          { label: 'Consumo', path: '/hydrology/consumption' },
-          { label: 'Balanço Energético', path: '/hydrology' }
-        ]
-      },
-      {
-        label: 'Modelos',
-        icon: 'memory',
-        children: [
-          { label: 'MLOps', path: '/hydrology/models' }
-        ]
+        path: '/hydrology'
       }
     ],
     '/pricing': [
@@ -159,15 +115,9 @@ export class ShellLayoutComponent implements OnInit {
         path: '/pricing'
       },
       {
-        label: 'Mercado & Risco',
-        icon: 'trending_up',
-        children: [
-          { label: 'Preços', path: '/pricing' },
-          { label: 'Exposição', path: '/pricing/exposure' },
-          { label: 'Posição de Mercado', path: '/pricing/position' },
-          { label: 'Curva Forward', path: '/pricing/curves' },
-          { label: 'Cenários', path: '/pricing/scenarios' }
-        ]
+        label: 'Prospecção (Energy Prospect)',
+        icon: 'explore',
+        path: '/pricing/prospect'
       }
     ]
   };
@@ -205,6 +155,7 @@ export class ShellLayoutComponent implements OnInit {
       if (event instanceof NavigationEnd) {
         this.updateMenu(event.urlAfterRedirects);
         this.autoExpandActiveGroup(event.urlAfterRedirects);
+        this.cdr.detectChanges();
       }
     });
     
@@ -212,6 +163,7 @@ export class ShellLayoutComponent implements OnInit {
     setTimeout(() => {
       this.updateMenu(this.router.url);
       this.autoExpandActiveGroup(this.router.url);
+      this.cdr.detectChanges();
     }, 100);
   }
 

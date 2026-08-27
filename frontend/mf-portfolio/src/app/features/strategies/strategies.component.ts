@@ -45,4 +45,8 @@ export class StrategiesComponent {
       );
     }
   }
+
+  onNewStrategy() {
+    alert('Abertura do formulário de "Nova Estratégia" em desenvolvimento!');
+  }
 }

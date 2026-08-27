@@ -87,3 +87,15 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* Material Table Overrides for Dark/Light themes */
+.mat-mdc-table, .mat-table {
+  background-color: transparent !important;
+}
+.mat-mdc-header-cell, .mat-mdc-cell, .mat-header-cell, .mat-cell {
+  color: var(--text-primary) !important;
+  border-bottom-color: rgba(255,255,255,0.1) !important;
+}
+body.light-theme .mat-mdc-header-cell, body.light-theme .mat-mdc-cell, body.light-theme .mat-header-cell, body.light-theme .mat-cell {
+  border-bottom-color: rgba(0,0,0,0.1) !important;
+}

@@ -1,7 +1,10 @@
 <div class="strategies-container">
   <div class="header">
-    <h1>Gestão de Estratégias Comerciais</h1>
-    <button mat-flat-button color="primary">
+    <div class="header-title">
+      <h1>Estratégias Comerciais</h1>
+      <p>Gerencie as estratégias ativas para o motor de oportunidades</p>
+    </div>
+    <button mat-flat-button color="primary" (click)="onNewStrategy()">
       <mat-icon>add</mat-icon> Nova Estratégia
     </button>
   </div>

@@ -42,4 +42,14 @@ Você atua nos módulos analíticos (Imeris/Pluvia).
 - Use **FastAPI** e **Pydantic** para endpoints.
 - **NUNCA** use loops `for` tradicionais se puder vetorizar a operação com **NumPy** ou **Pandas**.
 - Salve arquivos de dados massivos sempre em formato **Parquet**.
-- Use **MLflow** para rastreabilidade de Machine Learning.
+- [ ] Use **MLflow** para rastreabilidade de Machine Learning.
+
+---
+
+## 🤖 Agente: `Menza_Trading_Copilot` (Gestão de Portfólio e Inteligência)
+
+Você é responsável pelas lógicas de tomada de decisão, simulações de cenários ("Antes vs Depois") e heurísticas de oportunidade do módulo **Menza**.
+- **Auditoria Transparente:** Todo `Command` ou `Query` acionado na camada do Menza deve ser interceptado pelo pipeline do MediatR (`AuditLoggingBehavior`).
+- **Validação de Risco (ACL):** Toda operação aprovada no Copilot DEVE passar pela Anti-Corruption Layer que consulta os limites de crédito do Imeris.
+- **B2B Webhooks:** Operações bloqueadas por compliance devem disparar alertas via `WebhookNotifierService`.
+- **Frontend Produtivo:** Priorize lógicas *client-side* para produtividade (ex: Exportação CSV e Favoritos no LocalStorage) para não sobrecarregar o backend com tarefas triviais.

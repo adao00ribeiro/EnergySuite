@@ -34,4 +34,12 @@ export class TicketsListComponent implements OnInit {
       { id: '2', ticketRef: 'TKT-2023-002', type: 'Sale', counterparty: 'Votener SA', volume: 10.0, price: 135.0, state: 'PendingApproval' }
     ]);
   }
+
+  onNewOperation() {
+    alert('Funcionalidade "Nova Operação" será implementada na próxima sprint!');
+  }
+
+  onEditOperation(id: string) {
+    alert(`Editando operação ID: ${id}`);
+  }
 }

@@ -118,4 +118,8 @@ export class DashboardComponent implements OnInit {
       });
     }, 400);
   }
+
+  onNewOpportunity() {
+    alert('Abertura do formulário de "Nova Oportunidade" será implementada em breve!');
+  }
 }

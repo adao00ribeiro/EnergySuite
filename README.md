@@ -7,9 +7,11 @@ O **EnergySuite** é uma plataforma inovadora **B2B SaaS Multi-Tenant** projetad
 ## 🚀 Principais Funcionalidades
 
 * **Isolamento de Dados (Multi-Tenancy)**: Utiliza *Global Query Filters* do Entity Framework para garantir a separação lógica e segura dos dados entre diferentes clientes corporativos (tenants).
+* **Menza (Portfolio & Trading Cockpit)**: Módulo analítico avançado para gestão de portfólio. Inclui o *Opportunity Engine* que cruza gaps com estratégias, um **AI Trading Copilot** para simulação preditiva ("Antes vs Depois") e validação automática de risco de crédito (Integração Imeris).
 * **Segurança Corporativa (SSO e IAM)**: Integração com o **Keycloak** (OIDC/JWT) para gestão centralizada de identidades, controle de acesso baseado em funções (RBAC) e autenticação segura via PKCE em todos os microsserviços e frontends.
+* **Governança e Webhooks B2B**: O backend possui um pipeline de auditoria interceptando todas as ações do usuário e dispara notificações (*Webhooks*) automáticas em caso de violação de limites corporativos.
 * **Análise Avançada de Riscos**: Um motor de risco dedicado, construído em Python com FastAPI, responsável por processar métricas de *Mark-to-Market* (MtM) e calcular a exposição financeira.
-* **Dashboards Dinâmicos de Portfólio**: Um *App Shell* desenvolvido em Angular 18 (Micro Frontend) que consome e renderiza visualizações financeiras interativas de alta performance utilizando **Apache ECharts**.
+* **Dashboards Dinâmicos de Portfólio**: Um *App Shell* desenvolvido em Angular 18 (Micro Frontend) que abriga o módulo `mf-portfolio`, consumindo dados via tabelas reativas, cards de simulação e gráficos ECharts, permitindo exportações CSV client-side.
 * **Observabilidade End-to-End**: Stack completa de telemetria com Prometheus, Grafana e Grafana Tempo (OpenTelemetry) para métricas e rastreamento distribuído de requisições.
 * **Pipeline de MLOps**: Ambiente abrangente de Machine Learning que inclui MinIO (Data Lake), MLflow (Registro de Modelos) e Apache Airflow (Orquestração de Workflows).
 
@@ -24,7 +26,7 @@ A plataforma é dividida em serviços desacoplados que se comunicam através de 
 * **Apache ECharts**: Motor de renderização do Dashboard de Risco, garantindo visualizações fluidas de grandes volumes de dados financeiros.
 
 ### ⚙️ Serviços de Backend (Microservices)
-* **ETRM Service (.NET 8)**: O motor transacional central, responsável por gerenciar contratos de energia, clientes, tenants e as operações de trading. Utiliza Entity Framework Core e PostgreSQL.
+* **ETRM Service (.NET 8)**: O motor transacional central, responsável por gerenciar contratos de energia, clientes, tenants e as operações de trading do módulo **Menza**. Conta com pipeline rigoroso de Auditoria (MediatR Behavior) e envio de Webhooks B2B. Utiliza Entity Framework Core e PostgreSQL.
 * **Risk Service (Python FastAPI)**: Motor computacional de alta performance para execução de modelos complexos de risco financeiro e simulações.
 * **MLOps / Engenharia de Dados (Python)**: Utiliza **Apache Airflow** para agendamento de pipelines de dados e **MLflow** para o rastreamento e versionamento de modelos preditivos.
 
@@ -54,6 +56,10 @@ graph TD
     %% Core Services & Databases
     ETRM -->|Leitura/Escrita| Postgres[(PostgreSQL: etrm_db)]
     RiskService -->|Leitura/Escrita| PostgresRisk[(PostgreSQL: risk_db)]
+    
+    %% B2B Webhooks & ACL
+    ETRM -.->|Anti-Corruption Layer| Imeris[Imeris Risk API]
+    ETRM -->|Dispara Webhooks| B2BClients[Sistemas Clientes B2B]
     
     %% Asynchronous Messaging
     ETRM -->|Publica Eventos| Kafka[Apache Kafka Event Bus]

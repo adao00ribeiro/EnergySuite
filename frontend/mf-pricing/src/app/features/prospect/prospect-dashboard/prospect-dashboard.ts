@@ -61,4 +61,8 @@ export class ProspectDashboardComponent implements OnInit {
       default: return '';
     }
   }
+
+  onNewStudy() {
+    alert('Abertura do formulário de "Novo Estudo" em desenvolvimento na Sprint atual!');
+  }
 }
