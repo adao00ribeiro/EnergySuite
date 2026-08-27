@@ -43,6 +43,9 @@ public static class NativeInjectorConfig
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUserService, EtrmService.API.Services.CurrentUserService>();
 
+        // Domain Services
+        services.AddScoped<EtrmService.Application.Prospect.Services.IWebhookService, WebhookService>();
+
         // Repositórios
         services.AddScoped<IContractRepository, ContractRepository>();
 

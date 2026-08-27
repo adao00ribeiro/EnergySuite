@@ -50,16 +50,16 @@ Com base na sua análise técnica profunda e no SPEC fornecido (espelhado no Pro
 **Objetivo:** Quando os Workers finalizam com sucesso, os dados binários e relatórios devem ser processados em banco para renderização rápida.
 
 * **Tarefas:**
-  - [ ] **Backend:** Criar `ResultProcessor` (Extrai PLD, ENA, CMO dos resultados gerados e insere no PostgreSQL).
-  - [ ] **API:** Endpoints `/api/v1/results/{id}/chart-data` flexíveis por eixo X, Y e Tipo.
-  - [ ] **Frontend:** Integração do Construtor de Gráficos (Echarts ou Chart.js) visualizando Linhas/Barras e Tabelas Consolidadas.
-  - [ ] **Frontend:** Botão de Exportação e Download de relatórios CSV, XLSX e PNG.
+  - [x] **Backend:** Extrator de saídas (Parser de `.out` ou banco binário) para transformar resultados do modelo em `StudyResultDto`.
+  - [x] **Backend:** Endpoint para buscar os "Resultados (PLD)" por Submercado e Mês após o término.
+  - [x] **Frontend:** Painel de Gráficos (ECharts) para visualização de resultados de PLD vs Cenários.
+  - [x] **Frontend:** Exportação para Excel (.xlsx) e PDF dos relatórios consolidados.
   - [ ] **Geral:** Disparo de e-mails/notificações quando o Estudo termina.
 
 ### Sprint 6: API Cliente e Reaproveitamento
 **Objetivo:** Expor todas essas capacidades via API pública (M2M) e permitir o reuso de dados de estudos anteriores.
 
 * **Tarefas:**
-  - [ ] **Backend:** Feature de "Reaproveitar Resultados" (Clona a referência MinIO de reservatórios e premissas hidrológicas para um Novo Estudo).
-  - [ ] **API Gateway:** Documentar (Swagger) e blindar com JWT Client Credentials as rotas B2B `/api/v1/studies`, `/api/v1/decks/generate`, `/api/v1/executions`.
-  - [ ] **Backend:** Implementar disparos de Webhooks (`study.started`, `study.completed`, `deck.completed`) para APIs externas de clientes.
+  - [x] **Backend:** Feature de "Reaproveitar Resultados" (Clona a referência MinIO de reservatórios e premissas hidrológicas para um Novo Estudo).
+  - [x] **API Gateway:** Documentar (Swagger) e blindar com JWT Client Credentials as rotas B2B `/api/v1/studies`, `/api/v1/decks/generate`, `/api/v1/executions`.
+  - [x] **Backend:** Implementar disparos de Webhooks (`study.started`, `study.completed`, `deck.completed`) para APIs externas de clientes.

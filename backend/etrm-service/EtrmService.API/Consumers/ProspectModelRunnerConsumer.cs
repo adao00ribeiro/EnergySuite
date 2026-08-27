@@ -2,11 +2,13 @@ using System;
 using System.Threading.Tasks;
 using EtrmService.Application.Interfaces;
 using EtrmService.Application.Prospect.Events;
+using EtrmService.Application.Prospect.Services;
 using EtrmService.API.Hubs;
 using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace EtrmService.API.Consumers;
 
@@ -15,12 +17,14 @@ public class ProspectModelRunnerConsumer : IConsumer<StudyExecutionRequestedEven
     private readonly IEtrmDbContext _context;
     private readonly IHubContext<ProspectHub> _hubContext;
     private readonly ILogger<ProspectModelRunnerConsumer> _logger;
+    private readonly IWebhookService _webhookService;
 
-    public ProspectModelRunnerConsumer(IEtrmDbContext context, IHubContext<ProspectHub> hubContext, ILogger<ProspectModelRunnerConsumer> logger)
+    public ProspectModelRunnerConsumer(IEtrmDbContext context, IHubContext<ProspectHub> hubContext, ILogger<ProspectModelRunnerConsumer> logger, IWebhookService webhookService)
     {
         _context = context;
         _hubContext = hubContext;
         _logger = logger;
+        _webhookService = webhookService;
     }
 
     public async Task Consume(ConsumeContext<StudyExecutionRequestedEvent> context)
@@ -41,6 +45,7 @@ public class ProspectModelRunnerConsumer : IConsumer<StudyExecutionRequestedEven
         study.ChangeState(Domain.Enums.StudyState.Running);
         await _context.SaveChangesAsync(context.CancellationToken);
         await group.SendAsync("LogReceived", $"[SYSTEM] Status do Estudo alterado para RUNNING.");
+        await _webhookService.SendWebhookAsync("study.started", new { StudyId = study.Id, Status = "Running" });
 
         var decks = await _context.ProspectDecks
             .Include(d => d.Versions)
@@ -81,6 +86,7 @@ public class ProspectModelRunnerConsumer : IConsumer<StudyExecutionRequestedEven
             await group.SendAsync("LogReceived", $"[WORKER] Simulação do Deck {deck.SequenceOrder} concluída com sucesso.");
             deck.ChangeState(Domain.Enums.DeckState.Completed);
             await _context.SaveChangesAsync(context.CancellationToken);
+            await _webhookService.SendWebhookAsync("deck.completed", new { DeckId = deck.Id, StudyId = study.Id, Sequence = deck.SequenceOrder });
         }
 
         study.ChangeState(Domain.Enums.StudyState.Completed);
@@ -88,5 +94,6 @@ public class ProspectModelRunnerConsumer : IConsumer<StudyExecutionRequestedEven
 
         await group.SendAsync("LogReceived", $"[SYSTEM] Execução finalizada! Status do Estudo: COMPLETED.");
         _logger.LogInformation("Execução do Estudo {StudyId} finalizada.", studyId);
+        await _webhookService.SendWebhookAsync("study.completed", new { StudyId = study.Id, Status = "Completed" });
     }
 }

@@ -7,7 +7,7 @@
   </div>
 
   <div class="table-container mat-elevation-z8">
-    <table mat-table [dataSource]="studies()">
+    <table mat-table [dataSource]="studies">
 
       <!-- Name Column -->
       <ng-container matColumnDef="name">
@@ -48,16 +48,16 @@
 
       <!-- Actions Column -->
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef> Ações </th>
-        <td mat-cell *matCellDef="let element">
-          <button mat-icon-button color="primary" [routerLink]="['/prospect', element.id]">
-            <mat-icon>visibility</mat-icon>
-          </button>
-          <button mat-icon-button color="accent">
-            <mat-icon>play_arrow</mat-icon>
-          </button>
-        </td>
-      </ng-container>
+      <th mat-header-cell *matHeaderCellDef> Ações </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button color="primary" (click)="viewDetails(element.id)" title="Ver Detalhes">
+          <mat-icon>visibility</mat-icon>
+        </button>
+        <button mat-icon-button color="accent" (click)="cloneStudy(element)" title="Clonar Estudo (Reaproveitar)">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </td>
+    </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
