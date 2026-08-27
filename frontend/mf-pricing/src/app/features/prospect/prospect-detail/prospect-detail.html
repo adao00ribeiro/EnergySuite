@@ -48,10 +48,15 @@
           <mat-card-content>
             <mat-list>
               <mat-list-item *ngFor="let deck of decks">
-                <mat-icon matListItemIcon [color]="deck.status === 'Completed' ? 'primary' : (deck.status === 'Running' ? 'accent' : '')">
-                  {{ deck.status === 'Completed' ? 'check_circle' : (deck.status === 'Running' ? 'autorenew' : 'hourglass_empty') }}
+                <mat-icon matListItemIcon [color]="deck.status === 'Completed' ? 'primary' : (deck.status === 'Running' ? 'accent' : (deck.status === 'Infeasible' ? 'warn' : ''))">
+                  {{ deck.status === 'Completed' ? 'check_circle' : (deck.status === 'Running' ? 'autorenew' : (deck.status === 'Infeasible' ? 'error' : 'hourglass_empty')) }}
                 </mat-icon>
-                <div matListItemTitle>{{ deck.mes }}</div>
+                <div matListItemTitle>
+                  {{ deck.mes }}
+                  <span *ngIf="deck.versions > 1" class="version-chip" title="Ajuste automático aplicado">
+                    ⚠️ Auto-Relaxamento (v{{deck.versions}})
+                  </span>
+                </div>
                 <div matListItemLine>Status: <strong>{{ deck.status }}</strong></div>
               </mat-list-item>
             </mat-list>

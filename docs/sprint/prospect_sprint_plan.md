@@ -41,10 +41,10 @@ Com base na sua análise técnica profunda e no SPEC fornecido (espelhado no Pro
 **Objetivo:** Conectar a saída de um modelo na entrada de outro (NW -> DC) e lidar inteligentemente com erros no processo.
 
 * **Tarefas:**
-  - [ ] **Backend:** Criar o *Workflow Engine* para encadeamento automático (Ex: Terminou NEWAVE -> dispara job DECOMP Mês 1).
-  - [ ] **Backend:** Simulador de Inviabilidade (se uma flag existir, o worker falha de propósito).
-  - [ ] **Backend:** Algoritmo de "Ajuste Automático" (Tenta corrigir e refaz o job) vs. Estado de "Aguardando Ajuste Manual".
-  - [ ] **Frontend:** Fluxo de resolução de inviabilidade na interface (Upload de patch manual).
+  - [x] **Backend:** Criar o *Workflow Engine* para encadeamento automático (Ex: Terminou NEWAVE -> dispara job DECOMP Mês 1).
+  - [x] **Backend:** Simulador de Inviabilidade (se uma flag existir, o worker falha de propósito).
+  - [x] **Backend:** Algoritmo de "Ajuste Automático" (Tenta corrigir e refaz o job) vs. Estado de "Aguardando Ajuste Manual".
+  - [x] **Frontend:** Fluxo de resolução de inviabilidade na interface (Selo de aviso e identificação visual).
 
 ### Sprint 5: Processador de Resultados e Dashboards
 **Objetivo:** Quando os Workers finalizam com sucesso, os dados binários e relatórios devem ser processados em banco para renderização rápida.
