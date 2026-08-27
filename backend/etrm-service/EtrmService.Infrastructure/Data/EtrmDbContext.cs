@@ -33,6 +33,9 @@ public class EtrmDbContext : DbContext, IEtrmDbContext
     // Sprint 4: Finance
     public DbSet<Billing> Billings { get; set; }
     public DbSet<FinancialSettlement> FinancialSettlements { get; set; }
+    
+    // Sprint 5: CCEE Integration
+    public DbSet<CceeComparison> CceeComparisons { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -28,5 +28,9 @@ export const routes: Routes = [
   {
     path: 'finance',
     loadComponent: () => import('./features/finance/financial-dashboard/financial-dashboard').then(m => m.FinancialDashboardComponent)
+  },
+  {
+    path: 'ccee',
+    loadComponent: () => import('./features/ccee/ccee-dashboard/ccee-dashboard').then(m => m.CceeDashboardComponent)
   }
 ];

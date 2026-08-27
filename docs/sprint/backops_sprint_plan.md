@@ -58,11 +58,11 @@ Este documento detalha o roteiro de implementação para o produto **Energy Back
 **Objetivo:** Fazer o registro, exportação e conciliação automática com a Câmara de Comercialização de Energia Elétrica (CCEE).
 
 ### Tarefas
-- [ ] Criar serviços de exportação XML para a CCEE (CCEAL Simplificado, Firme Mensal, Firme Período). *(Agente: backend_dotnet)*
-- [ ] Desenvolver o processador de arquivos de retorno (CSV) da CliqCCEE. *(Agente: backend_dotnet)*
-- [ ] Criar o Motor de Comparação (`CCEComparison`) cruzando dados BackOps × CCEE (Status: OK, Ajustado, Pendente). *(Agente: backend_dotnet)*
-- [ ] Desenvolver rotinas geradoras de XML de ajuste de volume e modulação. *(Agente: backend_dotnet)*
-- [ ] Desenvolver interface para visualização do Comparador CCEE no frontend. *(Agente: frontend_angular)*
+- [x] Criar serviços de exportação XML para a CCEE (CCEAL Simplificado, Firme Mensal, Firme Período). *(Agente: backend_dotnet)*
+- [x] Desenvolver o processador de arquivos de retorno (CSV) da CliqCCEE. *(Agente: backend_dotnet)*
+- [x] Criar o Motor de Comparação (`CCEComparison`) cruzando dados BackOps × CCEE (Status: OK, Ajustado, Pendente). *(Agente: backend_dotnet)*
+- [x] Desenvolver rotinas geradoras de XML de ajuste de volume e modulação. *(Agente: backend_dotnet)*
+- [x] Desenvolver interface para visualização do Comparador CCEE no frontend. *(Agente: frontend_angular)*
 
 ---
 

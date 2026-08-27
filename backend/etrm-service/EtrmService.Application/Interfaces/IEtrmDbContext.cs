@@ -30,5 +30,8 @@ public interface IEtrmDbContext
     DbSet<Billing> Billings { get; set; }
     DbSet<FinancialSettlement> FinancialSettlements { get; set; }
 
+    // Sprint 5
+    DbSet<CceeComparison> CceeComparisons { get; set; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
