@@ -1,0 +1,40 @@
+<h2 mat-dialog-title>Nova Simulação de Risco</h2>
+<mat-dialog-content>
+  <p class="dialog-subtitle">Configure os parâmetros para simulação de VaR e marcação a mercado (MtM).</p>
+  
+  <form [formGroup]="simulationForm" class="simulation-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Nome do Cenário</mat-label>
+      <input matInput formControlName="scenarioName" placeholder="Ex: Estresse Hídrico Q4 2026">
+      <mat-error *ngIf="simulationForm.get('scenarioName')?.hasError('required')">O nome do cenário é obrigatório</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Portfólio</mat-label>
+      <mat-select formControlName="portfolio">
+        <mat-option *ngFor="let port of portfolios" [value]="port">{{port}}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="simulationForm.get('portfolio')?.hasError('required')">O portfólio é obrigatório</mat-error>
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="flex-field">
+        <mat-label>Nível de Confiança (VaR)</mat-label>
+        <mat-select formControlName="confidenceLevel">
+          <mat-option *ngFor="let level of confidenceLevels" [value]="level.value">{{level.label}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="flex-field">
+        <mat-label>Data Alvo</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="targetDate">
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-flat-button color="primary" [disabled]="simulationForm.invalid" (click)="onSubmit()">Executar Simulação</button>
+</mat-dialog-actions>

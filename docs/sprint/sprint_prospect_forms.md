@@ -11,28 +11,28 @@ O sistema foi analisado em comparação aos líderes de mercado e a arquitetura 
 ## Task Board (To-Do)
 
 ### 1. Backend e API de Integração
-- [ ] **Mapeamento de Rotas no MFE:** Garantir que o serviço `ProspectService` (`frontend/mf-pricing/src/app/features/prospect/services/prospect.service.ts`) implemente o método `createStudy(payload)` apontando corretamente para o Gateway ou para a base URL da API local `POST /api/v1/prospect/studies`.
-- [ ] **Definição de DTOs no Angular:** Criar a interface Typescript que mapeie a estrutura exata do `CreateStudyCommand` (Name, Description, Model, StartDate, HorizonMonths).
+- [x] **Mapeamento de Rotas no MFE:** Garantir que o serviço `ProspectService` (`frontend/mf-pricing/src/app/features/prospect/services/prospect.service.ts`) implemente o método `createStudy(payload)` apontando corretamente para o Gateway ou para a base URL da API local `POST /api/v1/prospect/studies`.
+- [x] **Definição de DTOs no Angular:** Criar a interface Typescript que mapeie a estrutura exata do `CreateStudyCommand` (Name, Description, Model, StartDate, HorizonMonths).
 
 ### 2. UI/UX: Novo Estudo (Prospect)
-- [ ] **Criar Componente `NewStudyDialogComponent`:**
+- [x] **Criar Componente `NewStudyDialogComponent`:**
   - Diretório: `frontend/mf-pricing/src/app/features/prospect/components/new-study-dialog/`
   - Utilizar `@angular/material/dialog`.
-- [ ] **Implementar Reactive Forms:**
+- [x] **Implementar Reactive Forms:**
   - `name`: Text Input, Obrigatório.
   - `description`: Text Area, Opcional.
   - `model`: Dropdown Select (NEWAVE, DECOMP, DESSEM).
   - `startDate`: Angular Material Datepicker.
   - `horizonMonths`: Number Input (ex: 12 meses).
-- [ ] **Vinculação de Ação no Dashboard:**
+- [x] **Vinculação de Ação no Dashboard:**
   - Modificar `prospect-dashboard.ts` para que o botão "Novo Estudo" (`onNewStudy()`) efetivamente instancie e exiba o `NewStudyDialogComponent`.
   - Configurar reload da tabela de estudos quando o Modal retornar sucesso.
 
 ### 3. UI/UX: Nova Simulação (Pricing)
-- [ ] **Definir Regra de Simulação:** Validar se a "Nova Simulação" no painel de Pricing compartilha o mesmo escopo de Prospect ou se necessita de um formulário de Risco independente.
-- [ ] **Criar Componente `NewSimulationDialogComponent` (se independente):**
+- [x] **Definir Regra de Simulação:** Validar se a "Nova Simulação" no painel de Pricing compartilha o mesmo escopo de Prospect ou se necessita de um formulário de Risco independente.
+- [x] **Criar Componente `NewSimulationDialogComponent` (se independente):**
   - Diretório: `frontend/mf-pricing/src/app/features/pricing/components/new-simulation-dialog/`
-- [ ] **Vinculação no Pricing Dashboard:**
+- [x] **Vinculação no Pricing Dashboard:**
   - Modificar `pricing-dashboard.ts` para que `onNewSimulation()` engatilhe o dialog correto.
 
 ### 4. Testes e Qualidade

@@ -1,0 +1,44 @@
+<h2 mat-dialog-title>Novo Estudo Prospectivo</h2>
+<mat-dialog-content>
+  <p class="dialog-subtitle">Defina os parâmetros base para a geração e projeção de PLD.</p>
+  
+  <form [formGroup]="studyForm" class="study-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Nome do Estudo</mat-label>
+      <input matInput formControlName="name" placeholder="Ex: PLD Setembro 2026">
+      <mat-error *ngIf="studyForm.get('name')?.hasError('required')">O nome é obrigatório</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Descrição (Opcional)</mat-label>
+      <textarea matInput formControlName="description" rows="3" placeholder="Detalhes do estudo..."></textarea>
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="flex-field">
+        <mat-label>Modelo</mat-label>
+        <mat-select formControlName="model">
+          <mat-option *ngFor="let model of models" [value]="model">{{model}}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="studyForm.get('model')?.hasError('required')">O modelo é obrigatório</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="flex-field">
+        <mat-label>Data Base</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="startDate">
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Horizonte (Meses)</mat-label>
+      <input matInput type="number" formControlName="horizonMonths" min="1">
+      <mat-error *ngIf="studyForm.get('horizonMonths')?.hasError('required')">O horizonte é obrigatório</mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-flat-button color="primary" [disabled]="studyForm.invalid" (click)="onSubmit()">Criar Estudo</button>
+</mat-dialog-actions>
