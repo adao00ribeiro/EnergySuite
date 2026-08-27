@@ -91,17 +91,27 @@
     <div class="sidebar-footer">
       <div class="user-card" [class.collapsed]="isCollapsed">
         <div class="avatar">
-          <img src="https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff" alt="User Avatar">
+          <img [src]="'https://ui-avatars.com/api/?name=' + (userProfile?.firstName || 'User') + '&background=0D8ABC&color=fff'" alt="User Avatar">
         </div>
         
         <div class="user-info" *ngIf="!isCollapsed">
-          <div class="user-name">Administrador</div>
-          <div class="user-role">Portfolio Manager</div>
+          <div class="user-name">{{ userProfile?.firstName }} {{ userProfile?.lastName }}</div>
+          <div class="user-role">{{ userRoles.length > 0 ? userRoles[0] : 'User' }}</div>
         </div>
         
-        <button class="more-btn" *ngIf="!isCollapsed">
+        <button class="more-btn" *ngIf="!isCollapsed" [matMenuTriggerFor]="userMenu">
           <mat-icon>more_vert</mat-icon>
         </button>
+        <mat-menu #userMenu="matMenu">
+          <button mat-menu-item>
+            <mat-icon>person</mat-icon>
+            <span>Meu Perfil</span>
+          </button>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon color="warn">logout</mat-icon>
+            <span>Sair</span>
+          </button>
+        </mat-menu>
       </div>
     </div>
     

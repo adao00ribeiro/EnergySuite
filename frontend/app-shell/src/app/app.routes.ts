@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { loadRemoteModule } from '@angular-architects/native-federation';
+import { AuthGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
   {
@@ -10,6 +11,7 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./layout/shell-layout/shell-layout').then(m => m.ShellLayoutComponent),
+    canActivate: [AuthGuard],
     children: [
       {
         path: 'portfolio',

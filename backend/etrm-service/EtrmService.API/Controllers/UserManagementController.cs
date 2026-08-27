@@ -5,7 +5,7 @@ namespace EtrmService.API.Controllers
 {
     [ApiController]
     [Route("api/v1/users")]
-    [Authorize]
+    [Authorize(Roles = "Portfolio Manager")]
     public class UserManagementController : ControllerBase
     {
         private readonly ILogger<UserManagementController> _logger;

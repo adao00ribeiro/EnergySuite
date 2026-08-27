@@ -4,6 +4,8 @@ import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
+import { KeycloakService } from 'keycloak-angular';
 
 export interface NavItem {
   label: string;
@@ -13,7 +15,7 @@ export interface NavItem {
 export interface NavGroup {
   label: string;
   icon: string;
-  path?: string; // Se não tiver path, funciona apenas como um grupo expansível (mas o usuário pediu para Dashboard ter path, e Portfólio ter path E submenus)
+  path?: string; // Se não tiver path, funciona apenas como um grupo expansível
   badge?: number;
   children?: NavItem[];
 }
@@ -21,17 +23,21 @@ export interface NavGroup {
 @Component({
   selector: 'app-shell-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatSidenavModule, MatIconModule, MatTooltipModule],
+  imports: [CommonModule, RouterModule, MatSidenavModule, MatIconModule, MatTooltipModule, MatMenuModule],
   templateUrl: './shell-layout.html',
   styleUrl: './shell-layout.scss'
 })
 export class ShellLayoutComponent implements OnInit {
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
+  private keycloak = inject(KeycloakService);
 
   isCollapsed = false;
   isDarkTheme = true;
   expandedGroups: Record<string, boolean> = {};
+
+  userProfile: any = null;
+  userRoles: string[] = [];
 
   toggleTheme() {
     this.isDarkTheme = !this.isDarkTheme;
@@ -45,112 +51,45 @@ export class ShellLayoutComponent implements OnInit {
   navGroups: NavGroup[] = [];
   currentTheme = '';
 
-  // Global Contexts mapped to the new NavGroup structure
   private moduleMenus: Record<string, NavGroup[]> = {
     '/portfolio': [
-      {
-        label: 'Dashboard',
-        icon: 'dashboard',
-        path: '/portfolio/dashboard'
-      },
-      {
-        label: 'Estratégias',
-        icon: 'analytics',
-        path: '/portfolio/strategies'
-      },
-      {
-        label: 'Oportunidades',
-        icon: 'lightbulb',
-        path: '/portfolio/opportunities'
-      }
+      { label: 'Dashboard', icon: 'dashboard', path: '/portfolio/dashboard' },
+      { label: 'Estratégias', icon: 'analytics', path: '/portfolio/strategies' },
+      { label: 'Oportunidades', icon: 'lightbulb', path: '/portfolio/opportunities' }
     ],
     '/operations': [
-      {
-        label: 'Dashboard',
-        icon: 'dashboard',
-        path: '/operations'
-      },
-      {
-        label: 'Cadastro Comercial',
-        icon: 'domain',
-        children: [
-          { label: 'Empresas', path: '/operations/commercial/companies' }
-        ]
-      },
-      {
-        label: 'Operações',
-        icon: 'swap_horiz',
-        children: [
-          { label: 'Boletas e Operações', path: '/operations/tickets' },
-          { label: 'Portfólios', path: '/operations/portfolios' }
-        ]
-      },
-      {
-        label: 'Central de Aprovação',
-        icon: 'verified',
-        path: '/operations/approvals'
-      },
-      {
-        label: 'Financeiro',
-        icon: 'attach_money',
-        path: '/operations/finance'
-      },
-      {
-        label: 'Integração CCEE',
-        icon: 'electric_bolt',
-        path: '/operations/ccee'
-      }
+      { label: 'Dashboard', icon: 'dashboard', path: '/operations' },
+      { label: 'Cadastro Comercial', icon: 'domain', children: [{ label: 'Empresas', path: '/operations/commercial/companies' }] },
+      { label: 'Operações', icon: 'swap_horiz', children: [{ label: 'Boletas e Operações', path: '/operations/tickets' }, { label: 'Portfólios', path: '/operations/portfolios' }] },
+      { label: 'Central de Aprovação', icon: 'verified', path: '/operations/approvals' },
+      { label: 'Financeiro', icon: 'attach_money', path: '/operations/finance' },
+      { label: 'Integração CCEE', icon: 'electric_bolt', path: '/operations/ccee' }
     ],
     '/hydrology': [
-      {
-        label: 'Pluvia Dashboard',
-        icon: 'water_drop',
-        path: '/hydrology'
-      }
+      { label: 'Pluvia Dashboard', icon: 'water_drop', path: '/hydrology' }
     ],
     '/pricing': [
-      {
-        label: 'Dashboard',
-        icon: 'dashboard',
-        path: '/pricing'
-      },
-      {
-        label: 'Prospecção (Energy Prospect)',
-        icon: 'explore',
-        path: '/pricing/prospect'
-      }
+      { label: 'Dashboard', icon: 'dashboard', path: '/pricing' },
+      { label: 'Prospecção (Energy Prospect)', icon: 'explore', path: '/pricing/prospect' }
     ]
   };
 
-  // Fallback se estiver na home ou rota não reconhecida
   private defaultMenu: NavGroup[] = [
-    {
-      label: 'Home',
-      icon: 'home',
-      path: '/'
-    }
+    { label: 'Home', icon: 'home', path: '/' }
   ];
 
   managementGroups: NavGroup[] = [
-    {
-      label: 'Alertas',
-      icon: 'notifications',
-      path: '/alerts',
-      badge: 3
-    },
-    {
-      label: 'Configurações',
-      icon: 'settings',
-      path: '/settings'
-    },
-    {
-      label: 'Usuários',
-      icon: 'people',
-      path: '/users'
-    }
+    { label: 'Alertas', icon: 'notifications', path: '/alerts', badge: 3 },
+    { label: 'Configurações', icon: 'settings', path: '/settings' },
+    { label: 'Usuários', icon: 'people', path: '/users' }
   ];
 
-  ngOnInit() {
+  async ngOnInit() {
+    if (await this.keycloak.isLoggedIn()) {
+      this.userProfile = await this.keycloak.loadUserProfile();
+      this.userRoles = this.keycloak.getUserRoles();
+    }
+
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.updateMenu(event.urlAfterRedirects);
@@ -159,7 +98,6 @@ export class ShellLayoutComponent implements OnInit {
       }
     });
     
-    // Initial load
     setTimeout(() => {
       this.updateMenu(this.router.url);
       this.autoExpandActiveGroup(this.router.url);
@@ -171,7 +109,6 @@ export class ShellLayoutComponent implements OnInit {
     const baseRoute = Object.keys(this.moduleMenus).find(route => url.startsWith(route));
     this.navGroups = baseRoute ? this.moduleMenus[baseRoute] : this.defaultMenu;
     
-    // Define active theme
     if (url.startsWith('/portfolio')) this.currentTheme = 'theme-portfolio';
     else if (url.startsWith('/operations')) this.currentTheme = 'theme-operations';
     else if (url.startsWith('/pricing')) this.currentTheme = 'theme-pricing';
@@ -185,7 +122,7 @@ export class ShellLayoutComponent implements OnInit {
 
   toggleGroup(groupLabel: string) {
     if (this.isCollapsed) {
-      this.isCollapsed = false; // Expande o sidebar se clicar no grupo estando fechado
+      this.isCollapsed = false;
     }
     this.expandedGroups[groupLabel] = !this.expandedGroups[groupLabel];
   }
@@ -215,15 +152,15 @@ export class ShellLayoutComponent implements OnInit {
     if (group.children && group.children.length > 0) {
       this.toggleGroup(group.label);
     } else if (group.path) {
-      if (['/alerts', '/settings', '/users'].includes(group.path)) {
-        alert(`O módulo "${group.label}" (Gestão) está em desenvolvimento para a próxima sprint!`);
-      } else {
-        this.router.navigate([group.path]);
-      }
+      this.router.navigate([group.path]);
     }
   }
 
   goHome() {
     this.router.navigate(['/']);
+  }
+
+  logout() {
+    this.keycloak.logout(window.location.origin);
   }
 }
