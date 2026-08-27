@@ -16,14 +16,26 @@
   </header>
 
   <main class="dashboard-content" *ngIf="portfolioData() as data; else loading">
-    <app-indicator-cards 
-      [purchased]="data.totalPurchased"
-      [sold]="data.totalSold"
-      [net]="data.netPosition"
-      [estimatedResult]="data.estimatedResult">
-    </app-indicator-cards>
-
-    <app-position-chart [data]="data.monthlyData"></app-position-chart>
+    <mat-tab-group animationDuration="0ms">
+      <mat-tab label="Visão Geral">
+        <div class="tab-content">
+          <app-indicator-cards 
+            [purchased]="data.totalPurchased"
+            [sold]="data.totalSold"
+            [net]="data.netPosition"
+            [estimatedResult]="data.estimatedResult">
+          </app-indicator-cards>
+          <app-position-chart [data]="data.monthlyData"></app-position-chart>
+        </div>
+      </mat-tab>
+      
+      <mat-tab label="Análise de Gaps (Drill-down)">
+        <div class="tab-content">
+          <app-heatmap-chart [heatmapData]="data.heatmap"></app-heatmap-chart>
+          <app-position-grid [data]="data.detailedGaps"></app-position-grid>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
   </main>
 
   <ng-template #loading>

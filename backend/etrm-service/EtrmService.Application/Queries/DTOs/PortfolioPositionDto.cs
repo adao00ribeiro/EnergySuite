@@ -15,6 +15,9 @@ public class PortfolioPositionDto
     public decimal EstimatedResult { get; set; }
     
     public List<MonthlyPositionDto> MonthlyPositions { get; set; } = new();
+    
+    public List<PositionGapDto> DetailedGaps { get; set; } = new();
+    public HeatmapDataDto Heatmap { get; set; } = new();
 }
 
 public class MonthlyPositionDto
