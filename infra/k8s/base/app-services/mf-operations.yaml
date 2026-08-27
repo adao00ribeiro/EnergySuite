@@ -32,9 +32,10 @@ metadata:
   name: mf-operations
   namespace: energysuite
 spec:
-  type: ClusterIP
+  type: NodePort
   ports:
     - port: 80
       targetPort: 80
+      nodePort: 32002
   selector:
     app: mf-operations

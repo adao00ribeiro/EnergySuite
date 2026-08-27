@@ -32,9 +32,10 @@ metadata:
   name: mf-pricing
   namespace: energysuite
 spec:
-  type: ClusterIP
+  type: NodePort
   ports:
     - port: 80
       targetPort: 80
+      nodePort: 32003
   selector:
     app: mf-pricing

@@ -18,3 +18,4 @@ resources:
   - app-services/mf-portfolio.yaml
   - app-services/mf-hydrology.yaml
   - app-services/mf-operations.yaml
+  - app-services/federation-manifest-cm.yaml
