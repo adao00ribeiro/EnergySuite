@@ -14,3 +14,7 @@ resources:
   - app-services/etrm-service.yaml
   - app-services/risk-service.yaml
   - app-services/app-shell.yaml
+  - app-services/mf-pricing.yaml
+  - app-services/mf-portfolio.yaml
+  - app-services/mf-hydrology.yaml
+  - app-services/mf-operations.yaml

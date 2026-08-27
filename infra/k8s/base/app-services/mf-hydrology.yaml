@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mf-hydrology
+  namespace: energysuite
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mf-hydrology
+  template:
+    metadata:
+      labels:
+        app: mf-hydrology
+    spec:
+      containers:
+        - name: mf-hydrology
+          image: energysuite/mf-hydrology:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "128Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mf-hydrology
+  namespace: energysuite
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: mf-hydrology
