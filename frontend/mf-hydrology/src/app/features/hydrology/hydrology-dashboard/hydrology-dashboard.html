@@ -34,8 +34,8 @@
       </mat-tab>
 
       <mat-tab label="Análises ENA" *ngIf="auth.hasPermission('CanViewENA')">
-        <div class="charts-grid mt-4">
-          <app-reservoir-levels-chart></app-reservoir-levels-chart>
+        <div class="mt-4">
+          <app-ena-analytics></app-ena-analytics>
         </div>
       </mat-tab>
       

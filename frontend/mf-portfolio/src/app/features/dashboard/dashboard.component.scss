@@ -13,12 +13,12 @@
   h1 {
     font-size: 28px;
     font-weight: 700;
-    color: var(--text-primary);
+    color: var(--color-foreground);
     margin: 0;
 
     .subtitle {
       font-weight: 400;
-      color: var(--text-secondary);
+      color: var(--color-muted-foreground);
     }
   }
 

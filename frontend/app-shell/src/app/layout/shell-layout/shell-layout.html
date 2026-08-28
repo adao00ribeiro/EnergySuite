@@ -62,57 +62,8 @@
             
           </div>
         </div>
-
-        <div class="nav-divider"></div>
-
-        <!-- Management Groups -->
-        <div class="nav-section">
-          <div class="nav-section-title" *ngIf="!isCollapsed">Gestão</div>
-          
-          <div class="nav-group" *ngFor="let group of managementGroups">
-            <div class="group-header" 
-                 [class.active]="isGroupActive(group)" 
-                 (click)="handleGroupClick(group)"
-                 [matTooltip]="isCollapsed ? group.label : ''"
-                 matTooltipPosition="right">
-                 
-              <div class="group-header-content">
-                <mat-icon class="group-icon">{{ group.icon }}</mat-icon>
-                <span class="group-label" *ngIf="!isCollapsed">{{ group.label }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
         
       </nav>
-    </div>
-
-    <!-- User Footer -->
-    <div class="sidebar-footer">
-      <div class="user-card" [class.collapsed]="isCollapsed">
-        <div class="avatar">
-          <img [src]="'https://ui-avatars.com/api/?name=' + (userProfile?.firstName || 'User') + '&background=0D8ABC&color=fff'" alt="User Avatar">
-        </div>
-        
-        <div class="user-info" *ngIf="!isCollapsed">
-          <div class="user-name">{{ userProfile?.firstName }} {{ userProfile?.lastName }}</div>
-          <div class="user-role">{{ userRoles.length > 0 ? userRoles[0] : 'User' }}</div>
-        </div>
-        
-        <button class="more-btn" *ngIf="!isCollapsed" [matMenuTriggerFor]="userMenu">
-          <mat-icon>more_vert</mat-icon>
-        </button>
-        <mat-menu #userMenu="matMenu">
-          <button mat-menu-item>
-            <mat-icon>person</mat-icon>
-            <span>Meu Perfil</span>
-          </button>
-          <button mat-menu-item (click)="logout()">
-            <mat-icon color="warn">logout</mat-icon>
-            <span>Sair</span>
-          </button>
-        </mat-menu>
-      </div>
     </div>
     
   </mat-sidenav>
@@ -124,10 +75,37 @@
         <!-- Optional Breadcrumbs -->
       </div>
       <div class="topbar-actions">
-        <!-- Global Search or Profile could go here if needed -->
+        <!-- Global Actions -->
+        <button class="icon-btn" matTooltip="Alertas">
+          <mat-icon>notifications_none</mat-icon>
+        </button>
+        <button class="icon-btn" matTooltip="Configurações">
+          <mat-icon>settings</mat-icon>
+        </button>
+        
         <button class="theme-toggle-btn" (click)="toggleTheme()" [matTooltip]="isDarkTheme ? 'Mudar para Tema Claro' : 'Mudar para Tema Escuro'">
           <mat-icon>{{ isDarkTheme ? 'light_mode' : 'dark_mode' }}</mat-icon>
         </button>
+
+        <div class="user-profile" [matMenuTriggerFor]="userMenu">
+          <div class="avatar">{{ userInitials }}</div>
+        </div>
+        
+        <mat-menu #userMenu="matMenu">
+          <div class="user-details">
+            <span class="u-name">{{ userProfile?.firstName || 'Usuário' }}</span>
+            <span class="u-email">{{ userProfile?.email }}</span>
+          </div>
+          <mat-divider></mat-divider>
+          <button mat-menu-item>
+            <mat-icon>person</mat-icon>
+            <span>Meu Perfil</span>
+          </button>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon color="warn">logout</mat-icon>
+            <span>Sair</span>
+          </button>
+        </mat-menu>
       </div>
     </div>
     

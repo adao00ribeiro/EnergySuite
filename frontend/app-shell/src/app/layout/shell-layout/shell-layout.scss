@@ -3,17 +3,17 @@
 }
 
 /* ---------------------------------------------------
-   SIDEBAR BASE
+   SIDEBAR BASE (Corporate Flat)
 ----------------------------------------------------- */
 .shell-sidebar {
   width: 260px;
-  background-color: #0b1121; /* Slightly different from the deep black/blue of the app shell */
-  border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+  background-color: var(--color-secondary);
+  border-right: 1px solid var(--color-border) !important;
   display: flex;
   flex-direction: column;
   transition: width 0.3s cubic-bezier(0.2, 0, 0, 1);
   overflow-x: hidden;
-  color: var(--text-secondary);
+  color: var(--color-muted-foreground);
   
   &.collapsed {
     width: 72px;
@@ -29,7 +29,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--color-border);
   flex-shrink: 0;
 }
 
@@ -45,12 +45,12 @@
   width: 32px;
   height: 32px;
   min-width: 32px;
-  background: linear-gradient(135deg, #0ea5e9, #2563eb);
-  border-radius: 8px;
+  background: var(--color-accent);
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #ffffff;
   
   mat-icon {
     font-size: 20px;
@@ -64,9 +64,9 @@
   
   h2 {
     margin: 0;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-primary);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-foreground);
     font-family: var(--font-sans);
     letter-spacing: -0.2px;
   }
@@ -75,19 +75,19 @@
 .toggle-btn {
   background: transparent;
   border: none;
-  color: var(--text-secondary);
+  color: var(--color-muted-foreground);
   cursor: pointer;
   width: 32px;
   height: 32px;
-  border-radius: 6px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background 0.2s;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-primary);
+    background: var(--color-card-hover);
+    color: var(--color-foreground);
   }
 }
 
@@ -104,29 +104,30 @@
     width: 4px;
   }
   &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--color-border);
     border-radius: 4px;
   }
 }
 
 .nav-section {
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .nav-section-title {
-  padding: 0 24px;
+  padding: 0 20px;
   margin-bottom: 8px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--color-muted-foreground);
   white-space: nowrap;
+  opacity: 0.8;
 }
 
 .nav-divider {
   height: 1px;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--color-border);
   margin: 16px 20px;
 }
 
@@ -134,7 +135,7 @@
    GROUPS AND ITEMS
 ----------------------------------------------------- */
 .nav-group {
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   padding: 0 12px;
 }
 
@@ -142,26 +143,26 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 40px;
+  height: 36px;
   padding: 0 12px;
-  border-radius: 8px;
+  border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: var(--text-secondary);
+  color: var(--color-muted-foreground);
   border-left: 3px solid transparent;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.04);
-    color: var(--text-primary);
+    background: var(--color-card-hover);
+    color: var(--color-foreground);
   }
 
   &.active {
-    background: rgba(14, 165, 233, 0.12); /* Subtle blue translucent */
-    color: white;
-    border-left: 3px solid #0ea5e9; /* Bright blue indicator */
+    background: rgba(0, 82, 204, 0.08); /* Corporate subtle primary background */
+    color: var(--color-accent);
+    border-left: 3px solid var(--color-accent);
     
     .group-icon {
-      color: #0ea5e9;
+      color: var(--color-accent);
     }
   }
 }
@@ -174,15 +175,15 @@
 }
 
 .group-icon {
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
-  min-width: 20px;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
   transition: color 0.2s;
 }
 
 .group-label {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   white-space: nowrap;
 }
@@ -194,19 +195,19 @@
 }
 
 .badge {
-  background: #3b82f6;
-  color: white;
+  background: var(--color-accent);
+  color: #ffffff;
   font-size: 11px;
   font-weight: 600;
   padding: 2px 6px;
-  border-radius: 10px;
+  border-radius: 12px;
 }
 
 .expand-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-  opacity: 0.5;
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
 }
 
 /* ---------------------------------------------------
@@ -215,58 +216,57 @@
 .submenu {
   display: flex;
   flex-direction: column;
-  padding-top: 4px;
+  padding-top: 2px;
   padding-bottom: 4px;
   position: relative;
 
-  /* Left vertical guideline for submenus */
   &::before {
     content: '';
     position: absolute;
     top: 0;
     bottom: 8px;
-    left: 21px; /* Aligned with icon center */
+    left: 20px;
     width: 1px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--color-border);
   }
 }
 
 .submenu-item {
   display: flex;
   align-items: center;
-  height: 36px;
-  padding-left: 44px; /* Indent */
+  height: 32px;
+  padding-left: 42px;
   padding-right: 12px;
-  color: var(--text-secondary);
+  color: var(--color-muted-foreground);
   text-decoration: none;
-  font-size: 14px;
+  font-size: 13px;
   transition: color 0.2s;
   position: relative;
   white-space: nowrap;
 
   .submenu-dot {
     position: absolute;
-    left: 19px;
+    left: 18px;
     width: 5px;
     height: 5px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--color-border);
     transition: all 0.2s;
   }
 
   &:hover {
-    color: var(--text-primary);
+    color: var(--color-foreground);
     .submenu-dot {
-      background: var(--text-primary);
+      background: var(--color-foreground);
     }
   }
 
   &.active {
-    color: #0ea5e9;
-    font-weight: 500;
+    color: var(--color-accent);
+    font-weight: 600;
     .submenu-dot {
-      background: #0ea5e9;
-      box-shadow: 0 0 8px rgba(14, 165, 233, 0.6);
+      background: var(--color-accent);
+      box-shadow: 0 0 0 2px rgba(0, 82, 204, 0.2);
     }
   }
 }
@@ -277,24 +277,24 @@
 .sidebar-footer {
   flex-shrink: 0;
   padding: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--color-border);
 }
 
 .user-card {
   display: flex;
   align-items: center;
-  padding: 8px;
-  border-radius: 8px;
+  padding: 6px;
+  border-radius: 4px;
   transition: background 0.2s;
   cursor: pointer;
   gap: 12px;
   
   &:hover {
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--color-card-hover);
   }
 
   &.collapsed {
-    padding: 8px 4px;
+    padding: 6px 4px;
     justify-content: center;
   }
 }
@@ -303,7 +303,7 @@
   width: 32px;
   height: 32px;
   min-width: 32px;
-  border-radius: 50%;
+  border-radius: 4px; /* Corporate square-ish avatar */
   overflow: hidden;
   
   img {
@@ -321,24 +321,25 @@
 .user-name {
   font-size: 13px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
 }
 
 .user-role {
-  font-size: 12px;
-  color: var(--text-secondary);
+  font-size: 11px;
+  color: var(--color-muted-foreground);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  text-transform: uppercase;
 }
 
 .more-btn {
   background: transparent;
   border: none;
-  color: var(--text-secondary);
+  color: var(--color-muted-foreground);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -346,13 +347,13 @@
   padding: 0;
   
   mat-icon {
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
   }
 
   &:hover {
-    color: var(--text-primary);
+    color: var(--color-foreground);
   }
 }
 
@@ -366,14 +367,13 @@
   .group-header {
     padding: 0;
     justify-content: center;
-    border-radius: 12px;
-    border-left: none; /* Remove left border in collapsed state */
+    border-radius: 4px;
+    border-left: none;
     
     &.active {
-      /* In collapsed mode, highlight the whole button instead of just the border */
-      background: rgba(14, 165, 233, 0.15);
-      color: #0ea5e9;
-      box-shadow: inset 2px 0 0 0 #0ea5e9; /* Smaller, subtle indicator inside */
+      background: rgba(0, 82, 204, 0.1);
+      color: var(--color-accent);
+      box-shadow: inset 2px 0 0 0 var(--color-accent);
     }
   }
   .group-header-content {
@@ -388,7 +388,7 @@
 .shell-content {
   display: flex;
   flex-direction: column;
-  background-color: var(--bg-base);
+  background-color: var(--color-background);
 }
 
 .topbar {
@@ -397,9 +397,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 32px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  background: rgba(2, 6, 23, 0.6);
-  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-primary);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -410,25 +409,67 @@
   gap: 16px;
 }
 
-.theme-toggle-btn {
+.theme-toggle-btn, .icon-btn {
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--text-secondary);
+  border: 1px solid var(--color-border);
+  color: var(--color-on-primary);
   cursor: pointer;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
   
   &:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-primary);
-    transform: scale(1.05);
+    background: var(--color-card-hover);
+    color: var(--color-foreground);
   }
 }
+
+.icon-btn {
+  border: none;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding-left: var(--space-xl);
+  border-left: 1px solid var(--color-border);
+  
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background-color: var(--color-accent);
+    color: var(--color-on-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+  }
+}
+
+.user-details {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  
+  .u-name {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--color-foreground);
+  }
+  
+  .u-email {
+    font-size: 11px;
+    color: var(--color-muted-foreground);
+  }
+}
+
 .mf-wrapper {
   flex: 1;
   overflow: auto;

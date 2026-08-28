@@ -13,10 +13,10 @@
     h1 {
       font-size: 28px;
       margin-bottom: 4px;
-      color: var(--text-primary);
+      color: var(--color-foreground);
     }
     .subtitle {
-      color: var(--text-secondary);
+      color: var(--color-muted-foreground);
       margin: 0;
       font-size: 14px;
     }
@@ -68,7 +68,7 @@
     flex-direction: column;
     
     .label {
-      color: var(--text-secondary);
+      color: var(--color-muted-foreground);
       font-size: 13px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -77,7 +77,7 @@
     .value {
       font-size: 24px;
       font-weight: 700;
-      color: var(--text-primary);
+      color: var(--color-foreground);
     }
   }
 }
@@ -99,7 +99,7 @@
   background: transparent !important;
   
   th.mat-header-cell {
-    color: var(--text-secondary);
+    color: var(--color-muted-foreground);
     border-bottom-color: rgba(255, 255, 255, 0.05);
     font-size: 12px;
     text-transform: uppercase;
@@ -107,7 +107,7 @@
   }
   
   td.mat-cell {
-    color: var(--text-primary);
+    color: var(--color-foreground);
     border-bottom-color: rgba(255, 255, 255, 0.02);
   }
 }
@@ -140,7 +140,7 @@
   flex-direction: column;
   align-items: center;
   padding: 60px;
-  color: var(--text-secondary);
+  color: var(--color-muted-foreground);
   
   mat-icon {
     font-size: 48px;

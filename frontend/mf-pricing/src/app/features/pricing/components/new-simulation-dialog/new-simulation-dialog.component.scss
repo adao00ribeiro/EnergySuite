@@ -3,11 +3,11 @@ h2[mat-dialog-title] {
   font-family: 'Inter', 'Roboto', sans-serif;
   font-weight: 600;
   font-size: 20px;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
 }
 
 .dialog-subtitle {
-  color: var(--text-secondary, #b0bec5);
+  color: var(--color-muted-foreground, #b0bec5);
   font-size: 14px;
   margin-bottom: 24px;
   font-family: 'Inter', 'Roboto', sans-serif;

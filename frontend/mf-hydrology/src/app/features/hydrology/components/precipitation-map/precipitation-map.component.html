@@ -1,35 +1,34 @@
-<div class="precipitation-container">
-  <mat-card class="filter-card">
-    <mat-card-header>
-      <mat-card-title>Filtros Meteorológicos (Lakehouse)</mat-card-title>
-    </mat-card-header>
-    <mat-card-content class="filter-content">
-      <mat-form-field appearance="outline">
-        <mat-label>Modelo</mat-label>
-        <mat-select [ngModel]="selectedModel()" (ngModelChange)="selectedModel.set($event)">
-          <mat-option value="GEFS">GEFS (NOAA)</mat-option>
-          <mat-option value="ECMWF">ECMWF (OpenData)</mat-option>
-          <mat-option value="ETA">ETA (CPTEC)</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Data de Previsão</mat-label>
+<div class="precipitation-dashboard">
+  <!-- Top Bar -->
+  <div class="ena-topbar mb-4">
+    <div class="breadcrumb">Mapas de Precipitação</div>
+    <div class="topbar-filters">
+      <mat-form-field appearance="outline" class="density-3">
+        <mat-label>Previsões do dia</mat-label>
         <input matInput type="date" [ngModel]="selectedDate()" (ngModelChange)="selectedDate.set($event)">
       </mat-form-field>
-    </mat-card-content>
-  </mat-card>
+      <button mat-button color="primary">Limpar filtros</button>
+    </div>
+  </div>
 
-  <mat-card class="map-card">
-    <mat-card-content>
-      <div *ngIf="isLoading()" class="loading-overlay">
-        <span>Carregando matriz geoespacial do Lakehouse...</span>
-      </div>
-      <div 
-        echarts 
-        [options]="chartOption()" 
-        class="map-chart">
-      </div>
-    </mat-card-content>
-  </mat-card>
+  <!-- Loading State -->
+  <div *ngIf="isLoading()" class="loading-overlay mat-elevation-z1 p-4 text-center">
+    <span>Carregando matriz geoespacial do Lakehouse...</span>
+  </div>
+
+  <!-- Map Grid -->
+  <div class="map-grid" *ngIf="!isLoading()">
+    <mat-card *ngFor="let map of mapGrid()" class="map-card" (click)="openDialog(map)">
+      <mat-card-header>
+        <mat-card-title class="map-title">{{ map.model }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="map-thumbnail">
+        <div echarts [options]="map.chartOption" class="mini-map-chart"></div>
+      </mat-card-content>
+      <mat-card-footer class="map-footer">
+        <span>{{ map.date | date:'dd/MM/yyyy' }} - {{ map.dayLabel }}</span>
+        <mat-icon class="expand-icon">open_in_full</mat-icon>
+      </mat-card-footer>
+    </mat-card>
+  </div>
 </div>

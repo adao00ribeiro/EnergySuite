@@ -5,6 +5,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 import { KeycloakService } from 'keycloak-angular';
 
 export interface NavItem {
@@ -23,7 +24,7 @@ export interface NavGroup {
 @Component({
   selector: 'app-shell-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatSidenavModule, MatIconModule, MatTooltipModule, MatMenuModule],
+  imports: [CommonModule, RouterModule, MatSidenavModule, MatIconModule, MatTooltipModule, MatMenuModule, MatDividerModule],
   templateUrl: './shell-layout.html',
   styleUrl: './shell-layout.scss'
 })
@@ -38,6 +39,7 @@ export class ShellLayoutComponent implements OnInit {
 
   userProfile: any = null;
   userRoles: string[] = [];
+  userInitials: string = 'US';
 
   toggleTheme() {
     this.isDarkTheme = !this.isDarkTheme;
@@ -86,7 +88,25 @@ export class ShellLayoutComponent implements OnInit {
 
   async ngOnInit() {
     if (await this.keycloak.isLoggedIn()) {
-      this.userProfile = await this.keycloak.loadUserProfile();
+      try {
+        const kcInstance = this.keycloak.getKeycloakInstance();
+        const tokenParsed = kcInstance.tokenParsed;
+        
+        if (tokenParsed) {
+          this.userProfile = {
+            firstName: tokenParsed['given_name'] || tokenParsed['preferred_username'] || 'Usuário',
+            lastName: tokenParsed['family_name'] || '',
+            email: tokenParsed['email'] || ''
+          };
+        }
+
+        const first = this.userProfile?.firstName?.charAt(0) || '';
+        const last = this.userProfile?.lastName?.charAt(0) || '';
+        this.userInitials = (first + last).toUpperCase() || 'US';
+      } catch (err) {
+        console.error('Failed to parse user info', err);
+        this.userInitials = 'US';
+      }
       this.userRoles = this.keycloak.getUserRoles();
     }
 

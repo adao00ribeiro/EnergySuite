@@ -1,12 +1,12 @@
 /* Design System - Portfolio (mf-portfolio) */
 :root {
   /* Color Palette - Premium Dark Mode */
-  --bg-base: #0f172a; /* Slate 900 */
-  --bg-surface: rgba(30, 41, 59, 0.7);
-  --bg-surface-hover: rgba(30, 41, 59, 0.9);
+  --color-background: #0f172a; /* Slate 900 */
+  --color-card: rgba(30, 41, 59, 0.7);
+  --color-muted: rgba(30, 41, 59, 0.9);
   
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
+  --color-foreground: #f8fafc;
+  --color-muted-foreground: #94a3b8;
   
   /* Executive Accents - Portfolio Theme (Bright Blue & Rose) */
   --accent-blue: #0ea5e9; /* Sky 500 - Physical Assets */
@@ -27,8 +27,8 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--bg-base);
-  color: var(--text-primary);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
@@ -40,7 +40,7 @@ body {
 
 /* Glassmorphism Utilities */
 .glass-panel {
-  background: var(--bg-surface);
+  background: var(--color-card);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -50,7 +50,7 @@ body {
 }
 
 .glass-panel:hover {
-  background: var(--bg-surface-hover);
+  background: var(--color-muted);
   border-color: rgba(255, 255, 255, 0.15);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
 }
@@ -93,7 +93,7 @@ h1, h2, h3, h4, h5, h6 {
   background-color: transparent !important;
 }
 .mat-mdc-header-cell, .mat-mdc-cell, .mat-header-cell, .mat-cell {
-  color: var(--text-primary) !important;
+  color: var(--color-foreground) !important;
   border-bottom-color: rgba(255,255,255,0.1) !important;
 }
 body.light-theme .mat-mdc-header-cell, body.light-theme .mat-mdc-cell, body.light-theme .mat-header-cell, body.light-theme .mat-cell {

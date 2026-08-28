@@ -13,7 +13,7 @@
   margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 .kanban-board {
   display: flex;
@@ -22,7 +22,7 @@
 }
 .column {
   flex: 1;
-  background: var(--bg-surface);
+  background: var(--color-card);
   border-radius: 12px;
   padding: 16px;
   display: flex;
@@ -30,7 +30,7 @@
 }
 .column h2 {
   font-size: 1.1rem;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin-bottom: 16px;
   font-weight: 600;
 }
@@ -45,7 +45,7 @@
   cursor: grab;
   border-left: 4px solid #cbd5e1;
   background: rgba(0, 0, 0, 0.4) !important;
-  color: var(--text-primary) !important;
+  color: var(--color-foreground) !important;
 }
 .strategy-card:active {
   cursor: grabbing;
@@ -63,7 +63,7 @@
   border-radius: 4px;
   box-shadow: 0 5px 15px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
   background: rgba(0, 0, 0, 0.8) !important;
-  color: var(--text-primary) !important;
+  color: var(--color-foreground) !important;
 }
 .cdk-drag-placeholder {
   opacity: 0;

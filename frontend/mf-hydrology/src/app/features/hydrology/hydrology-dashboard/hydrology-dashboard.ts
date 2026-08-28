@@ -1,18 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
-import { ReservoirLevelsChartComponent } from '../components/reservoir-levels-chart/reservoir-levels-chart';
 import { MlopsStatusComponent } from '../components/mlops-status/mlops-status';
 import { PrecipitationMapComponent } from '../components/precipitation-map/precipitation-map.component';
 import { CustomScenariosComponent } from '../components/custom-scenarios/custom-scenarios';
 import { ExportsDashboardComponent } from '../components/exports-dashboard/exports-dashboard';
+import { EnaAnalyticsComponent } from '../components/ena-analytics/ena-analytics';
 import { AuthService } from '../../../core/services/auth.service';
-import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-hydrology-dashboard',
   standalone: true,
-  imports: [CommonModule, MatTabsModule, ReservoirLevelsChartComponent, MlopsStatusComponent, PrecipitationMapComponent, CustomScenariosComponent, ExportsDashboardComponent],
+  imports: [
+    CommonModule, 
+    MatTabsModule, 
+    MlopsStatusComponent, 
+    PrecipitationMapComponent, 
+    CustomScenariosComponent, 
+    ExportsDashboardComponent,
+    EnaAnalyticsComponent
+  ],
   templateUrl: './hydrology-dashboard.html',
   styleUrl: './hydrology-dashboard.css'
 })

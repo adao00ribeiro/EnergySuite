@@ -1,0 +1,129 @@
+<div class="ena-dashboard">
+  <!-- Top Bar -->
+  <div class="ena-topbar">
+    <div class="breadcrumb">ENA > <span class="font-bold">Tabela</span></div>
+    <div class="topbar-filters">
+      <mat-form-field appearance="outline" class="density-3">
+        <mat-label>Previsões do dia</mat-label>
+        <input matInput type="date" value="2024-11-25">
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="density-3">
+        <mat-select value="mapas">
+          <mat-option value="mapas">Mapas</mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="density-3">
+        <mat-select value="cat">
+          <mat-option value="cat">Categorias</mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="density-3">
+        <mat-select value="cenarios">
+          <mat-option value="cenarios">Cenários</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-button color="primary">Limpar filtros</button>
+    </div>
+  </div>
+
+  <div class="ena-layout">
+    <!-- Left: Chart Area -->
+    <div class="chart-section mat-elevation-z1">
+      <mat-tab-group animationDuration="0ms" class="chart-tabs">
+        <mat-tab label="GRÁFICO 1">
+          <div echarts [options]="chartOption()" class="ena-chart"></div>
+        </mat-tab>
+        <mat-tab label="GRÁFICO 2">
+          <div class="placeholder-chart">Sem dados selecionados</div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+
+    <!-- Right: Config Sidebar -->
+    <div class="config-sidebar mat-elevation-z1">
+      <div class="sidebar-header">
+        <h3>Configurações</h3>
+      </div>
+      <div class="sidebar-content">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Nome da tabela</mat-label>
+          <input matInput [ngModel]="tableName()">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100 mt-2">
+          <mat-label>Resultados</mat-label>
+          <mat-select [ngModel]="selectedResult()">
+            <mat-option value="oficial">Resultados Oficiais</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="grid-2-cols mt-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Base de informações</mat-label>
+            <mat-select [ngModel]="selectedInfoBase()">
+              <mat-option value="Ambas">Ambas</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Decks do PREVS</mat-label>
+            <mat-select [ngModel]="selectedPrevsDeck()">
+              <mat-option value="Combinado">Combinado</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Base do cálculo</mat-label>
+            <mat-select [ngModel]="selectedCalcBase()">
+              <mat-option value="Semanal/Mensal">Semanal/Mensal</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Medida</mat-label>
+            <mat-select [ngModel]="selectedMeasure()">
+              <mat-option value="%MLT">%MLT</mat-option>
+              <mat-option value="MWmed">MWmed</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Agrupar por</mat-label>
+            <mat-select [ngModel]="groupBy()">
+              <mat-option value="Submercados">Submercados</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Agrupamentos</mat-label>
+            <mat-select value="all">
+              <mat-option value="all">Todos</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="w-100 mt-2">
+          <mat-label>Análise temporal</mat-label>
+          <mat-select [ngModel]="tempAnalysis()">
+            <mat-option value="D-0">D-0 (26/11/2024)</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="toggle-section mt-2">
+          <mat-slide-toggle [ngModel]="diffMode()">
+            Calcular diferença entre previsões
+          </mat-slide-toggle>
+        </div>
+      </div>
+      
+      <div class="sidebar-footer">
+        <button mat-flat-button color="primary" class="w-100 mb-2 btn-main">Criar tabela</button>
+        <button mat-stroked-button color="primary" class="w-100 btn-outline">Criar tabela em nova aba</button>
+      </div>
+    </div>
+  </div>
+</div>

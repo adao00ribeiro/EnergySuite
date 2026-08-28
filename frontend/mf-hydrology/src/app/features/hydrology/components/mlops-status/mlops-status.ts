@@ -36,7 +36,7 @@ export class MlopsStatusComponent implements OnInit, OnDestroy {
   }
 
   fetchExecutions() {
-    this.http.get<MlopsRun[]>('/api/v1/pluvia/executions').subscribe({
+    this.http.get<MlopsRun[]>('http://localhost:8000/api/v1/pluvia/executions').subscribe({
       next: (data) => {
         this.runs.set(data);
       },

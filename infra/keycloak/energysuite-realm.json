@@ -1,5 +1,6 @@
 {
   "realm": "EnergySuite",
+  "loginTheme": "energysuite",
   "enabled": true,
   "sslRequired": "none",
   "registrationAllowed": true,

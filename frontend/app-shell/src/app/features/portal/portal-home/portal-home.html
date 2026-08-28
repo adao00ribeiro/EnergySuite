@@ -1,88 +1,79 @@
-<div class="workspace-launcher animate-fade-in">
-  <!-- Top Header -->
-  <header class="top-header">
-    <div class="logo-area">
-      <h2>EnergySuite</h2>
-      <span class="badge-enterprise">Enterprise Platform</span>
-    </div>
-    <div class="user-actions">
-      <button class="icon-btn"><mat-icon>notifications</mat-icon></button>
-      <button class="icon-btn"><mat-icon>help_outline</mat-icon></button>
-      <div class="user-profile" [matMenuTriggerFor]="userMenu" style="cursor: pointer;">
-        <div class="avatar">{{ userInitials }}</div>
-        <span class="user-name">{{ userProfile?.firstName || 'Usuário' }}</span>
-        <mat-icon>expand_more</mat-icon>
+<div class="launcher-container">
+  <!-- Sidebar -->
+  <aside class="launcher-sidebar">
+    <div class="sidebar-header">
+      <div class="logo-box">
+        <mat-icon>flash_on</mat-icon>
       </div>
-      <mat-menu #userMenu="matMenu">
-        <button mat-menu-item>
-          <mat-icon>person</mat-icon>
-          <span>Meu Perfil</span>
-        </button>
-        <button mat-menu-item (click)="logout()">
-          <mat-icon color="warn">logout</mat-icon>
-          <span>Sair</span>
-        </button>
-      </mat-menu>
-    </div>
-  </header>
-
-  <!-- Hero & Search -->
-  <section class="hero-section animate-slide-up">
-    <div class="welcome-text">
-      <h1>Olá, {{ userProfile?.firstName || 'Visitante' }}</h1>
-      <p>Acesse seus módulos e operações do EnergySuite.</p>
+      <div class="logo-text">
+        <span class="brand-name">EnergySuite</span>
+        <span class="brand-powered">Enterprise Platform</span>
+      </div>
     </div>
     
-    <div class="search-container">
-      <mat-icon class="search-icon">search</mat-icon>
-      <input type="text" placeholder="Buscar módulo, funcionalidade ou operação..." class="search-input">
-      <div class="shortcut-hint">
-        <kbd>⌘</kbd> <kbd>K</kbd>
+    <nav class="sidebar-nav">
+      <div class="nav-item active">
+        <div class="nav-indicator"></div>
+        <span class="nav-text">Minha Central</span>
       </div>
-    </div>
-  </section>
+      
+      <!-- List all available modules dynamically -->
+      <ng-container *ngFor="let mod of modules">
+        <div class="nav-group-title">{{ mod.name }}</div>
+        <div class="nav-item" (click)="navigateTo(mod.path)">
+          <span class="nav-text">Acessar {{ mod.name }}</span>
+        </div>
+      </ng-container>
+      
+    </nav>
+  </aside>
 
-  <!-- Modules Grid -->
-  <section class="modules-section animate-slide-up" style="animation-delay: 0.1s;">
-    <h3 class="section-title">Módulos</h3>
-    <div class="modules-grid">
-      <div *ngFor="let mod of modules; let i = index" 
-           class="module-card glass-panel"
-           [ngStyle]="{'animation-delay': ((i * 0.1) + 0.2) + 's'}"
-           (click)="navigateTo(mod.path)">
-           
-        <div class="card-icon" [ngClass]="mod.color">
-          <mat-icon>{{ mod.icon }}</mat-icon>
+  <!-- Main Content -->
+  <main class="launcher-main">
+    <!-- Topbar -->
+    <header class="main-header">
+      <div class="header-title">Minha Central</div>
+      
+      <div class="header-actions">
+        <button class="icon-btn"><mat-icon>menu_book</mat-icon></button>
+        <button class="icon-btn"><mat-icon>notifications_none</mat-icon></button>
+        
+        <div class="user-profile" [matMenuTriggerFor]="userMenu">
+          <div class="avatar">{{ userInitials }}</div>
         </div>
         
-        <div class="card-content">
-          <div class="card-category" [ngClass]="mod.color + '-text'">{{ mod.category }}</div>
-          <h4 class="card-title">{{ mod.name }}</h4>
-          <p class="card-desc">{{ mod.description }}</p>
-        </div>
-        
-        <div class="card-cta">
-          <span>Abrir módulo</span>
-          <mat-icon>arrow_forward</mat-icon>
-        </div>
+        <mat-menu #userMenu="matMenu">
+          <div class="user-details">
+            <span class="u-name">{{ userProfile?.firstName || 'Usuário' }}</span>
+            <span class="u-email">{{ userProfile?.email }}</span>
+          </div>
+          <mat-divider></mat-divider>
+          <button mat-menu-item>
+            <mat-icon>person</mat-icon>
+            <span>Meu Perfil</span>
+          </button>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon color="warn">logout</mat-icon>
+            <span>Sair</span>
+          </button>
+        </mat-menu>
       </div>
-    </div>
-  </section>
+    </header>
 
-  <!-- Recent Activity -->
-  <section class="activity-section animate-slide-up" style="animation-delay: 0.3s;">
-    <h3 class="section-title">Atividade recente</h3>
-    <div class="activity-list">
-      <div *ngFor="let act of recentActivities" class="activity-item glass-panel">
-        <div class="act-icon" [ngClass]="act.color">
-          <mat-icon>{{ act.icon }}</mat-icon>
+    <!-- Apps Content -->
+    <div class="content-area">
+      <h2 class="section-title">Apps</h2>
+      
+      <div class="apps-grid">
+        <div *ngFor="let mod of modules" class="app-card">
+          <div class="card-top-border" [ngClass]="mod.color"></div>
+          <div class="card-body">
+            <h3 class="app-title">{{ mod.name }}</h3>
+            <p class="app-desc">{{ mod.description }}</p>
+            <button class="btn-primary" (click)="navigateTo(mod.path)">Acessar</button>
+          </div>
         </div>
-        <div class="act-details">
-          <span class="act-module">{{ act.module }}</span>
-          <span class="act-time">{{ act.time }}</span>
-        </div>
-        <mat-icon class="act-arrow">chevron_right</mat-icon>
       </div>
     </div>
-  </section>
+  </main>
 </div>

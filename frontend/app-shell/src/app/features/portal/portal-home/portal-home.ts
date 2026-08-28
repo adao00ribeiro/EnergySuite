@@ -1,20 +1,22 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 import { KeycloakService } from 'keycloak-angular';
 
 @Component({
   selector: 'app-portal-home',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatMenuModule],
+  imports: [CommonModule, MatIconModule, MatMenuModule, MatDividerModule],
   templateUrl: './portal-home.html',
   styleUrl: './portal-home.scss'
 })
 export class PortalHomeComponent implements OnInit {
   private router = inject(Router);
   private keycloak = inject(KeycloakService);
+  private cdr = inject(ChangeDetectorRef);
 
   userProfile: any = null;
   userInitials: string = 'AD';
@@ -68,18 +70,36 @@ export class PortalHomeComponent implements OnInit {
 
   async ngOnInit() {
     if (await this.keycloak.isLoggedIn()) {
-      this.userProfile = await this.keycloak.loadUserProfile();
-      
-      const first = this.userProfile?.firstName?.charAt(0) || '';
-      const last = this.userProfile?.lastName?.charAt(0) || '';
-      this.userInitials = (first + last).toUpperCase() || 'U';
+      try {
+        const kcInstance = this.keycloak.getKeycloakInstance();
+        const tokenParsed = kcInstance.tokenParsed;
+        
+        if (tokenParsed) {
+          this.userProfile = {
+            firstName: tokenParsed['given_name'] || tokenParsed['preferred_username'] || 'Usuário',
+            lastName: tokenParsed['family_name'] || '',
+            email: tokenParsed['email'] || ''
+          };
+        }
+
+        const first = this.userProfile?.firstName?.charAt(0) || '';
+        const last = this.userProfile?.lastName?.charAt(0) || '';
+        this.userInitials = (first + last).toUpperCase() || 'AD';
+      } catch (err) {
+        console.error('Failed to parse user info', err);
+        this.userInitials = 'AD';
+      }
 
       const userRoles = this.keycloak.getUserRoles();
       
-      // Filter modules based on user roles
+      // Admin bypass or role filtering
+      const isAdmin = userRoles.includes('admin') || userRoles.includes('default-roles-energysuite');
+      
       this.modules = this.allModules.filter(mod => 
-        mod.roles.some(role => userRoles.includes(role))
+        isAdmin || mod.roles.some(role => userRoles.includes(role))
       );
+      
+      this.cdr.detectChanges();
     }
   }
 
