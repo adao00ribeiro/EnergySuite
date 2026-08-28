@@ -8,18 +8,28 @@
     <div class="user-actions">
       <button class="icon-btn"><mat-icon>notifications</mat-icon></button>
       <button class="icon-btn"><mat-icon>help_outline</mat-icon></button>
-      <div class="user-profile">
-        <div class="avatar">AD</div>
-        <span class="user-name">Administrador</span>
+      <div class="user-profile" [matMenuTriggerFor]="userMenu" style="cursor: pointer;">
+        <div class="avatar">{{ userInitials }}</div>
+        <span class="user-name">{{ userProfile?.firstName || 'Usuário' }}</span>
         <mat-icon>expand_more</mat-icon>
       </div>
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item>
+          <mat-icon>person</mat-icon>
+          <span>Meu Perfil</span>
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon color="warn">logout</mat-icon>
+          <span>Sair</span>
+        </button>
+      </mat-menu>
     </div>
   </header>
 
   <!-- Hero & Search -->
   <section class="hero-section animate-slide-up">
     <div class="welcome-text">
-      <h1>Olá, Administrador</h1>
+      <h1>Olá, {{ userProfile?.firstName || 'Visitante' }}</h1>
       <p>Acesse seus módulos e operações do EnergySuite.</p>
     </div>
     

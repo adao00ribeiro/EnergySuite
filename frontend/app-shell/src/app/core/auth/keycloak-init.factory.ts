@@ -9,7 +9,7 @@ export function initializeKeycloak(keycloak: KeycloakService) {
         clientId: 'energysuite-frontend'
       },
       initOptions: {
-        onLoad: 'check-sso',
+        onLoad: 'login-required',
         silentCheckSsoRedirectUri:
           window.location.origin + '/assets/silent-check-sso.html',
         pkceMethod: 'S256'
