@@ -21,7 +21,7 @@ export class PortalHomeComponent implements OnInit {
   
   allModules = [
     { 
-      name: 'Gestão de Portfólio', 
+      name: 'VoltTrade', 
       category: 'PORTFÓLIO & MERCADO',
       description: 'Gestão de ativos, posições e exposição energética.',
       path: '/portfolio', 
@@ -30,7 +30,7 @@ export class PortalHomeComponent implements OnInit {
       roles: ['Trader', 'Executive']
     },
     { 
-      name: 'ETRM & Backops', 
+      name: 'OpsCore', 
       category: 'OPERAÇÕES',
       description: 'Operações, contratos e processos de backoffice.',
       path: '/operations', 
@@ -39,7 +39,7 @@ export class PortalHomeComponent implements OnInit {
       roles: ['Trader', 'Executive']
     },
     { 
-      name: 'Imeris', 
+      name: 'RiskVisor', 
       category: 'RISCO',
       description: 'Monitoramento e análise de risco energético.',
       path: '/pricing', 
@@ -48,7 +48,7 @@ export class PortalHomeComponent implements OnInit {
       roles: ['RiskAnalyst', 'Executive']
     },
     { 
-      name: 'Pluvia', 
+      name: 'Fluvius', 
       category: 'HIDROLOGIA',
       description: 'Dados, indicadores e análises hidrológicas.',
       path: '/hydrology', 
@@ -61,9 +61,9 @@ export class PortalHomeComponent implements OnInit {
   modules: any[] = [];
 
   recentActivities = [
-    { module: 'Gestão de Portfólio', time: 'Último acesso hoje às 14:32', color: 'portfolio-color', icon: 'bar_chart' },
-    { module: 'Imeris', time: 'Último acesso ontem às 18:10', color: 'risk-color', icon: 'security' },
-    { module: 'Pluvia', time: 'Último acesso 25/08/2026', color: 'hydrology-color', icon: 'water_drop' }
+    { module: 'VoltTrade', time: 'Último acesso hoje às 14:32', color: 'portfolio-color', icon: 'bar_chart' },
+    { module: 'RiskVisor', time: 'Último acesso ontem às 18:10', color: 'risk-color', icon: 'security' },
+    { module: 'Fluvius', time: 'Último acesso 25/08/2026', color: 'hydrology-color', icon: 'water_drop' }
   ];
 
   async ngOnInit() {
