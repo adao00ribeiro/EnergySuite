@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using EtrmService.Application.Interfaces;
@@ -27,22 +29,18 @@ public class GetStudyResultsQueryHandler : IRequestHandler<GetStudyResultsQuery,
 
         var response = new StudyResultResponseDto();
 
-        var random = new Random(request.StudyId.GetHashCode());
+        if (string.IsNullOrWhiteSpace(study.ResultsJson))
+            return response;
 
-        var currentPeriod = study.StartDate;
-        for (int i = 1; i <= study.HorizonMonths; i++)
+        try
         {
-            // Gerando PLD fictício (entre 60 e 200) simulando a saída de um DECOMP/NEWAVE
-            response.Results.Add(new StudyResultDto
-            {
-                Month = currentPeriod.ToString("MM/yyyy"),
-                PldSE = Math.Round((decimal)(60 + random.NextDouble() * 100), 2),
-                PldS = Math.Round((decimal)(50 + random.NextDouble() * 120), 2),
-                PldNE = Math.Round((decimal)(70 + random.NextDouble() * 80), 2),
-                PldN = Math.Round((decimal)(60 + random.NextDouble() * 50), 2),
-            });
-
-            currentPeriod = currentPeriod.AddMonths(1);
+            var results = JsonSerializer.Deserialize<List<StudyResultDto>>(study.ResultsJson);
+            if (results != null)
+                response.Results.AddRange(results);
+        }
+        catch (JsonException)
+        {
+            return response;
         }
 
         return response;

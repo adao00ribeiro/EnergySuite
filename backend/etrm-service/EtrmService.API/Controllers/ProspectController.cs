@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using EtrmService.Application.Interfaces;
 using EtrmService.Application.Prospect.Commands;
 using EtrmService.Application.Prospect.DTOs;
 using EtrmService.Application.Prospect.Queries;
@@ -12,21 +13,23 @@ namespace EtrmService.API.Controllers;
 
 [ApiController]
 [Route("api/v1/prospect")]
-[Authorize] // Simulando a blindagem B2B via JWT
+[Authorize]
 public class ProspectController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly ICurrentUserService _currentUser;
 
-    public ProspectController(IMediator mediator)
+    public ProspectController(IMediator mediator, ICurrentUserService currentUser)
     {
         _mediator = mediator;
+        _currentUser = currentUser;
     }
 
     [HttpPost("studies")]
     [ProducesResponseType(typeof(StudyDto), 200)]
     public async Task<IActionResult> CreateStudy([FromBody] CreateStudyCommand command)
     {
-        command.TenantId = Guid.Parse("00000000-0000-0000-0000-000000000001"); // Mock Tenant
+        command.TenantId = _currentUser.TenantId;
         var result = await _mediator.Send(command);
         return Ok(result);
     }
@@ -35,7 +38,7 @@ public class ProspectController : ControllerBase
     [ProducesResponseType(typeof(List<StudyDto>), 200)]
     public async Task<IActionResult> GetStudies()
     {
-        var query = new GetStudiesQuery { TenantId = Guid.Parse("00000000-0000-0000-0000-000000000001") };
+        var query = new GetStudiesQuery { TenantId = _currentUser.TenantId };
         var result = await _mediator.Send(query);
         return Ok(result);
     }
@@ -47,7 +50,7 @@ public class ProspectController : ControllerBase
         var command = new ExecuteStudyCommand
         {
             StudyId = id,
-            TenantId = Guid.Parse("00000000-0000-0000-0000-000000000001") // Mock Tenant
+            TenantId = _currentUser.TenantId
         };
 
         await _mediator.Send(command);
@@ -61,7 +64,7 @@ public class ProspectController : ControllerBase
         var query = new GetStudyResultsQuery
         {
             StudyId = id,
-            TenantId = Guid.Parse("00000000-0000-0000-0000-000000000001") // Mock Tenant
+            TenantId = _currentUser.TenantId
         };
 
         var result = await _mediator.Send(query);
@@ -75,7 +78,7 @@ public class ProspectController : ControllerBase
         var command = new CloneStudyCommand
         {
             StudyId = id,
-            TenantId = Guid.Parse("00000000-0000-0000-0000-000000000001") // Mock Tenant
+            TenantId = _currentUser.TenantId
         };
 
         var result = await _mediator.Send(command);

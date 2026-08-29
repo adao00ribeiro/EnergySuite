@@ -1,4 +1,8 @@
+using System;
+using System.Threading.Tasks;
+using EtrmService.API.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EtrmService.API.Controllers
@@ -9,37 +13,44 @@ namespace EtrmService.API.Controllers
     public class UserManagementController : ControllerBase
     {
         private readonly ILogger<UserManagementController> _logger;
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IKeycloakAdminService _keycloakAdminService;
 
-        public UserManagementController(ILogger<UserManagementController> logger, IHttpClientFactory httpClientFactory)
+        public UserManagementController(ILogger<UserManagementController> logger, IKeycloakAdminService keycloakAdminService)
         {
             _logger = logger;
-            _httpClientFactory = httpClientFactory;
+            _keycloakAdminService = keycloakAdminService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Buscando usuários via Keycloak Admin API");
-            // Exemplo de integração crúa (Raw HttpClient)
-            // var client = _httpClientFactory.CreateClient("KeycloakAdmin");
-            // var response = await client.GetAsync("/admin/realms/EnergySuite/users");
-            
-            // Mock data para UI:
-            var mockUsers = new[]
+            try
             {
-                new { id = "u1", username = "jsilva", email = "joao.silva@energy.com", roles = new[]{"Portfolio Manager"}, lastAccess = DateTime.UtcNow, status = "Active" }
-            };
-
-            return Ok(mockUsers);
+                var users = await _keycloakAdminService.GetUsersAsync(cancellationToken);
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Falha ao buscar usuários no Keycloak Admin API");
+                return StatusCode(StatusCodes.Status502BadGateway, ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status502BadGateway, "Keycloak indisponível", detail: ex.Message));
+            }
         }
 
         [HttpPut("{id}/roles")]
-        public async Task<IActionResult> UpdateRoles(string id, [FromBody] string[] roles)
+        public async Task<IActionResult> UpdateRoles(string id, [FromBody] string[] roles, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Atualizando roles do usuário {id} no Keycloak", id);
-            // Aqui entra a chamada para /admin/realms/EnergySuite/users/{id}/role-mappings/realm
-            return Ok();
+            try
+            {
+                await _keycloakAdminService.UpdateUserRolesAsync(id, roles, cancellationToken);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Falha ao atualizar roles do usuário {id} no Keycloak Admin API", id);
+                return StatusCode(StatusCodes.Status502BadGateway, ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status502BadGateway, "Keycloak indisponível", detail: ex.Message));
+            }
         }
     }
 }

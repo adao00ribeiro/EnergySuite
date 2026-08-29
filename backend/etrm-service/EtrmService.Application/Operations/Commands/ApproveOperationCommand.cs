@@ -1,9 +1,14 @@
 using System;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using EtrmService.Application.Interfaces;
 using EtrmService.Application.ImerisIntegration;
 using EtrmService.Application.Operations.Services;
+using EtrmService.Domain.Entities;
+using EtrmService.Domain.Enums;
 
 namespace EtrmService.Application.Operations.Commands;
 
@@ -15,32 +20,52 @@ public class ApproveOperationResponse
 
 public class ApproveOperationCommand : IRequest<ApproveOperationResponse>
 {
+    public Guid OperationId { get; set; }
     public Guid OpportunityId { get; set; }
-    // No MVP, mockamos o volume da operação com base no que foi simulado.
     public decimal RequestedVolumeMwm { get; set; }
 }
 
 public class ApproveOperationCommandHandler : IRequestHandler<ApproveOperationCommand, ApproveOperationResponse>
 {
+    private readonly IEtrmDbContext _context;
+    private readonly ICurrentUserService _currentUserService;
     private readonly IImerisCreditClient _imerisClient;
     private readonly IWebhookNotifierService _webhookNotifier;
 
-    public ApproveOperationCommandHandler(IImerisCreditClient imerisClient, IWebhookNotifierService webhookNotifier)
+    public ApproveOperationCommandHandler(
+        IEtrmDbContext context,
+        ICurrentUserService currentUserService,
+        IImerisCreditClient imerisClient,
+        IWebhookNotifierService webhookNotifier)
     {
+        _context = context;
+        _currentUserService = currentUserService;
         _imerisClient = imerisClient;
         _webhookNotifier = webhookNotifier;
     }
 
     public async Task<ApproveOperationResponse> Handle(ApproveOperationCommand request, CancellationToken cancellationToken)
     {
-        // Simulando que a contraparte está fixada no contexto da oportunidade
-        var mockCounterpartyId = Guid.NewGuid();
+        var operation = await _context.Operations
+            .FirstOrDefaultAsync(o => o.Id == request.OperationId, cancellationToken);
 
-        var validationResult = await _imerisClient.ValidateLimitAsync(mockCounterpartyId, request.RequestedVolumeMwm);
+        if (operation == null)
+        {
+            return new ApproveOperationResponse
+            {
+                Success = false,
+                Message = "Operação não encontrada."
+            };
+        }
+
+        var counterpartyId = operation.CounterpartyId;
+        var operationVolume = request.RequestedVolumeMwm > 0m ? request.RequestedVolumeMwm : operation.VolumeMwMed;
+
+        var validationResult = await _imerisClient.ValidateLimitAsync(counterpartyId, operationVolume);
 
         if (!validationResult.IsApproved)
         {
-            await _webhookNotifier.NotifyRiskViolationAsync(request.OpportunityId, validationResult.Reason);
+            await _webhookNotifier.NotifyRiskViolationAsync(request.OpportunityId != Guid.Empty ? request.OpportunityId : operation.Id, validationResult.Reason);
 
             return new ApproveOperationResponse
             {
@@ -49,8 +74,17 @@ public class ApproveOperationCommandHandler : IRequestHandler<ApproveOperationCo
             };
         }
 
-        // Aqui, a operação seria persistida no banco e enviada para o BackOps...
-        
+        var oldState = operation.State.ToString();
+        operation.ChangeState(OperationState.Approved);
+
+        var changes = JsonSerializer.Serialize(new { OldState = oldState, NewState = OperationState.Approved.ToString(), CounterpartyId = counterpartyId });
+        var auditLog = new AuditLog("Operation", operation.Id.ToString(), "Approved", changes, _currentUserService.UserId ?? "system", _currentUserService.TenantId);
+
+        _context.AuditLogs.Add(auditLog);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        await _webhookNotifier.NotifyApprovedAsync(operation.Id, $"Operação aprovada com {operationVolume} MWm.");
+
         return new ApproveOperationResponse
         {
             Success = true,

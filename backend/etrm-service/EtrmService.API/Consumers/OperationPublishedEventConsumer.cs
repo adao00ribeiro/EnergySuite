@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using EtrmService.Application.IntegrationEvents;
 using EtrmService.Application.Interfaces;
+using EtrmService.Application.Services;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -63,8 +64,11 @@ public class OperationPublishedEventConsumer : IConsumer<OperationPublishedInteg
                     Content = new StringContent(jsonPayload, Encoding.UTF8, "application/json")
                 };
 
-                // Add simple signature/auth if needed
-                request.Headers.Add("X-EnergySuite-Signature", sub.SecretKey); // Mock implementation
+                // Assinatura HMAC-SHA256 do payload canonizado (JSON serializado).
+                // A chave secreta do webhook nunca transita em texto claro no header.
+                var signature = WebhookSigningService.ComputeSignature(sub.SecretKey, jsonPayload);
+                if (!string.IsNullOrEmpty(signature))
+                    request.Headers.Add("X-EnergySuite-Signature", signature);
 
                 var response = await httpClient.SendAsync(request, context.CancellationToken);
                 

@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using EtrmService.Application.Interfaces;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace EtrmService.Application.Strategies.Queries;
 
@@ -21,17 +24,26 @@ public class GetStrategiesQuery : IRequest<List<StrategyDto>>
 
 public class GetStrategiesQueryHandler : IRequestHandler<GetStrategiesQuery, List<StrategyDto>>
 {
+    private readonly IEtrmDbContext _context;
+
+    public GetStrategiesQueryHandler(IEtrmDbContext context)
+    {
+        _context = context;
+    }
+
     public async Task<List<StrategyDto>> Handle(GetStrategiesQuery request, CancellationToken cancellationToken)
     {
-        await Task.Delay(100, cancellationToken); // Simula busca no banco
-        
-        // Mocking Data for Kanban
-        return new List<StrategyDto>
-        {
-            new StrategyDto { Id = Guid.NewGuid(), Name = "Arbitragem Sul x SE", Description = "Compra no Sul e venda no SE aproveitando spread", Status = "Approved" },
-            new StrategyDto { Id = Guid.NewGuid(), Name = "Hedge de Inverno", Description = "Proteção contra preços em época de seca", Status = "Draft" },
-            new StrategyDto { Id = Guid.NewGuid(), Name = "Venda Excedente Eólica", Description = "Desovar excedentes do NE", Status = "Approved" },
-            new StrategyDto { Id = Guid.NewGuid(), Name = "Especulação Curto Prazo", Description = "Day trade no PLD", Status = "Inactive" }
-        };
+        return await _context.Strategies
+            .AsNoTracking()
+            .Where(s => s.TenantId == request.TenantId)
+            .OrderByDescending(s => s.CreatedAt)
+            .Select(s => new StrategyDto
+            {
+                Id = s.Id,
+                Name = s.Name,
+                Description = s.Description,
+                Status = s.Status
+            })
+            .ToListAsync(cancellationToken);
     }
 }

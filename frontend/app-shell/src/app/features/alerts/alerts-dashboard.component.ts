@@ -27,12 +27,8 @@ export interface AlertMessage {
 })
 export class AlertsDashboardComponent implements OnInit, OnDestroy {
   private hubConnection: signalR.HubConnection | undefined;
-  
-  alerts: AlertMessage[] = [
-    { id: '1', category: 'System', severity: 'Info', title: 'Atualização do Sistema', message: 'A release 2.4 foi implantada com sucesso.', timestamp: new Date(), read: false },
-    { id: '2', category: 'Risk', severity: 'Critical', title: 'Limite de VaR Excedido', message: 'O portfólio SE excedeu o limite de VaR 95%.', timestamp: new Date(), read: false },
-    { id: '3', category: 'Operational', severity: 'Warning', title: 'Falha no MLFlow', message: 'Execução do modelo de previsão falhou.', timestamp: new Date(), read: true }
-  ];
+
+  alerts: AlertMessage[] = [];
 
   ngOnInit() {
     this.connectSignalR();
@@ -46,12 +42,15 @@ export class AlertsDashboardComponent implements OnInit, OnDestroy {
 
   private connectSignalR() {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('/api/hubs/alerts') // Assuming reverse proxy handles this path
+      .withUrl('http://localhost:8080/hubs/alerts')
       .withAutomaticReconnect()
       .build();
 
     this.hubConnection.on('ReceiveAlert', (alert: AlertMessage) => {
-      this.alerts = [alert, ...this.alerts];
+      this.alerts = [{
+        ...alert,
+        timestamp: new Date(alert.timestamp)
+      }, ...this.alerts];
     });
 
     this.hubConnection.start()

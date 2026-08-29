@@ -47,6 +47,12 @@ public class EtrmDbContext : DbContext, IEtrmDbContext
     public DbSet<EtrmService.Domain.Entities.Prospect.Deck> ProspectDecks { get; set; }
     public DbSet<EtrmService.Domain.Entities.Prospect.DeckVersion> ProspectDeckVersions { get; set; }
 
+    // Sprint 7: Strategies
+    public DbSet<Strategy> Strategies { get; set; }
+
+    // Sprint 12: App Settings
+    public DbSet<AppSetting> AppSettings { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(EtrmDbContext).Assembly);
@@ -60,6 +66,8 @@ public class EtrmDbContext : DbContext, IEtrmDbContext
         modelBuilder.Entity<Operation>().HasQueryFilter(c => c.TenantId == _currentUserService.TenantId);
         modelBuilder.Entity<AuditLog>().HasQueryFilter(c => c.TenantId == _currentUserService.TenantId);
         modelBuilder.Entity<Portfolio>().HasQueryFilter(c => c.TenantId == _currentUserService.TenantId);
+        modelBuilder.Entity<Strategy>().HasQueryFilter(c => c.TenantId == _currentUserService.TenantId);
+        modelBuilder.Entity<AppSetting>().HasQueryFilter(c => c.TenantId == _currentUserService.TenantId);
         
         base.OnModelCreating(modelBuilder);
     }

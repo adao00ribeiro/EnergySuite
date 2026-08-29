@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>Editar Papéis (RBAC)</h2>
+
+<mat-dialog-content>
+  <p class="dialog-subtitle">Usuário: <strong>{{ data.username }}</strong></p>
+
+  <form [formGroup]="rolesForm">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Papéis</mat-label>
+      <mat-select formControlName="roles" multiple>
+        <mat-option *ngFor="let role of availableRoles" [value]="role">{{ role }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="rolesForm.invalid">
+    <mat-icon>save</mat-icon> Salvar
+  </button>
+</mat-dialog-actions>

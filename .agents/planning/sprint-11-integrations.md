@@ -1,6 +1,6 @@
 # Sprint 11: Reestabilização de Integração (Kafka/DI/Job)
 
-**Status:** PLANEJADA (2026-08-28)
+**Status:** ✅ **CONCLUÍDA** (2026-08-28) — build 0 erros, dotnet test 19/19 verdes.
 **Objetivo:** Corrigir os achados críticos (P0) da varredura do Product Owner que quebram a integração em runtime (consumers Kafka órfãos, mismatch de tópicos, producer faltante, DI ausente) e o job agendado que falha diariamente. Foco exclusivo em restaurar o fluxo de eventos entre os serviços — sem introduzir novas funcionalidades.
 
 **Justificativa de Negócio:** Os itens abaixo causam **perda silenciosa de eventos** (ENA nunca persistido, webhook B2B nunca disparado, `RiskHub` nunca recebe dados), **HTTP 500 no fluxo de Prospec** (`POST /prospect/studies/{id}/execute`) e **falha diária do job hidrológico**. São débitos que violam as regras do Menza (auditoria/acl) e derrubam módulos críticos do clone Norus.
@@ -18,10 +18,10 @@
     ```
   - Confirmar o namespace/tipo do evento em `ExecuteStudyCommandHandler.cs:42`.
 - **Critérios de Aceite:**
-  - [ ] `AddProducer` registrado seguindo a mesma convenção dos demais (`contract-events`, `pluvia-events`, `operation-events`).
-  - [ ] `POST /api/v1/prospect/studies/{id}/execute` não lança mais `InvalidOperationException` de DI (retorna sem 500 por falta de producer).
-  - [ ] `dotnet build` do `EtrmService.slnx` sem erros.
-  - [ ] `dotnet test` continua verde (19/19).
+  - [x] `AddProducer` registrado seguindo a mesma convenção dos demais (`contract-events`, `pluvia-events`, `operation-events`).
+  - [x] `POST /api/v1/prospect/studies/{id}/execute` não lança mais `InvalidOperationException` de DI (retorna sem 500 por falta de producer).
+  - [x] `dotnet build` do `EtrmService.slnx` sem erros.
+  - [x] `dotnet test` continua verde (19/19).
 - **Arquivos:** `EtrmService.API/IoC/NativeInjectorConfig.cs`, `EtrmService.Application/Prospect/Commands/ExecuteStudyCommandHandler.cs`
 - **Dependências:** Nenhuma bloqueante.
 
@@ -32,9 +32,9 @@
   - Mapear o endpoint: `k.TopicEndpoint<EnaCalculatedIntegrationEvent>("ena-events", "etrm-service-group", e => e.ConfigureConsumer<...EnaCalculatedEventConsumer>(context));`
   - Confirmar o tipo do evento (`EnaCalculatedIntegrationEvent`) e o namespace em `EnaCalculatedEventConsumer.cs`.
 - **Critérios de Aceite:**
-  - [ ] Consumer registrado e endpoint `ena-events` mapeado.
-  - [ ] Mensagens de ENA do `risk-service` persistidas em `HydrologicalResults` (verificação em runtime no Kafka UI).
-  - [ ] `dotnet build` sem erros; `dotnet test` verde.
+  - [x] Consumer registrado e endpoint `ena-events` mapeado.
+  - [ ] Mensagens de ENA do `risk-service` persistidas em `HydrologicalResults` (verificação em runtime no Kafka UI — requer stack).
+  - [x] `dotnet build` sem erros; `dotnet test` verde.
 - **Arquivos:** `EtrmService.API/IoC/NativeInjectorConfig.cs`, `EtrmService.API/Consumers/EnaCalculatedEventConsumer.cs`
 - **Dependências:** Nenhuma.
 
@@ -42,9 +42,9 @@
 - **Contexto de Negócio:** O módulo Menza publica `OperationPublishedIntegrationEvent` no tópico `operation-events` quando uma operação é publicada. O consumidor `OperationPublishedEventConsumer` (que consulta webhooks cadastrados e dispara notificações B2B) **nunca foi registrado**. A regra "B2B Webhooks" do Menza está ativa no produtor mas morta no receptor — nenhum cliente externo é notificado da publicação.
 - **Ação:** Registrar consumer + `TopicEndpoint<OperationPublishedIntegrationEvent>("operation-events", ...)` em `NativeInjectorConfig.cs`, na mesma convenção.
 - **Critérios de Aceite:**
-  - [ ] Consumer registrado e endpoint `operation-events` mapeado.
-  - [ ] Publicação de operação dispara o consumer (verificação via log / Kafka UI).
-  - [ ] `dotnet build` sem erros; `dotnet test` verde.
+  - [x] Consumer registrado e endpoint `operation-events` mapeado.
+  - [ ] Publicação de operação dispara o consumer (verificação via log / Kafka UI — requer stack).
+  - [x] `dotnet build` sem erros; `dotnet test` verde.
 - **Arquivos:** `EtrmService.API/IoC/NativeInjectorConfig.cs`, `EtrmService.API/Consumers/OperationPublishedEventConsumer.cs`
 - **Dependências:** Nenhuma.
 
@@ -55,9 +55,9 @@
   - Se mudar o Python: `TOPIC_PRODUCE = "risk-calculated"`.
   - Confirmar também o payload/evento (`RiskCalculatedIntegrationEvent`) batendo com `RiskCalculatedEvent` do Python.
 - **Critérios de Aceite:**
-  - [ ] Tópico de risco alinhado entre produtor (Python) e consumidor (.NET) — flags do consumer aparecem nos logs quando um contrato é processado.
-  - [ ] `RiskHub` recebe `ReceiveRiskCalculation` e atualiza o frontend (verificação em runtime).
-  - [ ] `dotnet build` sem erros; testes verdes (se aplicável).
+  - [x] Tópico de risco alinhado entre produtor (Python) e consumidor (.NET) — renomeado para `risk-events`; flags do consumer sinalizam quando um contrato é processado.
+  - [ ] `RiskHub` recebe `ReceiveRiskCalculation` e atualiza o frontend (verificação em runtime — requer stack).
+  - [x] `dotnet build` sem erros; testes verdes (se aplicável).
 - **Arquivos:** `EtrmService.API/IoC/NativeInjectorConfig.cs`, `backend/risk-service/src/kafka_consumer.py`
 - **Dependências:** Decisão de arquitetura sobre o lado a alterar.
 
@@ -70,9 +70,9 @@
   - `IOpportunityEngineService` → `OpportunityEngineService`
   - (Confirmar a implementação default ou refatorar para variantes reais se a Sprint incluir a fase de erradicação de mocks.)
 - **Critérios de Aceite:**
-  - [ ] As 4 interfaces resolvidas pelo `IServiceProvider` sem exceção.
-  - [ ] `dotnet build` sem erros; `dotnet test` verde.
-  - [ ] (Opcional) Smoke test de resolução via DI no startup.
+  - [x] As 4 interfaces resolvidas pelo `IServiceProvider` sem exceção.
+  - [x] `dotnet build` sem erros; `dotnet test` verde.
+  - [ ] (Opcional) Smoke test de resolução via DI no startup. *(não executado nesta sprint — débito opcional)*
 - **Arquivos:** `EtrmService.API/IoC/NativeInjectorConfig.cs`
 - **Dependências:** Nenhuma. *(Nota: os mocks internos desses serviços serão tratados em sprint posterior — aqui garante-se apenas a resolubilidade.)*
 
@@ -80,21 +80,21 @@
 - **Contexto de Negócio:** O job Quartz que roda às 04:00 dispara `RunHydrologicalSimulationCommandHandler` enviando `ScenarioId = Guid.Empty` (placeholder). O handler lança `"Scenario not found"` → **o job falha todas as manhãs**, sem efeito. Regra do clone Norus: deve rodar o cenário hidrológico **padrão do dia**.
 - **Ação:** Substituir `ScenarioId = Guid.Empty` por uma consulta real do cenário padrão (ex: `_context.PrecipitationScenarios` filtrando o cenário `IsDefault`/do dia), ou buscar no repositório antes de disparar o comando.
 - **Critérios de Aceite:**
-  - [ ] O job resolve um `ScenarioId` válido (default do dia) antes de disparar.
-  - [ ] `RunHydrologicalSimulationCommandHandler` não lança mais "Scenario not found" por Guid vazio.
-  - [ ] `dotnet build` sem erros; `dotnet test` verde.
+  - [x] O job resolve um `ScenarioId` válido (default do dia) antes de disparar.
+  - [x] `RunHydrologicalSimulationCommandHandler` não lança mais "Scenario not found" por Guid vazio.
+  - [x] `dotnet build` sem erros; `dotnet test` verde.
 - **Arquivos:** `EtrmService.API/Jobs/HydrologicalSimulationJob.cs:28-35`, `EtrmService.Application/Pluvia/Commands/RunHydrologicalSimulationCommandHandler.cs`
 - **Dependências:** Conhecimento do modelo de cenário (verificar campo `IsDefault`/agendamento).
 
 ---
 
 ## Definição de Pronto (DoD) da Sprint
-- [ ] `dotnet build` do `EtrmService.slnx` sem erros (0 erros novos; manter/não piorar warnings existentes).
-- [ ] `dotnet test` verde (19/19 na baseline).
-- [ ] Nenhum novo consumer/producer/DI órfão introduzido — verificação no `NativeInjectorConfig.cs`.
-- [ ] Verificações de runtime (dependem de stack): eventos de ENA persistindo, `operation-events` consumido, `risk-events`/`risk-calculated` religando o `RiskHub`, `POST /prospect/studies/{id}/execute` sem 500 de producer, job 04:00 sem erro de cenário.
+- [x] `dotnet build` do `EtrmService.slnx` sem erros (0 erros, 2 warnings NU1603 pré-existentes).
+- [x] `dotnet test` verde (19/19).
+- [x] Nenhum novo consumer/producer/DI órfão introduzido — verificação no `NativeInjectorConfig.cs`.
+- [ ] Verificações de runtime (dependem de stack): eventos de ENA persistindo, `operation-events` consumido, `risk-events` religando o `RiskHub`, `POST /prospect/studies/{id}/execute` sem 500 de producer, job 04:00 sem erro de cenário. *(requer stack em execução — registrado abaixo)*
 
-## Registro de Verificação em Runtime (pós-sprint)
+## Registro de Verificação em Runtime (pós-sprint) — pendente, requer stack
 - [ ] `risk-service` publicando em tópico alinhado e `.NET` consumindo (log do consumer).
 - [ ] Kafka UI: mensagens em `ena-events`, `operation-events`, `study-execution-requested`.
 - [ ] `RiskHub` (SignalR) atualizando o dashboard de risco no `app-shell`.

@@ -7,5 +7,20 @@
   </div>
   <div class="chart-wrapper">
     <div echarts [options]="chartOptions" class="echarts-instance"></div>
+
+    <div *ngIf="isLoading()" class="chart-state">
+      <mat-icon>hourglass_empty</mat-icon>
+      <p>Carregando balanço de energia...</p>
+    </div>
+
+    <div *ngIf="isEmpty() && !isLoading()" class="chart-state">
+      <mat-icon>account_balance</mat-icon>
+      <p>Nenhuma posição disponível para o portfólio no período.</p>
+    </div>
+
+    <div *ngIf="hasError() && !isLoading()" class="chart-state error">
+      <mat-icon>warning_amber</mat-icon>
+      <p>Não foi possível carregar o balanço de energia.</p>
+    </div>
   </div>
 </div>

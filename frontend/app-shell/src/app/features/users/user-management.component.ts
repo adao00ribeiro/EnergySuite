@@ -1,10 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { EditRolesDialogComponent } from './edit-roles-dialog.component';
 
 export interface UserAccess {
   id: string;
@@ -18,29 +23,80 @@ export interface UserAccess {
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatCardModule, MatButtonModule, MatIconModule, MatChipsModule],
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatChipsModule,
+    MatDialogModule,
+    MatSnackBarModule
+  ],
   templateUrl: './user-management.component.html',
   styleUrls: ['./user-management.component.scss']
 })
 export class UserManagementComponent implements OnInit {
+  private http = inject(HttpClient);
+  private dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
+
   displayedColumns: string[] = ['username', 'email', 'roles', 'lastAccess', 'status', 'actions'];
   users: UserAccess[] = [];
 
   ngOnInit() {
-    // Mock data based on IAM Keycloak fetch
-    this.users = [
-      { id: 'u1', username: 'jsilva', email: 'joao.silva@energy.com', roles: ['Portfolio Manager', 'Trader'], lastAccess: new Date(), status: 'Active' },
-      { id: 'u2', username: 'moliveira', email: 'maria.oliveira@energy.com', roles: ['Risk Analyst'], lastAccess: new Date(Date.now() - 86400000), status: 'Active' },
-      { id: 'u3', username: 'rlima', email: 'roberto.lima@energy.com', roles: ['Viewer'], lastAccess: new Date(Date.now() - 1728000000), status: 'Suspended' }
-    ];
+    this.loadUsers();
+  }
+
+  loadUsers() {
+    this.http.get<UserAccess[]>(`${environment.apiUrl}/users`).subscribe({
+      next: (data) => {
+        this.users = Array.isArray(data) ? data : [];
+      },
+      error: (err) => {
+        this.users = [];
+        console.error('Failed to load users from IAM:', err);
+        this.snackBar.open('Não foi possível carregar os usuários do Keycloak.', 'Fechar', {
+          duration: 5000,
+          panelClass: 'warn-snackbar'
+        });
+      }
+    });
   }
 
   editRoles(user: UserAccess) {
-    alert(`Editar papéis para ${user.username} (Modal Keycloak) será aberto aqui.`);
+    const dialogRef = this.dialog.open(EditRolesDialogComponent, {
+      width: '420px',
+      panelClass: 'glass-panel',
+      disableClose: true,
+      data: {
+        userId: user.id,
+        username: user.username,
+        roles: user.roles
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(roles => {
+      if (roles) {
+        this.http.put(`${environment.apiUrl}/users/${user.id}/roles`, roles).subscribe({
+          next: () => {
+            user.roles = roles;
+            this.snackBar.open('Papéis atualizados com sucesso.', 'Fechar', { duration: 3000 });
+          },
+          error: (err) => {
+            console.error('Failed to update roles:', err);
+            this.snackBar.open('Falha ao atualizar os papéis no Keycloak.', 'Fechar', {
+              duration: 5000,
+              panelClass: 'warn-snackbar'
+            });
+          }
+        });
+      }
+    });
   }
 
   viewLogs(user: UserAccess) {
-    alert(`Visualizando logs de sessão para ${user.username}`);
+    this.snackBar.open(`Logs de sessão de ${user.username} não disponíveis no backend.`, 'Fechar', { duration: 4000 });
   }
 
   getStatusColor(status: string): string {

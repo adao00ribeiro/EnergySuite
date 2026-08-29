@@ -17,6 +17,7 @@ public class Study
     public Guid TenantId { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
+    public string? ResultsJson { get; private set; }
 
     public ICollection<StudyTag> Tags { get; private set; }
     public ICollection<StudyFile> Files { get; private set; }
@@ -44,6 +45,12 @@ public class Study
     public void ChangeState(StudyState newState)
     {
         State = newState;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void SaveResults(string resultsJson)
+    {
+        ResultsJson = resultsJson;
         UpdatedAt = DateTime.UtcNow;
     }
 }

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
@@ -10,15 +10,30 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+
+interface AppSettingsResponse {
+  theme: string;
+  language: string;
+  timezone: string;
+}
+
+interface ApiKey {
+  id: string;
+  name: string;
+  token: string;
+  createdAt: Date;
+}
 
 @Component({
   selector: 'app-settings-dashboard',
   standalone: true,
   imports: [
-    CommonModule, 
-    MatTabsModule, 
-    MatCardModule, 
-    MatIconModule, 
+    CommonModule,
+    MatTabsModule,
+    MatCardModule,
+    MatIconModule,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
@@ -30,9 +45,10 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   templateUrl: './settings-dashboard.component.html',
   styleUrls: ['./settings-dashboard.component.scss']
 })
-export class SettingsDashboardComponent {
+export class SettingsDashboardComponent implements OnInit {
   private fb = inject(FormBuilder);
   private snackBar = inject(MatSnackBar);
+  private http = inject(HttpClient);
 
   settingsForm = this.fb.group({
     theme: ['dark'],
@@ -40,27 +56,61 @@ export class SettingsDashboardComponent {
     timezone: ['America/Sao_Paulo']
   });
 
-  apiKeys: { id: string, name: string, token: string, createdAt: Date }[] = [
-    { id: '1', name: 'Integração MLOps', token: 'ey...xxx', createdAt: new Date() }
-  ];
+  apiKeys: ApiKey[] = [];
+
+  ngOnInit() {
+    this.loadSettings();
+  }
+
+  loadSettings() {
+    this.http.get<AppSettingsResponse>(`${environment.apiUrl}/settings`).subscribe({
+      next: (settings) => {
+        if (settings?.theme) this.settingsForm.patchValue({ theme: settings.theme });
+        if (settings?.language) this.settingsForm.patchValue({ language: settings.language });
+        if (settings?.timezone) this.settingsForm.patchValue({ timezone: settings.timezone });
+      },
+      error: () => {
+        this.snackBar.open('Não foi possível carregar as preferências.', 'Fechar', {
+          duration: 5000,
+          panelClass: 'warn-snackbar'
+        });
+      }
+    });
+  }
 
   saveSettings() {
-    // Integração mock para salvar backend
-    this.snackBar.open('Preferências salvas com sucesso!', 'Fechar', { duration: 3000 });
+    this.http.put(`${environment.apiUrl}/settings`, this.settingsForm.value).subscribe({
+      next: () => {
+        this.snackBar.open('Preferências salvas com sucesso!', 'Fechar', { duration: 3000 });
+      },
+      error: (err) => {
+        console.error('Failed to save settings:', err);
+        this.snackBar.open('Falha ao salvar as preferências.', 'Fechar', {
+          duration: 5000,
+          panelClass: 'warn-snackbar'
+        });
+      }
+    });
   }
 
   generateApiKey() {
-    this.apiKeys.push({
-      id: Math.random().toString(36).substr(2, 9),
-      name: 'Nova Chave M2M',
-      token: 'ey...' + Math.random().toString(36),
-      createdAt: new Date()
+    this.http.post<ApiKey>(`${environment.apiUrl}/settings/m2m-tokens`, {}).subscribe({
+      next: (key) => {
+        this.apiKeys = [key, ...this.apiKeys];
+        this.snackBar.open('Chave gerada com sucesso!', 'Fechar', { duration: 3000 });
+      },
+      error: (err) => {
+        console.error('Failed to generate API key:', err);
+        this.snackBar.open('Falha ao gerar a chave M2M.', 'Fechar', {
+          duration: 5000,
+          panelClass: 'warn-snackbar'
+        });
+      }
     });
-    this.snackBar.open('Chave gerada com sucesso!', 'Fechar', { duration: 3000 });
   }
 
   revokeApiKey(id: string) {
     this.apiKeys = this.apiKeys.filter(k => k.id !== id);
-    this.snackBar.open('Chave revogada!', 'Fechar', { duration: 3000, panelClass: 'warn-snackbar' });
+    this.snackBar.open('Chave revogada.', 'Fechar', { duration: 3000, panelClass: 'warn-snackbar' });
   }
 }

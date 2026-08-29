@@ -5,15 +5,16 @@ import { ForwardCurveChartComponent } from '../components/forward-curve-chart/fo
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { NewSimulationDialogComponent } from '../components/new-simulation-dialog/new-simulation-dialog.component';
+import { ProspectService } from '../../prospect/services/prospect.service';
 
 @Component({
   selector: 'app-pricing-dashboard',
   standalone: true,
   imports: [
-    CommonModule, 
-    RiskMetricsComponent, 
-    ForwardCurveChartComponent, 
-    MatDialogModule, 
+    CommonModule,
+    RiskMetricsComponent,
+    ForwardCurveChartComponent,
+    MatDialogModule,
     MatSnackBarModule
   ],
   templateUrl: './pricing-dashboard.html',
@@ -22,7 +23,8 @@ import { NewSimulationDialogComponent } from '../components/new-simulation-dialo
 export class PricingDashboardComponent {
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
-  
+  private prospectService = inject(ProspectService);
+
   currentDate = new Date();
 
   onNewSimulation() {
@@ -34,8 +36,24 @@ export class PricingDashboardComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.snackBar.open(`Simulação "${result.scenarioName}" enfileirada com sucesso!`, 'Fechar', { duration: 4000 });
-        // Lógica de integração com o backend via Service (CQRS) entraria aqui
+        this.prospectService.createStudy({
+          name: result.scenarioName,
+          description: `Simulação de precificação para ${result.portfolio} (confiança ${result.confidenceLevel}%)`,
+          model: 'PricingSimulation',
+          startDate: result.targetDate.toISOString(),
+          horizonMonths: 24
+        }).subscribe({
+          next: () => {
+            this.snackBar.open(`Simulação "${result.scenarioName}" criada com sucesso!`, 'Fechar', { duration: 4000 });
+          },
+          error: (err) => {
+            console.error('Error creating simulation:', err);
+            this.snackBar.open('Falha ao criar a simulação. Tente novamente.', 'Fechar', {
+              duration: 5000,
+              panelClass: ['warn-snackbar']
+            });
+          }
+        });
       }
     });
   }

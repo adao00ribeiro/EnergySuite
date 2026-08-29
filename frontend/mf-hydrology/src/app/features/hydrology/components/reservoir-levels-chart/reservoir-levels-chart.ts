@@ -1,23 +1,34 @@
-import { Component, OnInit, signal, effect, inject } from '@angular/core';
+import { Component, signal, effect, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { HttpClient } from '@angular/common/http';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../../environments/environment';
+
+interface EnaPoint {
+  targetDate: string;
+  valueMwMed: number;
+  valuePercentageMlt: number;
+}
 
 @Component({
   selector: 'app-reservoir-levels-chart',
   standalone: true,
-  imports: [CommonModule, NgxEchartsDirective, MatButtonToggleModule, FormsModule],
+  imports: [CommonModule, NgxEchartsDirective, MatButtonToggleModule, MatIconModule, FormsModule],
   providers: [provideEchartsCore({ echarts: () => import('echarts') })],
   templateUrl: './reservoir-levels-chart.html',
   styleUrl: './reservoir-levels-chart.css'
 })
-export class ReservoirLevelsChartComponent implements OnInit {
+export class ReservoirLevelsChartComponent {
   private http = inject(HttpClient);
-  
+
   chartOptions = signal<any>({});
   selectedOffset = signal<number>(0);
+  hasError = signal(false);
+  isEmpty = signal(false);
+  isLoading = signal(false);
 
   constructor() {
     effect(() => {
@@ -25,22 +36,29 @@ export class ReservoirLevelsChartComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    // Initial load will be triggered by effect when signal is initialized
-  }
-
   loadEnaData(offsetDays: number) {
-    this.http.get<any[]>(`/api/v1/pluvia/ena?offsetDays=${offsetDays}`).subscribe({
+    this.isLoading.set(true);
+    this.hasError.set(false);
+
+    this.http.get<EnaPoint[]>(`${environment.apiUrl}/pluvia/ena?offsetDays=${offsetDays}`).subscribe({
       next: (data) => {
-        const months = data.map(d => {
+        const points: EnaPoint[] = Array.isArray(data) ? data : [];
+        this.isLoading.set(false);
+
+        if (points.length === 0) {
+          this.isEmpty.set(true);
+          this.chartOptions.set({});
+          return;
+        }
+        this.isEmpty.set(false);
+
+        const months = points.map(d => {
           const date = new Date(d.targetDate);
-          return date.toLocaleDateString('pt-BR', { month: 'short' });
+          return date.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' });
         });
-        
-        const projecaoMLT = data.map(d => d.valuePercentageMlt);
-        
-        // Simular um histórico ligeiramente alterado com base no MLT para visualização
-        const historicoMLT = projecaoMLT.map(v => v * 0.9 + (Math.random() * 5));
+
+        const mwmed = points.map(d => Number(d.valueMwMed));
+        const mlt = points.map(d => Number(d.valuePercentageMlt));
 
         this.chartOptions.set({
           backgroundColor: 'transparent',
@@ -52,7 +70,7 @@ export class ReservoirLevelsChartComponent implements OnInit {
             textStyle: { color: '#f8fafc' }
           },
           legend: {
-            data: ['ENA Histórico', 'ENA Projeção (ML)'],
+            data: ['ENA (MWmed)', 'ENA (%MLT)'],
             textStyle: { color: '#94a3b8' },
             top: 0
           },
@@ -66,17 +84,28 @@ export class ReservoirLevelsChartComponent implements OnInit {
             axisLine: { lineStyle: { color: '#334155' } },
             axisLabel: { color: '#94a3b8' }
           },
-          yAxis: {
-            type: 'value',
-            axisLine: { show: false },
-            axisLabel: { color: '#94a3b8', formatter: '{value}%' },
-            splitLine: { lineStyle: { color: 'rgba(255,255,255,0.05)' } }
-          },
+          yAxis: [
+            {
+              type: 'value',
+              name: 'MWmed',
+              axisLine: { show: false },
+              axisLabel: { color: '#94a3b8' },
+              splitLine: { lineStyle: { color: 'rgba(255,255,255,0.05)' } }
+            },
+            {
+              type: 'value',
+              name: '%MLT',
+              axisLine: { show: false },
+              axisLabel: { color: '#94a3b8', formatter: '{value}%' },
+              splitLine: { show: false }
+            }
+          ],
           series: [
             {
-              name: 'ENA Histórico',
+              name: 'ENA (MWmed)',
               type: 'line',
-              data: historicoMLT,
+              yAxisIndex: 0,
+              data: mwmed,
               smooth: true,
               symbol: 'circle',
               symbolSize: 6,
@@ -90,9 +119,10 @@ export class ReservoirLevelsChartComponent implements OnInit {
               }
             },
             {
-              name: 'ENA Projeção (ML)',
+              name: 'ENA (%MLT)',
               type: 'line',
-              data: projecaoMLT,
+              yAxisIndex: 1,
+              data: mlt,
               smooth: true,
               symbol: 'circle',
               symbolSize: 6,
@@ -104,7 +134,12 @@ export class ReservoirLevelsChartComponent implements OnInit {
           animationEasing: 'cubicOut'
         });
       },
-      error: (err) => console.error("Failed to load ENA data", err)
+      error: (err) => {
+        console.error('Failed to load ENA data', err);
+        this.isLoading.set(false);
+        this.hasError.set(true);
+        this.chartOptions.set({});
+      }
     });
   }
 }

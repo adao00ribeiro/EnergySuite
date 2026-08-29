@@ -1,4 +1,5 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
+import { environment } from '../../../../../environments/environment';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { MatTableModule } from '@angular/material/table';
@@ -56,7 +57,7 @@ export class ExportsDashboardComponent implements OnInit {
   loadExecutions() {
     this.isLoading.set(true);
     this.error.set(null);
-    this.http.get<Execution[]>('/api/v1/pluvia/executions').subscribe({
+    this.http.get<Execution[]>(`${environment.apiUrl}/pluvia/executions`).subscribe({
       next: (data) => {
         this.executions.set(data);
         const completed = data.find((e) => e.status === 'completed');
@@ -82,7 +83,7 @@ export class ExportsDashboardComponent implements OnInit {
     }
     this.isLoading.set(true);
     this.error.set(null);
-    this.http.get<ExportFile[]>(`/api/v1/pluvia/exports/${executionId}`).subscribe({
+    this.http.get<ExportFile[]>(`${environment.apiUrl}/pluvia/exports/${executionId}`).subscribe({
       next: (data) => {
         this.exports.set(data);
         this.isLoading.set(false);

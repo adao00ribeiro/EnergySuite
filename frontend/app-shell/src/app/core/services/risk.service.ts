@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface CounterpartyRisk {
   counterparty_name: string;
@@ -14,7 +15,7 @@ export interface CounterpartyRisk {
 export class RiskService {
   private http = inject(HttpClient);
   // URL base para o Risk Service (Python FastAPI)
-  private readonly apiUrl = 'http://localhost:8000/api/v1/metrics/portfolio';
+  private readonly apiUrl = `${environment.riskApiUrl}/metrics/portfolio`;
 
   public getPortfolioRisk(): Observable<CounterpartyRisk[]> {
     return this.http.get<CounterpartyRisk[]>(this.apiUrl);

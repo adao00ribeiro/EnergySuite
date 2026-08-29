@@ -1,9 +1,14 @@
 using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using EtrmService.Application.B2bIntegration.Commands;
+using EtrmService.Application.B2bIntegration.DTOs;
 using EtrmService.Domain.Enums;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -14,11 +19,13 @@ public class ExternalTradeSyncService : BackgroundService
 {
     private readonly ILogger<ExternalTradeSyncService> _logger;
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IConfiguration _configuration;
 
-    public ExternalTradeSyncService(ILogger<ExternalTradeSyncService> logger, IServiceScopeFactory scopeFactory)
+    public ExternalTradeSyncService(ILogger<ExternalTradeSyncService> logger, IServiceScopeFactory scopeFactory, IConfiguration configuration)
     {
         _logger = logger;
         _scopeFactory = scopeFactory;
+        _configuration = configuration;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -29,55 +36,10 @@ public class ExternalTradeSyncService : BackgroundService
         {
             try
             {
-                // Simulate synchronization every 5 minutes
+                // Sincroniza periodicamente a cada 5 minutos.
                 await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
-                
-                _logger.LogInformation("Syncing trades from external platforms (BBCE, N5X)...");
 
-                using var scope = _scopeFactory.CreateScope();
-                var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-                var httpClientFactory = scope.ServiceProvider.GetRequiredService<System.Net.Http.IHttpClientFactory>();
-
-                // Fetching real external trades from CCEE/BBCE API
-                var client = httpClientFactory.CreateClient("ExternalSyncClient");
-                client.BaseAddress ??= new Uri("https://api.ccee.org.br/v1/");
-
-                var response = await client.GetAsync("trades/sync?status=pending", stoppingToken);
-                
-                if (response.IsSuccessStatusCode)
-                {
-                    var tradesJson = await response.Content.ReadAsStringAsync(stoppingToken);
-                    // In a real scenario we deserialize into a list of DTOs.
-                    // For the sake of this integration, let's assume we mapped it to a command
-                    // and use a dynamically populated command from the payload.
-                    // Example: var externalTrades = JsonSerializer.Deserialize<List<ExternalTradeDto>>(tradesJson);
-                    
-                    var command = new CreateExternalOperationCommand
-                    {
-                        CounterpartyId = Guid.Parse("00000000-0000-0000-0000-000000000002"),
-                        Type = OperationType.Purchase,
-                        VolumeMwMed = 15.5m, // would come from DTO
-                        Price = 250.0m,      // would come from DTO
-                        StartDate = DateTime.UtcNow.Date.AddDays(1),
-                        EndDate = DateTime.UtcNow.Date.AddDays(30),
-                        ExternalPlatform = "CCEE",
-                        ExternalId = Guid.NewGuid().ToString() // would come from DTO
-                    };
-
-                    try 
-                    {
-                        var newOperationId = await mediator.Send(command, stoppingToken);
-                        _logger.LogInformation($"Successfully synced external trade {command.ExternalId} as Operation {newOperationId}");
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogWarning($"Failed to sync trade into ETRM: {ex.Message}");
-                    }
-                }
-                else
-                {
-                    _logger.LogWarning($"External API returned status: {response.StatusCode}");
-                }
+                await SyncPendingTradesAsync(stoppingToken);
             }
             catch (TaskCanceledException)
             {
@@ -90,5 +52,124 @@ public class ExternalTradeSyncService : BackgroundService
         }
 
         _logger.LogInformation("ExternalTradeSyncService stopping.");
+    }
+
+    private async Task SyncPendingTradesAsync(CancellationToken stoppingToken)
+    {
+        // BK-13: sem URL/credenciais hardcoded. Se não configurado, o sync não ocorre (erro honesto).
+        var baseUrl = _configuration["ExternalSync:CceeApiBaseUrl"];
+        var apiKey = _configuration["ExternalSync:ApiKey"];
+        var tenantValue = _configuration["ExternalSync:TenantId"];
+
+        if (string.IsNullOrWhiteSpace(baseUrl))
+        {
+            _logger.LogWarning("ExternalTradeSync skipped: 'ExternalSync:CceeApiBaseUrl' is not configured.");
+            return;
+        }
+
+        if (!Guid.TryParse(tenantValue, out var tenantId) || tenantId == Guid.Empty)
+        {
+            _logger.LogWarning("ExternalTradeSync skipped: 'ExternalSync:TenantId' is not configured or invalid.");
+            return;
+        }
+
+        using var scope = _scopeFactory.CreateScope();
+        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        var httpClientFactory = scope.ServiceProvider.GetRequiredService<IHttpClientFactory>();
+
+        var client = httpClientFactory.CreateClient();
+        var request = new HttpRequestMessage(HttpMethod.Get, new Uri(baseUrl.TrimEnd('/') + "/trades/sync?status=pending"));
+        if (!string.IsNullOrWhiteSpace(apiKey))
+            request.Headers.Add("X-Api-Key", apiKey);
+
+        var response = await client.SendAsync(request, stoppingToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            _logger.LogWarning($"External API returned status: {response.StatusCode}");
+            return;
+        }
+
+        var tradesJson = await response.Content.ReadAsStringAsync(stoppingToken);
+
+        List<TradeSyncItemDto>? trades;
+        try
+        {
+            trades = JsonSerializer.Deserialize<List<TradeSyncItemDto>>(tradesJson);
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogWarning(ex, "Failed to deserialize external trade payload (CCEE). Sync stopped for this cycle.");
+            return;
+        }
+
+        if (trades == null || trades.Count == 0)
+        {
+            _logger.LogInformation("ExternalTradeSync: no pending trades to process.");
+            return;
+        }
+
+        foreach (var item in trades)
+        {
+            if (string.IsNullOrWhiteSpace(item.ExternalId))
+            {
+                _logger.LogWarning("ExternalTradeSync: trade item without ExternalId ignored.");
+                continue;
+            }
+
+            if (!TryMapOperationType(item.Type, out var operationType))
+            {
+                _logger.LogWarning("ExternalTradeSync: unknown operation type '{Type}' for trade {ExternalId}.", item.Type, item.ExternalId);
+                continue;
+            }
+
+            var command = new CreateExternalOperationCommand
+            {
+                TenantId = tenantId,
+                CounterpartyCode = item.CounterpartyCode,
+                Type = operationType,
+                VolumeMwMed = item.VolumeMwMed,
+                Price = item.Price,
+                StartDate = item.StartDate,
+                EndDate = item.EndDate,
+                ExternalPlatform = "CCEE",
+                ExternalId = item.ExternalId
+            };
+
+            try
+            {
+                var newOperationId = await mediator.Send(command, stoppingToken);
+                _logger.LogInformation("Successfully synced external trade {ExternalId} (CCEE) as Operation {OperationId}", command.ExternalId, newOperationId);
+            }
+            catch (Exception ex)
+            {
+                // Regra Sprint 9: contraparte inexistente / falha de integração => rejeita e loga (sem sucesso falso).
+                _logger.LogWarning(ex, "Failed to sync external trade {ExternalId} into ETRM: {Reason}", command.ExternalId, ex.Message);
+            }
+        }
+    }
+
+    private static bool TryMapOperationType(string? type, out OperationType operationType)
+    {
+        operationType = OperationType.Purchase;
+
+        if (string.IsNullOrWhiteSpace(type))
+            return false;
+
+        if (type.Equals("PURCHASE", StringComparison.OrdinalIgnoreCase) ||
+            type.Equals("BUY", StringComparison.OrdinalIgnoreCase))
+        {
+            operationType = OperationType.Purchase;
+            return true;
+        }
+
+        if (type.Equals("SALE", StringComparison.OrdinalIgnoreCase) ||
+            type.Equals("SELL", StringComparison.OrdinalIgnoreCase))
+        {
+            operationType = OperationType.Sale;
+            return true;
+        }
+
+        return false;
     }
 }

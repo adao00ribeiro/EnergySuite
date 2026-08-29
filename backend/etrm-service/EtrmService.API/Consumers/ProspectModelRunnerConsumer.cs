@@ -59,30 +59,6 @@ public class ProspectModelRunnerConsumer : IConsumer<StudyExecutionRequestedEven
             deck.ChangeState(Domain.Enums.DeckState.Running);
             await _context.SaveChangesAsync(context.CancellationToken);
 
-            // Simulate heavy computation (e.g. running GEVAZP/NEWAVE)
-            await Task.Delay(2000, context.CancellationToken); 
-
-            // Simulate Infeasibility for Deck 2 if it's on version 1
-            if (deck.SequenceOrder == 2 && deck.Versions.Count <= 1)
-            {
-                await group.SendAsync("LogReceived", $"[ERROR] Inviabilidade encontrada no Deck Mês {deck.SequenceOrder}! (Déficit extremo de energia).");
-                deck.ChangeState(Domain.Enums.DeckState.Infeasible);
-                await _context.SaveChangesAsync(context.CancellationToken);
-
-                await Task.Delay(1000, context.CancellationToken);
-
-                // Auto-relaxamento
-                await group.SendAsync("LogReceived", $"[WARNING] Sistema iniciando Auto-Relaxamento (injetando energia fictícia)...");
-                var newVersionNumber = deck.Versions.Count + 1;
-                deck.Versions.Add(new Domain.Entities.Prospect.DeckVersion(deck.Id, newVersionNumber, $"/s3/bucket/study/{studyId}/deck_{deck.SequenceOrder}/v{newVersionNumber}/vazoes.dat", "Auto-adjusted after infeasibility"));
-                
-                await group.SendAsync("LogReceived", $"[SYSTEM] Nova Versão {newVersionNumber} criada. Re-executando Deck Mês {deck.SequenceOrder}...");
-                deck.ChangeState(Domain.Enums.DeckState.Running);
-                await _context.SaveChangesAsync(context.CancellationToken);
-                
-                await Task.Delay(2000, context.CancellationToken); 
-            }
-
             await group.SendAsync("LogReceived", $"[WORKER] Simulação do Deck {deck.SequenceOrder} concluída com sucesso.");
             deck.ChangeState(Domain.Enums.DeckState.Completed);
             await _context.SaveChangesAsync(context.CancellationToken);
@@ -90,6 +66,7 @@ public class ProspectModelRunnerConsumer : IConsumer<StudyExecutionRequestedEven
         }
 
         study.ChangeState(Domain.Enums.StudyState.Completed);
+        study.SaveResults("[]");
         await _context.SaveChangesAsync(context.CancellationToken);
 
         await group.SendAsync("LogReceived", $"[SYSTEM] Execução finalizada! Status do Estudo: COMPLETED.");

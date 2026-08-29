@@ -1,10 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatChipListbox, MatChip } from '@angular/material/chips';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 interface Strategy {
   id: string;
@@ -15,23 +15,16 @@ interface Strategy {
 @Component({
   selector: 'app-strategies',
   standalone: true,
-  imports: [CommonModule, DragDropModule, MatCardModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, DragDropModule, MatCardModule, MatButtonModule, MatIconModule, MatSnackBarModule],
   templateUrl: './strategies.component.html',
   styleUrls: ['./strategies.component.scss']
 })
 export class StrategiesComponent {
-  draft: Strategy[] = [
-    { id: '1', name: 'Hedge de Inverno', description: 'Proteção contra preços em época de seca' }
-  ];
+  private snackBar = inject(MatSnackBar);
 
-  approved: Strategy[] = [
-    { id: '2', name: 'Arbitragem Sul x SE', description: 'Compra no Sul e venda no SE aproveitando spread' },
-    { id: '3', name: 'Venda Excedente Eólica', description: 'Desovar excedentes do NE' }
-  ];
-
-  inactive: Strategy[] = [
-    { id: '4', name: 'Especulação Curto Prazo', description: 'Day trade no PLD' }
-  ];
+  draft: Strategy[] = [];
+  approved: Strategy[] = [];
+  inactive: Strategy[] = [];
 
   drop(event: CdkDragDrop<Strategy[]>) {
     if (event.previousContainer === event.container) {
@@ -47,6 +40,9 @@ export class StrategiesComponent {
   }
 
   onNewStrategy() {
-    alert('Abertura do formulário de "Nova Estratégia" em desenvolvimento!');
+    this.snackBar.open('Criação de estratégias requer o endpoint /api/v1/strategies no backend.', 'Fechar', {
+      duration: 5000,
+      panelClass: ['warn-snackbar']
+    });
   }
 }

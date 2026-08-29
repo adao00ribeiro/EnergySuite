@@ -51,6 +51,10 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover-row"></tr>
       </table>
+      <div class="empty-table" *ngIf="dataSource().length === 0">
+        <mat-icon>folder_open</mat-icon>
+        <p>Nenhum portfólio cadastrado no momento.</p>
+      </div>
       <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons class="bg-transparent"></mat-paginator>
     </div>
   </main>

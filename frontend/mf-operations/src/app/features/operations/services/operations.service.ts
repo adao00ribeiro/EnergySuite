@@ -1,5 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
 export interface OperationListItem {
@@ -33,7 +34,7 @@ interface OperationApiItem {
 @Injectable({ providedIn: 'root' })
 export class OperationsService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/v1/operations`;
+  private apiUrl = `${environment.apiUrl}/operations`;
 
   operations = signal<OperationListItem[]>([]);
   isLoading = signal<boolean>(false);
@@ -61,5 +62,9 @@ export class OperationsService {
         this.isLoading.set(false);
       }
     });
+  }
+
+  changeState(operationId: string, newState: string): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/${operationId}/state`, { newState });
   }
 }

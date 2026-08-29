@@ -41,6 +41,27 @@
   flex-direction: column;
   gap: 12px;
 }
+.column-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px 8px;
+  color: var(--color-muted-foreground, #94a3b8);
+  text-align: center;
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+}
+.column-empty mat-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+.column-empty p {
+  margin: 0;
+  font-size: 13px;
+}
 .strategy-card {
   cursor: grab;
   border-left: 4px solid #cbd5e1;

@@ -20,7 +20,7 @@ public class GetEnaResultsQueryHandler : IRequestHandler<GetEnaResultsQuery, IEn
 
     public async Task<IEnumerable<EnaResultDto>> Handle(GetEnaResultsQuery request, CancellationToken cancellationToken)
     {
-        // Pega a data base simulada baseada no offset (Hoje, Ontem, etc.)
+        // Pega a data base baseada no offset (Hoje, Ontem, etc.)
         var baseDate = DateTime.UtcNow.Date.AddDays(request.OffsetDays);
         
         var query = _context.HydrologicalResults.AsNoTracking();
@@ -30,7 +30,6 @@ public class GetEnaResultsQueryHandler : IRequestHandler<GetEnaResultsQuery, IEn
             query = query.Where(x => x.Submarket == request.Submarket);
         }
 
-        // Simula filtro por data de criacao da projecao
         query = query.Where(x => x.CreatedAt.Date <= baseDate);
 
         var results = await query
@@ -43,23 +42,6 @@ public class GetEnaResultsQueryHandler : IRequestHandler<GetEnaResultsQuery, IEn
                 ValuePercentageMlt = x.ValuePercentageMlt
             })
             .ToListAsync(cancellationToken);
-
-        // Fallback Mock se a base estiver limpa
-        if (!results.Any())
-        {
-            var fallback = new List<EnaResultDto>();
-            for (int i = 0; i < 12; i++)
-            {
-                var rand = new Random();
-                fallback.Add(new EnaResultDto
-                {
-                    TargetDate = DateTime.UtcNow.AddMonths(i),
-                    ValuePercentageMlt = 50 + (rand.Next(30) + (request.OffsetDays * 5)), // Offset gera mudança visual no %MLT mock
-                    ValueMwMed = 25000 + rand.Next(5000)
-                });
-            }
-            return fallback;
-        }
 
         return results;
     }

@@ -1,6 +1,7 @@
 import { Component, OnInit, signal, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../../environments/environment';
 
 interface MlopsRun {
   id: string;
@@ -36,11 +37,14 @@ export class MlopsStatusComponent implements OnInit, OnDestroy {
   }
 
   fetchExecutions() {
-    this.http.get<MlopsRun[]>('http://localhost:8000/api/v1/pluvia/executions').subscribe({
+    this.http.get<MlopsRun[]>(`${environment.apiUrl}/pluvia/executions`).subscribe({
       next: (data) => {
-        this.runs.set(data);
+        this.runs.set(Array.isArray(data) ? data : []);
       },
-      error: (err) => console.error('Failed to load mlops executions', err)
+      error: (err) => {
+        this.runs.set([]);
+        console.error('Failed to load mlops executions', err);
+      }
     });
   }
   

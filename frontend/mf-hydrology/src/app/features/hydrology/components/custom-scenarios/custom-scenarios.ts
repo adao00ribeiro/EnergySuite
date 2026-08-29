@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-custom-scenarios',
@@ -58,7 +59,7 @@ export class CustomScenariosComponent {
       formData.append('referenceDate', new Date().toISOString());
       formData.append('horizonDays', this.uploadForm.get('horizonDays')?.value);
 
-      this.http.post('/api/v1/pluvia/custom-maps/upload', formData).subscribe({
+      this.http.post(`${environment.apiUrl}/pluvia/custom-maps/upload`, formData).subscribe({
         next: (res) => {
           this.isUploading = false;
           alert('Upload concluído com sucesso!');
@@ -93,7 +94,7 @@ export class CustomScenariosComponent {
         })
       };
 
-      this.http.post('/api/v1/pluvia/custom-maps/blend', payload).subscribe({
+      this.http.post(`${environment.apiUrl}/pluvia/custom-maps/blend`, payload).subscribe({
         next: (res) => {
           this.isBlending = false;
           alert('Cenário combinado criado com sucesso!');

@@ -39,19 +39,7 @@ export class SimulationDialogComponent implements OnInit {
   simulateOperation() {
     this.portfolioService.simulateOperation(this.data.opportunityId, this.data.volumeMwm).subscribe({
       next: (response: any) => {
-        // Fallback for mocked UI representation if backend returns generic success
-        this.result = {
-          previousVolumeMwm: 30.5,
-          newVolumeMwm: 30.5 + this.data.volumeMwm,
-          volumeDelta: this.data.volumeMwm,
-          previousEstimatedResult: 450000.00,
-          newEstimatedResult: response.newEstimatedResult || (450000.00 - 12000.00),
-          financialDelta: response.newEstimatedResult ? (response.newEstimatedResult - 450000.00) : -12000.00,
-          copilotAnalysis: {
-            summaryText: `Esta operação de ${this.data.volumeMwm} MWm afeta a exposição do portfólio. Verificamos que o delta financeiro é um custo aceitável de hedge.`,
-            recommendation: "Approve"
-          }
-        };
+        this.result = response;
         this.isLoading = false;
       },
       error: (err) => {
@@ -64,23 +52,27 @@ export class SimulationDialogComponent implements OnInit {
 
   approve() {
     this.isSubmitting = true;
-    
-    // Simulate ApproveOperationCommand -> Imeris Validation
-    setTimeout(() => {
-      this.isSubmitting = false;
-      if (this.data.volumeMwm > 20) {
-        this.snackBar.open(`🚨 Risco de Crédito Reprovado (Imeris): O volume de ${this.data.volumeMwm} MWm ultrapassa o limite pré-aprovado de 20 MWm da contraparte.`, 'Fechar', {
+
+    this.portfolioService.approveOperation(this.data.opportunityId, this.data.opportunityId, this.data.volumeMwm).subscribe({
+      next: (response) => {
+        this.isSubmitting = false;
+        this.snackBar.open(response.message, 'Fechar', {
+          duration: 5000,
+          panelClass: response.success ? ['success-snackbar'] : ['error-snackbar']
+        });
+        if (response.success) {
+          this.dialogRef.close(true);
+        }
+      },
+      error: (err) => {
+        this.isSubmitting = false;
+        const message = err?.error?.message || 'Falha na validação de crédito pelo backend.';
+        this.snackBar.open(message, 'Fechar', {
           duration: 5000,
           panelClass: ['error-snackbar']
         });
-      } else {
-        this.snackBar.open('✅ Operação aprovada com sucesso! O BackOps foi notificado.', 'Fechar', {
-          duration: 3000,
-          panelClass: ['success-snackbar']
-        });
-        this.dialogRef.close(true);
       }
-    }, 2000);
+    });
   }
 
   close() {

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EtrmService.Application.Interfaces;
@@ -11,13 +12,15 @@ namespace EtrmService.Application.B2bIntegration.Commands;
 
 public class CreateExternalOperationCommand : IRequest<Guid>
 {
-    public Guid CounterpartyId { get; set; }
+    /// <summary>Tenant do sistema (integração em background, sem usuário autenticado).</summary>
+    public Guid? TenantId { get; set; }
+    public string CounterpartyCode { get; set; } = string.Empty; // CceeCode/CceeAcronym da empresa cadastrada
     public OperationType Type { get; set; }
     public decimal VolumeMwMed { get; set; }
     public decimal Price { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
-    public string ExternalPlatform { get; set; } = string.Empty; // e.g., BBCE, N5X
+    public string ExternalPlatform { get; set; } = string.Empty; // e.g., CCEE, BBCE
     public string ExternalId { get; set; } = string.Empty;
 }
 
@@ -34,23 +37,40 @@ public class CreateExternalOperationCommandHandler : IRequestHandler<CreateExter
 
     public async Task<Guid> Handle(CreateExternalOperationCommand request, CancellationToken cancellationToken)
     {
-        var tenantId = _currentUserService.TenantId;
+        var tenantId = request.TenantId ?? _currentUserService.TenantId;
 
-        // Fetch a default portfolio for the tenant (simplified for this context)
-        var defaultPortfolio = await _context.Portfolios
-            .FirstOrDefaultAsync(p => p.TenantId == tenantId, cancellationToken);
-            
+        // Regra Sprint 9: criar draft somente se a contraparte existir no cadastro;
+        // caso contrário, rejeitar (exceção honesta logada pelo chamador).
+        var companiesQuery = request.TenantId.HasValue
+            ? _context.Companies.IgnoreQueryFilters().Where(c => c.TenantId == tenantId)
+            : _context.Companies;
+
+        var counterparty = await companiesQuery.FirstOrDefaultAsync(c =>
+            (c.CceeCode != null && c.CceeCode.Equals(request.CounterpartyCode, StringComparison.OrdinalIgnoreCase)) ||
+            (c.CceeAcronym != null && c.CceeAcronym.Equals(request.CounterpartyCode, StringComparison.OrdinalIgnoreCase)),
+            cancellationToken);
+
+        if (counterparty == null)
+            throw new InvalidOperationException($"Counterparty not found for external code '{request.CounterpartyCode}'.");
+
+        var portfoliosQuery = request.TenantId.HasValue
+            ? _context.Portfolios.IgnoreQueryFilters().Where(p => p.TenantId == tenantId)
+            : _context.Portfolios;
+
+        var defaultPortfolio = await portfoliosQuery
+            .FirstOrDefaultAsync(cancellationToken);
+
         if (defaultPortfolio == null)
             throw new InvalidOperationException("No default portfolio found for tenant.");
 
-        // Create a Ticket for this external operation
+        // Cria um Ticket para a operação externa, referenciando o id real da fonte (ExternalId).
         var ticket = new Ticket(request.ExternalId, tenantId);
         _context.Tickets.Add(ticket);
 
         var operation = new Operation(
             ticketId: ticket.Id,
             portfolioId: defaultPortfolio.Id,
-            counterpartyId: request.CounterpartyId,
+            counterpartyId: counterparty.Id,
             type: request.Type,
             volumeMwMed: request.VolumeMwMed,
             price: request.Price,
@@ -58,19 +78,17 @@ public class CreateExternalOperationCommandHandler : IRequestHandler<CreateExter
             endDate: request.EndDate,
             tenantId: tenantId
         );
-        
-        // External trades are usually published immediately or bypass draft state
-        operation.ChangeState(OperationState.Published);
 
+        // Regra Sprint 9: trades externos entram como rascunho para aprovação do backoffice.
         _context.Operations.Add(operation);
 
-        // Add audit log for tracking external platform
+        // Audit log de origem (plataforma externa + id real da fonte).
         var auditLog = new AuditLog(
-            "Operation", 
-            operation.Id.ToString(), 
-            "Created", 
-            $"{{ \"Source\": \"{request.ExternalPlatform}\", \"ExternalId\": \"{request.ExternalId}\" }}", 
-            "System", 
+            "Operation",
+            operation.Id.ToString(),
+            "Created",
+            $"{{\"Source\":\"{request.ExternalPlatform}\",\"ExternalId\":\"{request.ExternalId}\",\"State\":\"Draft\"}}",
+            "System",
             tenantId
         );
         _context.AuditLogs.Add(auditLog);

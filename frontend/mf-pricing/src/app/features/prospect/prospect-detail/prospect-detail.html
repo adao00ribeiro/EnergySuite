@@ -5,8 +5,10 @@
       <p>PLD Setembro 2026 - Horizonte de 12 meses</p>
     </div>
     <div class="header-actions">
-      <button mat-flat-button color="accent" (click)="executeStudy()">
-        <mat-icon>play_arrow</mat-icon> Executar Estudo
+      <button mat-flat-button color="accent" (click)="executeStudy()" [disabled]="isExecuting()">
+        <mat-icon>play_arrow</mat-icon>
+        <span *ngIf="!isExecuting()">Executar Estudo</span>
+        <span *ngIf="isExecuting()">Executando...</span>
       </button>
     </div>
   </div>
@@ -14,14 +16,14 @@
   <mat-tab-group>
     <!-- Aba 1: Premissas -->
     <mat-tab label="Premissas (Excel)">
-      <div class="tab-content">
+      <div class="tab-content" *ngIf="premissas() as p; else noPremissas">
         <mat-card>
           <mat-card-header>
             <mat-card-title>Configurações Globais</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <p><strong>Cenário GSF:</strong> {{ premissas.cenarioGsf }}</p>
-            <p><strong>Crescimento de Carga (%):</strong> {{ premissas.crescimentoCarga }}</p>
+            <p><strong>Cenário GSF:</strong> {{ p.cenarioGsf }}</p>
+            <p><strong>Crescimento de Carga (%):</strong> {{ p.crescimentoCarga }}</p>
           </mat-card-content>
         </mat-card>
 
@@ -31,7 +33,7 @@
           </mat-card-header>
           <mat-card-content>
             <mat-list>
-              <mat-list-item *ngFor="let nivel of premissas.niveisIniciais">
+              <mat-list-item *ngFor="let nivel of p.niveisIniciais">
                 <span matListItemTitle>{{ nivel.submercado }}</span>
                 <span matListItemLine>{{ nivel.nivel }}%</span>
               </mat-list-item>
@@ -39,15 +41,21 @@
           </mat-card-content>
         </mat-card>
       </div>
+      <ng-template #noPremissas>
+        <div class="empty-state">
+          <mat-icon>assignment</mat-icon>
+          <p>Nenhuma premissa carregada para este estudo.</p>
+        </div>
+      </ng-template>
     </mat-tab>
 
     <!-- Aba 2: Decks -->
     <mat-tab label="Decks Gerados (GEVAZP)">
       <div class="tab-content">
-        <mat-card>
+        <mat-card *ngIf="decks().length > 0; else noDecks">
           <mat-card-content>
             <mat-list>
-              <mat-list-item *ngFor="let deck of decks">
+              <mat-list-item *ngFor="let deck of decks()">
                 <mat-icon matListItemIcon [color]="deck.status === 'Completed' ? 'primary' : (deck.status === 'Running' ? 'accent' : (deck.status === 'Infeasible' ? 'warn' : ''))">
                   {{ deck.status === 'Completed' ? 'check_circle' : (deck.status === 'Running' ? 'autorenew' : (deck.status === 'Infeasible' ? 'error' : 'hourglass_empty')) }}
                 </mat-icon>
@@ -62,6 +70,12 @@
             </mat-list>
           </mat-card-content>
         </mat-card>
+        <ng-template #noDecks>
+          <div class="empty-state">
+            <mat-icon>layers_clear</mat-icon>
+            <p>Nenhum deck gerado ainda. Execute o estudo para gerar os decks mensais.</p>
+          </div>
+        </ng-template>
       </div>
     </mat-tab>
 
@@ -69,10 +83,11 @@
     <mat-tab label="Console de Execução">
       <div class="tab-content">
         <div class="console">
+          <div *ngIf="!isHubConnected()" class="log-line muted">Conexão com o hub de logs indisponível no momento.</div>
           <div class="log-line" *ngFor="let log of logs()">
             {{ log }}
           </div>
-          <div *ngIf="logs().length === 0" class="log-line muted">Aguardando execução...</div>
+          <div *ngIf="logs().length === 0 && isHubConnected()" class="log-line muted">Aguardando execução...</div>
         </div>
       </div>
     </mat-tab>

@@ -11,6 +11,7 @@ public class Strategy
     
     public DateTime CreatedAt { get; private set; }
     public bool IsActive { get; private set; }
+    public string Status { get; private set; } = "Draft"; // Draft, Approved, Inactive
 
     protected Strategy() { }
 
@@ -22,10 +23,12 @@ public class Strategy
         TenantId = tenantId;
         CreatedAt = DateTime.UtcNow;
         IsActive = true;
+        Status = "Draft";
     }
 
     public void Deactivate()
     {
         IsActive = false;
+        Status = "Inactive";
     }
 }

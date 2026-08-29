@@ -3,7 +3,7 @@
     <h3 class="allocation-title">Alocação de Portfólio (MWm)</h3>
   </div>
   
-  <div class="allocation-list">
+  <div class="allocation-list" *ngIf="allocations.length > 0; else noData">
     <div *ngFor="let item of allocations" class="allocation-item">
       <div class="item-header">
         <span class="item-title">
@@ -19,4 +19,15 @@
       </div>
     </div>
   </div>
+
+  <ng-template #noData>
+    <div class="allocation-empty" *ngIf="!isLoading()">
+      <mat-icon>pie_chart</mat-icon>
+      <p>Sem dados de alocação disponíveis no momento.</p>
+    </div>
+    <div class="allocation-empty" *ngIf="isLoading()">
+      <mat-icon>hourglass_empty</mat-icon>
+      <p>Carregando alocação do portfólio...</p>
+    </div>
+  </ng-template>
 </div>

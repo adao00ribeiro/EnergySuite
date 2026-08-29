@@ -29,6 +29,11 @@
           </mat-card-content>
         </mat-card>
 
+        <div class="column-empty" *ngIf="draft.length === 0">
+          <mat-icon>inbox</mat-icon>
+          <p>Nenhuma estratégia em rascunho.</p>
+        </div>
+
       </div>
     </div>
 
@@ -51,6 +56,11 @@
           </mat-card-content>
         </mat-card>
 
+        <div class="column-empty" *ngIf="approved.length === 0">
+          <mat-icon>inbox</mat-icon>
+          <p>Nenhuma estratégia ativa.</p>
+        </div>
+
       </div>
     </div>
 
@@ -72,6 +82,11 @@
             <p>{{item.description}}</p>
           </mat-card-content>
         </mat-card>
+
+        <div class="column-empty" *ngIf="inactive.length === 0">
+          <mat-icon>inbox</mat-icon>
+          <p>Nenhuma estratégia inativa.</p>
+        </div>
 
       </div>
     </div>

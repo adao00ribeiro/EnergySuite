@@ -41,9 +41,41 @@
 .chart-wrapper {
   height: 400px;
   width: 100%;
+  position: relative;
 }
 
 .echarts-instance {
   height: 100%;
   width: 100%;
+}
+
+.chart-state {
+  position: absolute;
+  inset: 0;
+  left: 20%;
+  right: 20%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.chart-state mat-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  color: var(--text-secondary);
+}
+
+.chart-state p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.error-state mat-icon {
+  color: var(--status-danger);
 }

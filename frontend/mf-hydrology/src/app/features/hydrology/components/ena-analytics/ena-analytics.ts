@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -7,22 +7,32 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
+import { environment } from '../../../../../environments/environment';
+
+export interface EnaResult {
+  targetDate: string;
+  valueMwMed: number;
+  valuePercentageMlt: number;
+}
 
 @Component({
   selector: 'app-ena-analytics',
   standalone: true,
   imports: [
-    CommonModule, 
-    MatCardModule, 
+    CommonModule,
+    MatCardModule,
     MatTabsModule,
     MatSelectModule,
     MatInputModule,
     MatButtonModule,
     MatSlideToggleModule,
     MatIconModule,
+    MatProgressSpinnerModule,
     FormsModule,
     NgxEchartsModule
   ],
@@ -30,7 +40,12 @@ import { EChartsOption } from 'echarts';
   styleUrls: ['./ena-analytics.scss']
 })
 export class EnaAnalyticsComponent implements OnInit {
+  private http = inject(HttpClient);
+
   chartOption = signal<EChartsOption>({});
+  points = signal<EnaResult[]>([]);
+  isLoading = signal(false);
+  hasError = signal(false);
 
   // Form State
   tableName = signal('Gráfico Exemplo');
@@ -43,17 +58,48 @@ export class EnaAnalyticsComponent implements OnInit {
   tempAnalysis = signal('D-0');
   diffMode = signal(false);
 
+  private readonly submarkets = ['SE/CO', 'S', 'NE', 'N'];
+
   ngOnInit() {
-    this.initChart();
+    this.loadEnaData();
   }
 
-  initChart() {
+  loadEnaData() {
+    this.isLoading.set(true);
+    this.hasError.set(false);
+
+    this.http.get<EnaResult[]>(`${environment.apiUrl}/pluvia/ena`).subscribe({
+      next: (data) => {
+        const results: EnaResult[] = Array.isArray(data) ? data : [];
+        this.points.set(results);
+        this.isLoading.set(false);
+        this.buildChart(results);
+      },
+      error: (err) => {
+        console.error('Erro ao carregar resultados de ENA:', err);
+        this.points.set([]);
+        this.isLoading.set(false);
+        this.hasError.set(true);
+      }
+    });
+  }
+
+  buildChart(results: EnaResult[]) {
+    if (results.length === 0) {
+      this.chartOption.set({});
+      return;
+    }
+
+    const labels = results.map(r => new Date(r.targetDate).toISOString().slice(0, 7));
+    const measure = this.selectedMeasure() === '%MLT';
+    const values = results.map(r => measure ? Number(r.valuePercentageMlt) : Number(r.valueMwMed));
+
     this.chartOption.set({
       tooltip: {
         trigger: 'axis'
       },
       legend: {
-        data: ['Oficial (Sólida)', 'Projeção (Tracejada)'],
+        data: ['ENA'],
         bottom: 0,
         textStyle: { color: '#64748B' }
       },
@@ -66,31 +112,32 @@ export class EnaAnalyticsComponent implements OnInit {
       },
       xAxis: {
         type: 'category',
-        data: ['DC202601-sem1', 'DC202601-sem2', 'DC202601-sem3', 'DC202601-sem4', 'DC202601-sem5', 'DC202601-sem6'],
+        data: labels,
         axisLine: { lineStyle: { color: '#CBD5E1' } },
         axisLabel: { color: '#64748B' }
       },
       yAxis: {
         type: 'value',
         min: 0,
-        max: 300,
         splitLine: { lineStyle: { color: '#F1F5F9', type: 'solid' } },
         axisLabel: { color: '#64748B' }
       },
       series: [
         {
-          name: 'Oficial (Sólida)',
+          name: 'ENA',
           type: 'line',
-          data: [150, 100, 150, 180, 200, 150, 50, 100],
+          data: values,
           itemStyle: { color: '#0369A1' },
-          lineStyle: { width: 3 }
-        },
-        {
-          name: 'Projeção (Tracejada)',
-          type: 'line',
-          data: [100, 150, 200, 150, 150, 200, 200, 150],
-          itemStyle: { color: '#0F172A' },
-          lineStyle: { width: 3, type: 'dashed' }
+          lineStyle: { width: 3 },
+          areaStyle: {
+            color: {
+              type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+              colorStops: [
+                { offset: 0, color: 'rgba(3, 105, 161, 0.25)' },
+                { offset: 1, color: 'rgba(3, 105, 161, 0)' }
+              ]
+            }
+          }
         }
       ]
     });

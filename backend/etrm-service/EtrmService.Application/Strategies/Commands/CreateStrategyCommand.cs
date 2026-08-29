@@ -2,8 +2,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using EtrmService.Application.Interfaces;
 using EtrmService.Domain.Entities;
-// Assuming some mock repository or just returning success for Sprint 3 MVP
 
 namespace EtrmService.Application.Strategies.Commands;
 
@@ -23,14 +23,19 @@ public class CreateStrategyCommand : IRequest<Guid>
 
 public class CreateStrategyCommandHandler : IRequestHandler<CreateStrategyCommand, Guid>
 {
+    private readonly IEtrmDbContext _context;
+
+    public CreateStrategyCommandHandler(IEtrmDbContext context)
+    {
+        _context = context;
+    }
+
     public async Task<Guid> Handle(CreateStrategyCommand request, CancellationToken cancellationToken)
     {
-        await Task.Delay(100, cancellationToken); // Simula gravação no DB
-        
         var strategy = new Strategy(request.Name, request.Description, request.TenantId);
-        
-        // Em um cenário real, injetaríamos IStrategyRepository e salvaríamos.
-        // await _repository.AddAsync(strategy, cancellationToken);
+
+        _context.Strategies.Add(strategy);
+        await _context.SaveChangesAsync(cancellationToken);
 
         return strategy.Id;
     }

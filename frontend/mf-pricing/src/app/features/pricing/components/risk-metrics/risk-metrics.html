@@ -18,4 +18,9 @@
       <p class="metric-desc">{{ metric.description }}</p>
     </div>
   </div>
+
+  <div *ngIf="metrics.length === 0" class="glass-panel metric-card empty-state">
+    <mat-icon>monitor_heart</mat-icon>
+    <p>Métricas de risco indisponíveis. Aguardando dados da API.</p>
+  </div>
 </div>

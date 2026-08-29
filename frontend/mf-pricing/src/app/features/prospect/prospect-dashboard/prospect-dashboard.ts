@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { ProspectService } from '../services/prospect.service';
+import { ProspectService, Study } from '../services/prospect.service';
 import { Router, RouterModule } from '@angular/router';
 import { NewStudyDialogComponent } from '../components/new-study-dialog/new-study-dialog.component';
 
@@ -14,11 +14,11 @@ import { NewStudyDialogComponent } from '../components/new-study-dialog/new-stud
   selector: 'app-prospect-dashboard',
   standalone: true,
   imports: [
-    CommonModule, 
-    RouterModule, 
-    MatTableModule, 
-    MatButtonModule, 
-    MatIconModule, 
+    CommonModule,
+    RouterModule,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
     MatChipsModule,
     MatDialogModule,
     MatSnackBarModule
@@ -32,7 +32,8 @@ export class ProspectDashboardComponent implements OnInit {
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
 
-  studies: any[] = [];
+  studies = this.prospectService.studies;
+  isLoading = this.prospectService.isLoading;
   displayedColumns: string[] = ['name', 'model', 'startDate', 'horizon', 'state', 'actions'];
 
   ngOnInit() {
@@ -40,36 +41,34 @@ export class ProspectDashboardComponent implements OnInit {
   }
 
   loadStudies() {
-    // For now, load mock data but could be tied to service if available
-    this.studies = [
-      { id: 1, name: 'Estudo PLD 2026', author: 'João Silva', date: '2026-08-20', status: 'Completed' },
-      { id: 2, name: 'Cenário Base (PDE)', author: 'Maria Oliveira', date: '2026-08-21', status: 'Running' },
-      { id: 3, name: 'Estudo PLD 2027', author: 'João Silva', date: '2026-08-22', status: 'Pending' }
-    ];
+    this.prospectService.loadStudies();
   }
 
-  viewDetails(id: number) {
+  viewDetails(id: string) {
     this.router.navigate(['/prospect', id]);
   }
 
-  cloneStudy(study: any) {
-    const newId = this.studies.length + 1;
-    this.studies = [
-      {
-        id: newId,
-        name: study.name + ' (Cloned)',
-        author: 'Usuário Atual',
-        date: new Date().toISOString().split('T')[0],
-        status: 'Pending'
+  cloneStudy(study: Study) {
+    this.prospectService.cloneStudy(study.id).subscribe({
+      next: () => {
+        this.snackBar.open('Estudo clonado com sucesso!', 'Fechar', { duration: 3000 });
+        this.loadStudies();
       },
-      ...this.studies
-    ];
+      error: (err) => {
+        console.error('Erro ao clonar estudo', err);
+        this.snackBar.open('Falha ao clonar o estudo. Tente novamente.', 'Fechar', {
+          duration: 5000,
+          panelClass: ['warn-snackbar']
+        });
+      }
+    });
   }
 
   getStateColor(state: string): string {
     switch (state) {
       case 'Completed': return 'primary';
-      case 'Running': return 'accent';
+      case 'Running':
+      case 'Queued': return 'accent';
       case 'Failed': return 'warn';
       default: return '';
     }
@@ -84,7 +83,6 @@ export class ProspectDashboardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Append missing fields expected by the backend DTO if necessary
         const payload = {
           ...result,
           startDate: result.startDate.toISOString()
@@ -93,26 +91,14 @@ export class ProspectDashboardComponent implements OnInit {
         this.prospectService.createStudy(payload).subscribe({
           next: () => {
             this.snackBar.open('Estudo criado com sucesso!', 'Fechar', { duration: 3000 });
-            this.loadStudies(); // Reload table data
+            this.loadStudies();
           },
           error: (err) => {
             console.error('Error creating study:', err);
-            this.snackBar.open('Falha ao criar o estudo. Tente novamente.', 'Fechar', { 
-              duration: 5000, 
-              panelClass: ['warn-snackbar'] 
+            this.snackBar.open('Falha ao criar o estudo. Tente novamente.', 'Fechar', {
+              duration: 5000,
+              panelClass: ['warn-snackbar']
             });
-            // As a fallback for UI demonstration since backend might not be up:
-            const newId = this.studies.length + 1;
-            this.studies = [
-              {
-                id: newId,
-                name: payload.name,
-                author: 'Usuário Atual',
-                date: payload.startDate.split('T')[0],
-                status: 'Running'
-              },
-              ...this.studies
-            ];
           }
         });
       }

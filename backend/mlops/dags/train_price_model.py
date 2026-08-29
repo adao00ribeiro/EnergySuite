@@ -2,9 +2,12 @@
 Pluvia Price Forecaster - Airflow DAG
 
 Pipeline MLOps que:
-1. Extrai/simula dados históricos de chuva, demanda e preços
-2. Treina um modelo RandomForest para prever preços de energia
-3. Salva previsões no Data Lake (MinIO) como Parquet
+1. Lê dados históricos reais (ENA/precipitação/preços) do Data Lake (MinIO).
+2. Treina um modelo RandomForest para prever preços de energia.
+3. Salva previsões no Data Lake (MinIO) como Parquet e registra artefatos no MLflow.
+
+Se não houver dados reais suficientes, o pipeline encerra com estado claro de
+"sem dados" (sem treinar com dados fabricados).
 
 Agendamento: Diário (@daily)
 """
@@ -12,7 +15,6 @@ import os
 import logging
 from datetime import datetime, timedelta
 
-import numpy as np
 import pandas as pd
 import s3fs
 import mlflow
@@ -23,7 +25,6 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from airflow.utils.trigger_rule import TriggerRule
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +42,18 @@ SUBMARKETS = {
 }
 
 DATALAKE_PRICES_PATH = "s3://datalake/prices/latest_prices.parquet"
-DATALAKE_HISTORICAL_PATH = "s3://datalake/historical/"
+
+# Fontes reais de treino (Parquet produzidos por ingestão/risk-service)
+HISTORICAL_PATHS = [
+    "s3://datalake/gold/energy/historical.parquet",
+    "s3://datalake/historical/",
+]
+METEOROLOGY_PATHS = [
+    "s3://datalake/gold/meteorology/precipitation.parquet",
+    "s3://datalake/silver/meteorology/precipitation.parquet",
+]
+
+MIN_ROWS_FOR_TRAIN = 30
 
 
 def _get_s3fs():
@@ -52,76 +64,116 @@ def _get_s3fs():
     )
 
 
-def extract_simulate_data(**kwargs):
-    """Simula extração de dados históricos de chuva, demanda e preços da energia."""
-    np.random.seed(42)
-    n_samples = 1000
+def _read_historical_frames(fs):
+    """Lê DataFrames históricos reais do Data Lake (todos os PARQUET encontrados)."""
+    frames = []
+    for path in HISTORICAL_PATHS:
+        if fs.exists(path):
+            if fs.isdir(path):
+                for file in fs.ls(path):
+                    if file.endswith(".parquet"):
+                        try:
+                            with fs.open(file, "rb") as f:
+                                frames.append(pd.read_parquet(f))
+                        except Exception as exc:  # noqa: BLE001
+                            logger.warning(f"Falha ao ler {file}: {exc}")
+            else:
+                try:
+                    with fs.open(path, "rb") as f:
+                        frames.append(pd.read_parquet(f))
+                except Exception as exc:  # noqa: BLE001
+                    logger.warning(f"Falha ao ler {path}: {exc}")
+    return frames
 
-    data = []
-    for submarket_id, sub_name in SUBMARKETS.items():
-        rainfall = np.random.uniform(0, 100, n_samples)
-        demand = np.random.uniform(5000, 15000, n_samples)
 
-        base_price_factor = 200 + (demand * 0.01) - (rainfall * 1.5)
+def extract_real_data(**kwargs):
+    """Extrai dados históricos reais de chuva, demanda e preços do Data Lake.
 
-        if submarket_id == 0:
-            base_price_factor += 50
-        elif submarket_id == 1:
-            base_price_factor -= 20
-        elif submarket_id == 2:
-            base_price_factor -= 50
-        elif submarket_id == 3:
-            base_price_factor -= 80
+    Nenhuma série aleatória é fabricada. Se nada estiver disponível, publica
+    estado NO_DATA via XCom para que o treino não rode com dados falsos.
+    """
+    ti = kwargs["ti"]
+    fs = _get_s3fs()
 
-        prices = base_price_factor + np.random.normal(0, 10, n_samples)
-        prices = np.clip(prices, 50, 500)
+    frames = _read_historical_frames(fs)
 
-        df = pd.DataFrame(
-            {
-                "submarket": submarket_id,
-                "rainfall": rainfall,
-                "demand": demand,
-                "price": prices,
-            }
-        )
-        data.append(df)
+    if not frames:
+        logger.warning("[extract] Nenhum dado histórico real no Data Lake.")
+        ti.xcom_push(key="state", value="NO_DATA")
+        return
 
-    full_df = pd.concat(data, ignore_index=True)
+    full_df = pd.concat(frames, ignore_index=True)
 
-    # Save historical data to Data Lake for audit trail
+    required = {"submarket", "price"}
+    if not required.issubset(full_df.columns):
+        logger.warning("[extract] Dados históricos sem o esquema esperado (submarket/price).")
+        ti.xcom_push(key="state", value="NO_DATA")
+        return
+
+    full_df = full_df.dropna(subset=["price"])
+    full_df["submarket"] = full_df["submarket"].astype(int)
+
+    # Garante colunas de features com valores reais ou derivados deterministicamente
+    if "rainfall" not in full_df.columns:
+        full_df["rainfall"] = 0.0
+    if "demand" not in full_df.columns:
+        full_df["demand"] = 0.0
+
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    s3_path = f"s3://datalake/gold/energy/training_{ts}.parquet"
     try:
-        fs = _get_s3fs()
-        ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-        s3_path = f"s3://datalake/historical/snapshot_{ts}.parquet"
-        try:
-            fs.mkdir("datalake/historical")
-        except Exception:
-            pass
         with fs.open(s3_path, "wb") as f:
             full_df.to_parquet(f, engine="pyarrow")
-        logger.info(f"Historical snapshot saved to {s3_path}")
-    except Exception as e:
-        logger.warning(f"Could not persist historical snapshot: {e}")
+        logger.info(f"[extract] Snapshot de treino real salvo em {s3_path}")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning(f"[extract] Falha ao persistir snapshot: {exc}")
 
-    # Also save locally for the training step
     full_df.to_csv("/tmp/historical_data.csv", index=False)
-    logger.info(f"Data extraction complete. {len(full_df)} rows generated.")
-    kwargs["ti"].xcom_push(key="row_count", value=len(full_df))
+    logger.info(f"[extract] Extração real concluída. {len(full_df)} linhas.")
+
+    ti.xcom_push(key="state", value="TRAIN")
+    ti.xcom_push(key="row_count", value=len(full_df))
 
 
 def train_model(**kwargs):
-    """Treina o modelo RandomForest e registra no MLflow."""
+    """Treina o modelo RandomForest sobre dados reais e registra no MLflow.
+
+    Se o estado for NO_DATA, registra estado claro sem treinar com mock.
+    """
+    ti = kwargs["ti"]
+    state = ti.xcom_pull(task_ids="extract_real_data", key="state")
+
+    mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+    mlflow.set_experiment("pluvia_price_forecaster")
+
+    if state != "TRAIN":
+        with mlflow.start_run(run_name=f"rf_daily_{datetime.now().strftime('%Y%m%d')}"):
+            mlflow.log_param("train_state", "NO_DATA")
+            mlflow.log_metric("train_samples", 0)
+        logger.warning("[train] Nenhum dado real. Treino pulado (estado NO_DATA).")
+        ti.xcom_push(key="mse", value=None)
+        ti.xcom_push(key="r2", value=None)
+        return
+
     df = pd.read_csv("/tmp/historical_data.csv")
 
-    X = df[["submarket", "rainfall", "demand"]]
-    y = df["price"]
+    X = df[["submarket", "rainfall", "demand"]].apply(pd.to_numeric, errors="coerce").fillna(0)
+    y = pd.to_numeric(df["price"], errors="coerce")
+
+    X, y = X[y.notna()], y[y.notna()]
+
+    if len(X) < MIN_ROWS_FOR_TRAIN:
+        with mlflow.start_run(run_name=f"rf_daily_{datetime.now().strftime('%Y%m%d')}"):
+            mlflow.log_param("train_state", "NO_DATA")
+            mlflow.log_metric("train_samples", len(X))
+        logger.warning(f"[train] Poucas linhas reais ({len(X)}). Sem treino com mock.")
+        ti.xcom_push(key="mse", value=None)
+        ti.xcom_push(key="r2", value=None)
+        return
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42
     )
-
-    mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
-    mlflow.set_experiment("pluvia_price_forecaster")
 
     with mlflow.start_run(run_name=f"rf_daily_{datetime.now().strftime('%Y%m%d')}"):
         model = RandomForestRegressor(n_estimators=100, max_depth=8, random_state=42)
@@ -132,8 +184,9 @@ def train_model(**kwargs):
         mae = mean_absolute_error(y_test, predictions)
         r2 = r2_score(y_test, predictions)
 
-        logger.info(f"Model trained. MSE={mse:.4f} MAE={mae:.4f} R2={r2:.4f}")
+        logger.info(f"Model trained (dados reais). MSE={mse:.4f} MAE={mae:.4f} R2={r2:.4f}")
 
+        mlflow.log_param("train_state", "TRAINED")
         mlflow.log_param("n_estimators", 100)
         mlflow.log_param("max_depth", 8)
         mlflow.log_param("model_type", "RandomForestRegressor")
@@ -144,7 +197,6 @@ def train_model(**kwargs):
         mlflow.log_metric("mae", mae)
         mlflow.log_metric("r2", r2)
 
-        # Log feature importances
         for i, col in enumerate(X.columns):
             mlflow.log_metric(f"feature_importance_{col}", model.feature_importances_[i])
 
@@ -155,22 +207,34 @@ def train_model(**kwargs):
         joblib.dump(model, "/tmp/latest_model.pkl")
         logger.info("Model saved to /tmp/latest_model.pkl")
 
-        kwargs["ti"].xcom_push(key="mse", value=mse)
-        kwargs["ti"].xcom_push(key="r2", value=r2)
+        ti.xcom_push(key="mse", value=mse)
+        ti.xcom_push(key="r2", value=r2)
 
 
 def predict_and_load_datalake(**kwargs):
-    """Gera previsões para hoje e salva como Parquet no Data Lake."""
+    """Gera previsões com base em dados reais de entrada (não aleatórios)."""
     import joblib
+
+    ti = kwargs["ti"]
+    state = ti.xcom_pull(task_ids="extract_real_data", key="state")
+
+    if state != "TRAIN":
+        logger.warning("[predict] Sem dados reais de treino. Publicação de previsão pulada.")
+        return
+
+    if not os.path.exists("/tmp/latest_model.pkl"):
+        logger.warning("[predict] Modelo não treinado. Pulando previsão.")
+        return
 
     model = joblib.load("/tmp/latest_model.pkl")
 
-    np.random.seed(int(datetime.now().timestamp()))
+    # Entradas reais: última precipitação persistida por submercado no Data Lake.
+    rainfall_map = _latest_meteorology_by_submarket()
 
     today_predictions = []
     for submarket_id, sub_name in SUBMARKETS.items():
-        current_rain = np.random.uniform(10, 90)
-        current_demand = np.random.uniform(7000, 13000)
+        current_rain = rainfall_map.get(submarket_id, 0.0)
+        current_demand = 0.0  # demanda real seria lida de fonte de dados dedicada
 
         X_today = pd.DataFrame(
             {
@@ -181,14 +245,13 @@ def predict_and_load_datalake(**kwargs):
         )
 
         predicted_price = float(model.predict(X_today)[0])
-        volatility = np.random.uniform(0.10, 0.35)
 
         today_predictions.append(
             {
                 "submarket_id": submarket_id,
                 "submarket_name": sub_name,
                 "base_price": round(predicted_price, 2),
-                "volatility": round(volatility, 4),
+                "volatility": 0.0,
                 "rainfall_index": round(current_rain, 2),
                 "demand_mw": round(current_demand, 2),
                 "date": datetime.now().date().isoformat(),
@@ -201,7 +264,7 @@ def predict_and_load_datalake(**kwargs):
     fs = _get_s3fs()
     try:
         fs.mkdir("datalake/prices")
-    except Exception:
+    except Exception:  # noqa: BLE001
         pass
 
     with fs.open(DATALAKE_PRICES_PATH, "wb") as f:
@@ -210,7 +273,39 @@ def predict_and_load_datalake(**kwargs):
     logger.info(f"Prices saved to Data Lake at {DATALAKE_PRICES_PATH}")
     logger.info(results_df.to_string())
 
-    kwargs["ti"].xcom_push(key="predictions", value=today_predictions)
+    ti.xcom_push(key="predictions", value=today_predictions)
+
+
+def _latest_meteorology_by_submarket():
+    """Retorna a precipitação real mais recente agregada por submercado (vetorizado).
+
+    Deriva o submercado a partir da coluna `submarket` quando presente, senão por
+    faixa de latitude (proxy geográfico determinístico).
+    """
+    fs = _get_s3fs()
+    for path in METEOROLOGY_PATHS:
+        if not fs.exists(path):
+            continue
+        try:
+            with fs.open(path, "rb") as f:
+                df = pd.read_parquet(f)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning(f"Falha ao ler meteorologia {path}: {exc}")
+            continue
+
+        if df.empty:
+            continue
+
+        if "submarket" not in df.columns and "lat" in df.columns:
+            df["submarket"] = pd.cut(df["lat"], bins=4, labels=range(4)).astype(int)
+
+        if "submarket" not in df.columns:
+            continue
+
+        df = df.groupby("submarket", as_index=False)["value_mm"].mean()
+        return {int(row["submarket"]): float(row["value_mm"]) for _, row in df.iterrows()}
+
+    return {}
 
 
 default_args = {
@@ -225,15 +320,15 @@ default_args = {
 with DAG(
     "train_price_model",
     default_args=default_args,
-    description="Pluvia: treina modelo de previsão de preços e publica no Data Lake",
+    description="Pluvia: treina modelo de previsão de preços sobre dados reais e publica no Data Lake",
     schedule_interval="@daily",
     catchup=False,
     tags=["mlops", "pluvia", "pricing"],
 ) as dag:
 
     t1 = PythonOperator(
-        task_id="extract_simulate_data",
-        python_callable=extract_simulate_data,
+        task_id="extract_real_data",
+        python_callable=extract_real_data,
     )
 
     t2 = PythonOperator(

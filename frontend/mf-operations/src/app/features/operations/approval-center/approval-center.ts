@@ -1,44 +1,57 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-
-export interface ApprovalItem {
-  id: string;
-  ticketRef: string;
-  type: string;
-  counterparty: string;
-  volume: number;
-  price: number;
-  requestedBy: string;
-  requestedAt: Date;
-}
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { OperationsService } from '../services/operations.service';
 
 @Component({
   selector: 'app-approval-center',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatPaginatorModule, MatSortModule, MatIconModule, MatButtonModule],
+  imports: [CommonModule, MatTableModule, MatPaginatorModule, MatSortModule, MatIconModule, MatButtonModule, MatSnackBarModule],
   templateUrl: './approval-center.html',
   styleUrl: './approval-center.scss'
 })
 export class ApprovalCenterComponent implements OnInit {
-  displayedColumns: string[] = ['ticketRef', 'type', 'counterparty', 'details', 'requested', 'actions'];
-  dataSource = signal<ApprovalItem[]>([]);
+  displayedColumns: string[] = ['ticketRef', 'type', 'counterparty', 'details', 'actions'];
+
+  private operationsService = inject(OperationsService);
+  private snackBar = inject(MatSnackBar);
+
+  pendingItems = computed(() =>
+    this.operationsService.operations().filter(op => op.state === 'PendingApproval')
+  );
 
   ngOnInit(): void {
-    this.dataSource.set([
-      { id: '2', ticketRef: 'TKT-2023-002', type: 'Sale', counterparty: 'Votener SA', volume: 10.0, price: 135.0, requestedBy: 'João Trader', requestedAt: new Date() }
-    ]);
+    this.operationsService.loadOperations();
   }
 
   approve(id: string) {
-    console.log('Approve', id);
+    this.operationsService.changeState(id, 'Approved').subscribe({
+      next: () => {
+        this.snackBar.open('Operação aprovada com sucesso.', 'Fechar', { duration: 3000 });
+        this.operationsService.loadOperations();
+      },
+      error: (err) => {
+        console.error('Erro ao aprovar operação', err);
+        this.snackBar.open('Falha ao aprovar a operação.', 'Fechar', { duration: 5000, panelClass: ['warn-snackbar'] });
+      }
+    });
   }
 
   reject(id: string) {
-    console.log('Reject', id);
+    this.operationsService.changeState(id, 'Inactive').subscribe({
+      next: () => {
+        this.snackBar.open('Operação rejeitada e marcada como inativa.', 'Fechar', { duration: 3000 });
+        this.operationsService.loadOperations();
+      },
+      error: (err) => {
+        console.error('Erro ao rejeitar operação', err);
+        this.snackBar.open('Falha ao rejeitar a operação.', 'Fechar', { duration: 5000, panelClass: ['warn-snackbar'] });
+      }
+    });
   }
 }

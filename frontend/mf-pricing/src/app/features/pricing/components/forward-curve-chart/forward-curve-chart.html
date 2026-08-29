@@ -1,11 +1,18 @@
 <div class="glass-panel chart-container animate-fade-in" style="animation-delay: 0.4s">
   <div class="chart-header">
     <h3 class="chart-title">Curva Forward de Preços (PLD)</h3>
-    <button class="btn-icon" title="Exportar Dados">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-    </button>
   </div>
   <div class="chart-wrapper">
     <div echarts [options]="chartOptions" class="echarts-instance"></div>
+
+    <div *ngIf="isEmpty()" class="chart-state empty-state">
+      <mat-icon>show_chart</mat-icon>
+      <p>Nenhum dado de curva forward disponível no momento.</p>
+    </div>
+
+    <div *ngIf="hasError()" class="chart-state error-state">
+      <mat-icon>warning_amber</mat-icon>
+      <p>Não foi possível carregar a curva forward. Tente novamente mais tarde.</p>
+    </div>
   </div>
 </div>

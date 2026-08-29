@@ -16,5 +16,22 @@
     </div>
   </div>
 
-  <div echarts [options]="chartOptions()" class="echarts-wrapper"></div>
+  <div class="echarts-wrapper">
+    <div echarts [options]="chartOptions()" class="echarts-instance"></div>
+
+    <div *ngIf="isLoading()" class="chart-state">
+      <mat-icon>hourglass_empty</mat-icon>
+      <p>Carregando dados de ENA...</p>
+    </div>
+
+    <div *ngIf="isEmpty() && !isLoading()" class="chart-state">
+      <mat-icon>show_chart</mat-icon>
+      <p>Nenhum dado de ENA disponível para o período selecionado.</p>
+    </div>
+
+    <div *ngIf="hasError() && !isLoading()" class="chart-state error">
+      <mat-icon>warning_amber</mat-icon>
+      <p>Não foi possível carregar os dados de ENA. Tente novamente mais tarde.</p>
+    </div>
+  </div>
 </div>

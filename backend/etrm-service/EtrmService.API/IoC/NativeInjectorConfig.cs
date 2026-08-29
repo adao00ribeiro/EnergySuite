@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using MassTransit;
 using FluentValidation;
 using Quartz;
+using Microsoft.Extensions.Http;
+using Polly;
 
 namespace EtrmService.API.IoC;
 
@@ -43,8 +45,44 @@ public static class NativeInjectorConfig
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUserService, EtrmService.API.Services.CurrentUserService>();
 
+        // Keycloak Admin API
+        services.AddScoped<EtrmService.API.Services.IKeycloakAdminService, EtrmService.API.Services.KeycloakAdminService>();
+
         // Domain Services
         services.AddScoped<EtrmService.Application.Prospect.Services.IWebhookService, WebhookService>();
+
+        // Webhooks (BK-12b/BK-14): HttpClient nomeado sem default público.
+        // BaseAddress só é definido se 'Webhooks:DefaultBaseAddress' estiver configurado;
+        // caso contrário, os consumos são pulados com log (jamais um default público).
+        var webhookBaseAddress = configuration["Webhooks:DefaultBaseAddress"];
+        services.AddHttpClient("WebhookClient", client =>
+        {
+            if (!string.IsNullOrWhiteSpace(webhookBaseAddress))
+                client.BaseAddress = new Uri(webhookBaseAddress);
+        })
+        .AddPolicyHandler((serviceProvider, _) =>
+        {
+            var logger = serviceProvider.GetRequiredService<ILoggerFactory>()
+                .CreateLogger("EtrmService.WebhookClient");
+
+            return Policy
+                .Handle<HttpRequestException>()
+                .OrResult<HttpResponseMessage>(r =>
+                    (int)r.StatusCode >= 500 || r.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                .WaitAndRetryAsync(
+                    3,
+                    attempt => TimeSpan.FromSeconds(Math.Pow(2, attempt - 1)), // 1s, 2s, 4s
+                    (outcome, delay, attempt, _) =>
+                        logger.LogWarning(
+                            "Webhook POST failed (attempt {Attempt}) with status {StatusCode}; retrying in {Delay:g}.",
+                            attempt, outcome.Result?.StatusCode, delay));
+        });
+
+        // Menza / Imeris Services
+        services.AddScoped<EtrmService.Application.ImerisIntegration.IImerisCreditClient, EtrmService.Application.ImerisIntegration.ImerisCreditClient>();
+        services.AddScoped<EtrmService.Application.Operations.Services.IWebhookNotifierService, EtrmService.Application.Operations.Services.WebhookNotifierService>();
+        services.AddScoped<EtrmService.Application.Services.ITradingCopilotService, EtrmService.Application.Services.TradingCopilotService>();
+        services.AddScoped<EtrmService.Application.Services.IOpportunityEngineService, EtrmService.Application.Services.OpportunityEngineService>();
 
         // Repositórios
         services.AddScoped<IContractRepository, ContractRepository>();
@@ -80,17 +118,30 @@ public static class NativeInjectorConfig
             {
                 rider.AddConsumer<EtrmService.API.Consumers.RiskCalculatedEventConsumer>();
                 rider.AddConsumer<EtrmService.API.Consumers.ProspectModelRunnerConsumer>();
+                rider.AddConsumer<EtrmService.API.Consumers.EnaCalculatedEventConsumer>();
+                rider.AddConsumer<EtrmService.API.Consumers.OperationPublishedEventConsumer>();
                 rider.AddProducer<ContractCreatedIntegrationEvent>("contract-events");
                 rider.AddProducer<SimulationRequestedIntegrationEvent>("pluvia-events");
                 rider.AddProducer<OperationPublishedIntegrationEvent>("operation-events");
+                rider.AddProducer<EtrmService.Application.Prospect.Events.StudyExecutionRequestedEvent>("study-execution-requested");
 
                 rider.UsingKafka((context, k) =>
                 {
                     k.Host(configuration["Kafka:BootstrapServers"] ?? "localhost:9092");
 
-                    k.TopicEndpoint<RiskCalculatedIntegrationEvent>("risk-calculated", "etrm-service-group", e =>
+                    k.TopicEndpoint<RiskCalculatedIntegrationEvent>("risk-events", "etrm-service-group", e =>
                     {
                         e.ConfigureConsumer<EtrmService.API.Consumers.RiskCalculatedEventConsumer>(context);
+                    });
+
+                    k.TopicEndpoint<EnaCalculatedIntegrationEvent>("ena-events", "etrm-service-group", e =>
+                    {
+                        e.ConfigureConsumer<EtrmService.API.Consumers.EnaCalculatedEventConsumer>(context);
+                    });
+
+                    k.TopicEndpoint<OperationPublishedIntegrationEvent>("operation-events", "etrm-service-group", e =>
+                    {
+                        e.ConfigureConsumer<EtrmService.API.Consumers.OperationPublishedEventConsumer>(context);
                     });
 
                     k.TopicEndpoint<EtrmService.Application.Prospect.Events.StudyExecutionRequestedEvent>("study-execution-requested", "etrm-service-group", e =>

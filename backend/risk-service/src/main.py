@@ -104,11 +104,19 @@ async def get_portfolio_risk(db: AsyncSession = Depends(get_db), token_payload: 
 @app.get("/api/v1/pluvia/precipitation-map")
 async def get_precipitation_map(model: str = "GEFS", date: str = ""):
     """
-    Retorna uma matriz geoespacial de precipitação (mockada para a Sprint 2).
-    Simula o processamento dos arquivos GRIB2 do Data Lakehouse.
-    Bounds do Brasil: Lat -33 a 5, Lon -74 a -34
+    Retorna uma matriz geoespacial de precipitação real lida do Data Lake (MinIO).
+
+    Fonte: Parquet (gold/silver) produzido pelos DAGs do mlops
+    (ingest_meteorological_data.py). Interpolação vetorizada com NumPy para a
+    grade de saída (bounds do Brasil: lat -33 a 5, lon -74 a -34).
+
+    Se não houver dados reais para o período solicitado, retorna HTTP 404 com
+    problem detail (estado vazio honesto) — nunca gera matriz aleatória.
     """
     import numpy as np
+    import pandas as pd
+
+    from .data_lake import PRECIPITATION_PATHS, read_first_existing
 
     horizon_days = 8
 
@@ -120,48 +128,98 @@ async def get_precipitation_map(model: str = "GEFS", date: str = ""):
     lat_steps = 40
     lon_steps = 40
 
-    lat = np.linspace(lat_min, lat_max, lat_steps)
-    lon = np.linspace(lon_min, lon_max, lon_steps)
+    df = read_first_existing(PRECIPITATION_PATHS)
+    if df is None or df.empty:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "title": "Precipitação indisponível",
+                "type": "about:blank",
+                "status": 404,
+                "detail": "Nenhum dado real de precipitação encontrado no Data Lake "
+                          "(camada gold/silver de meteorologia). Execute o DAG "
+                          "ingest_meteorological_data para popular os dados.",
+            },
+        )
 
-    # Vectorized grid of coordinates: each row [lon, lat]
-    grid_lon, grid_lat = np.meshgrid(lon, lat)
+    # Filtra por modelo e data (offsetDays) — vetorizado
+    if model:
+        df = df[df["model"].astype(str).str.upper() == model.upper()]
+    if date:
+        df = df[df["date"].astype(str) == date]
+
+    if df.empty:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "title": "Precipitação indisponível",
+                "type": "about:blank",
+                "status": 404,
+                "detail": (
+                    f"Nenhum dado real de precipitação para model={model} e "
+                    f"date={date or '(todos os períodos)'} no Data Lake."
+                ),
+            },
+        )
+
+    # GRADE DE SAÍDA
+    lat_sel = np.linspace(lat_min, lat_max, lat_steps)
+    lon_sel = np.linspace(lon_min, lon_max, lon_steps)
+    grid_lon, grid_lat = np.meshgrid(lon_sel, lat_sel)
     coords = np.stack([grid_lon.ravel(), grid_lat.ravel()], axis=-1)
 
-    def base_field(seed):
-        rng = np.random.default_rng(seed)
-        # Underlying smooth spatial pattern (large-scale weather system)
-        base = rng.random((lat_steps, lon_steps))
-        # Rainshowers: random pockets of intensity
-        pockets = rng.random((lat_steps, lon_steps))
-        field = base * 0.4 + pockets * 0.6
-        return field
+    # Coordenadas únicas ordenadas da fonte (Parquet real)
+    unique_lon = np.sort(np.asarray(pd.unique(df["lon"]), dtype=float))
+    unique_lat = np.sort(np.asarray(pd.unique(df["lat"]), dtype=float))
 
-    def build_day(offset):
-        seed = hash((model, date, offset)) % (2 ** 32)
-        rng = np.random.default_rng(seed)
-        field = base_field(seed)
-        # Vectorized drift/decay across time: intensities decay and shift with horizon
-        factor = 0.3 + 0.7 * np.exp(-offset / 8.0)
-        # Small spatial drift of the wet system over days
-        drift = rng.normal(0.0, 0.15, size=(lat_steps, lon_steps))
-        values = (field + 0.25 * drift) * factor
-        # Water can't be negative
-        values = np.clip(values, 0.0, 1.0)
-        # Scale to realistic mm (0..100)
-        mm = values * 100.0
-        mm[mm < 15.0] = 0.0  # dry threshold for realism
-        return mm.ravel()
+    if unique_lon.size == 0 or unique_lat.size == 0:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "title": "Precipitação indisponível",
+                "type": "about:blank",
+                "status": 404,
+                "detail": "Dados de precipitação presentes porém sem coordenadas válidas.",
+            },
+        )
+
+    # Matriz de precipitação média por (lat, lon) da fonte (pivot vetorizado)
+    piv = df.groupby(["lat", "lon"], as_index=False)["value_mm"].mean().pivot_table(
+        index="lat", columns="lon", values="value_mm", aggfunc="mean"
+    ).reindex(index=unique_lat, columns=unique_lon)
+    pivot_values = piv.to_numpy(dtype=float)
+    pivot_values = np.nan_to_num(pivot_values, nan=0.0)
+    pivot_values = np.clip(pivot_values, 0.0, None)
+
+    # Mapa vetorizado de cada ponto de saída para o índice mais próximo da fonte
+    lon_pos = np.clip(np.searchsorted(unique_lon, coords[:, 0]), 1, unique_lon.size - 1)
+    lat_pos = np.clip(np.searchsorted(unique_lat, coords[:, 1]), 1, unique_lat.size - 1)
+    # searchsorted devolve o índice à direita; corrigimos para o vizinho mais próximo
+    lon_nearest = np.where(
+        np.abs(unique_lon[lon_pos - 1] - coords[:, 0]) <= np.abs(unique_lon[lon_pos] - coords[:, 0]),
+        lon_pos - 1,
+        lon_pos,
+    )
+    lat_nearest = np.where(
+        np.abs(unique_lat[lat_pos - 1] - coords[:, 1]) <= np.abs(unique_lat[lat_pos] - coords[:, 1]),
+        lat_pos - 1,
+        lat_pos,
+    )
+
+    out_mm = pivot_values[lat_nearest, lon_nearest]
 
     def to_points(mm_flat):
-        return [[round(float(c[0]), 2), round(float(c[1]), 2), round(float(v), 2)]
-                for c, v in zip(coords, mm_flat)]
+        out = np.column_stack([coords[:, 0], coords[:, 1], mm_flat])
+        return out.round(2).tolist()
 
-    # Day 1 keeps the "points" key for backward compatibility
+    # Dia 1 mantém a chave "points" por compatibilidade; demais dias interpolam
+    # a mesma superfície espacial (a superfície real é estática por execução).
+    points_day1 = to_points(out_mm)
     days = [
         {
             "offset": offset,
             "date": date,
-            "points": to_points(build_day(offset)),
+            "points": points_day1,
         }
         for offset in range(1, horizon_days + 1)
     ]
@@ -170,6 +228,6 @@ async def get_precipitation_map(model: str = "GEFS", date: str = ""):
         "model": model,
         "date": date,
         "horizon_days": horizon_days,
-        "points": days[0]["points"],
+        "points": points_day1,
         "days": days,
     }

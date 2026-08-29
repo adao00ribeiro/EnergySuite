@@ -43,5 +43,11 @@ public interface IEtrmDbContext
     DbSet<EtrmService.Domain.Entities.Prospect.Deck> ProspectDecks { get; set; }
     DbSet<EtrmService.Domain.Entities.Prospect.DeckVersion> ProspectDeckVersions { get; set; }
 
+    // Sprint 7: Strategies
+    DbSet<Strategy> Strategies { get; set; }
+
+    // Sprint 12: App Settings
+    DbSet<AppSetting> AppSettings { get; set; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

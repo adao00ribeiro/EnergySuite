@@ -75,18 +75,6 @@ public class PluviaController : ApiControllerBase
         var query = new GetForecastMetadataQuery();
         var result = await _mediator.Send(query);
         
-        // Mock fallback if db is empty for UI testing
-        if (!result.Any())
-        {
-            var mockData = new List<ForecastMetadataDto>
-            {
-                new ForecastMetadataDto { Id = Guid.NewGuid(), ModelName = "GEFS", ReferenceDate = DateTime.UtcNow.Date, Resolution = "0p50", EnsembleMembers = 30, LakehousePath = "s3://datalake/bronze/meteorology/gefs", CreatedAt = DateTime.UtcNow },
-                new ForecastMetadataDto { Id = Guid.NewGuid(), ModelName = "ECMWF", ReferenceDate = DateTime.UtcNow.Date, Resolution = "0p25", EnsembleMembers = 1, LakehousePath = "s3://datalake/bronze/meteorology/ecmwf", CreatedAt = DateTime.UtcNow },
-                new ForecastMetadataDto { Id = Guid.NewGuid(), ModelName = "ETA", ReferenceDate = DateTime.UtcNow.Date, Resolution = "15km", EnsembleMembers = 1, LakehousePath = "s3://datalake/bronze/meteorology/eta", CreatedAt = DateTime.UtcNow }
-            };
-            return Ok(mockData);
-        }
-
         return Ok(result);
     }
 
@@ -117,19 +105,7 @@ public class PluviaController : ApiControllerBase
     [ProducesResponseType(typeof(IEnumerable<ExportFileDto>), StatusCodes.Status200OK)]
     public IActionResult GetExports(Guid executionId)
     {
-        // Mocking exports for the UI
-        var minioBaseUrl = Environment.GetEnvironmentVariable("MINIO_ENDPOINT") ?? "http://localhost:9000";
-        var bucket = "datalake";
-        
-        var mockExports = new List<ExportFileDto>
-        {
-            new ExportFileDto { FileName = "PREVS.rv0", FileType = "PREVS", SizeBytes = 1024 * 45, DownloadUrl = $"{minioBaseUrl}/{bucket}/exports/{executionId}/PREVS.rv0" },
-            new ExportFileDto { FileName = "ENA.rv0", FileType = "ENA", SizeBytes = 1024 * 12, DownloadUrl = $"{minioBaseUrl}/{bucket}/exports/{executionId}/ENA.rv0" },
-            new ExportFileDto { FileName = "VNA.rv0", FileType = "VNA", SizeBytes = 1024 * 8, DownloadUrl = $"{minioBaseUrl}/{bucket}/exports/{executionId}/VNA.rv0" },
-            new ExportFileDto { FileName = "DADVAZ.rv0", FileType = "DADVAZ", SizeBytes = 1024 * 55, DownloadUrl = $"{minioBaseUrl}/{bucket}/exports/{executionId}/DADVAZ.rv0" }
-        };
-
-        return Ok(mockExports);
+        return Ok(Array.Empty<ExportFileDto>());
     }
 
     [HttpGet("scenarios")]

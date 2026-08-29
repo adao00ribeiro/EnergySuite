@@ -23,6 +23,7 @@ public class StudyMap : IEntityTypeConfiguration<Study>
         builder.Property(s => s.TenantId).HasColumnName("tenant_id").IsRequired();
         builder.Property(s => s.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("CURRENT_TIMESTAMP").IsRequired();
         builder.Property(s => s.UpdatedAt).HasColumnName("updated_at");
+        builder.Property(s => s.ResultsJson).HasColumnName("results_json").HasColumnType("text").IsRequired(false);
 
         builder.HasMany(s => s.Tags)
             .WithOne(t => t.Study)

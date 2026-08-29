@@ -12,6 +12,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NgxEchartsModule, NGX_ECHARTS_CONFIG } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
 import { PrecipitationMapDialogComponent } from './precipitation-map-dialog.component';
+import { environment } from '../../../../../environments/environment';
 
 interface ForecastDay {
   offset: number;
@@ -81,7 +82,7 @@ export class PrecipitationMapComponent implements OnInit {
       .set('date', date);
 
     this.http.get<any>(
-      `http://localhost:8000/api/v1/pluvia/precipitation-map`,
+      `${environment.riskApiUrl}/pluvia/precipitation-map`,
       { params }
     ).subscribe({
       next: (response) => {

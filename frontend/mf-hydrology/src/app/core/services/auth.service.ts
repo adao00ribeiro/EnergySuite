@@ -5,8 +5,6 @@ import { Injectable } from '@angular/core';
 })
 export class AuthService {
 
-  private readonly fallbackClaims = ['CanViewDashboard', 'CanViewENA', 'CanSimulate'];
-
   private get userClaims(): string[] {
     const rolesRaw = sessionStorage.getItem('energysuite_roles');
     if (rolesRaw) {
@@ -29,11 +27,11 @@ export class AuthService {
           claims?.resource_access?.['energysuite-frontend']?.roles ?? [];
         return Array.from(new Set([...realmRoles, ...clientRoles]));
       } catch {
-        // fallthrough to fallback
+        // fallthrough, no claims available
       }
     }
 
-    return this.fallbackClaims;
+    return [];
   }
 
   hasPermission(claim: string): boolean {

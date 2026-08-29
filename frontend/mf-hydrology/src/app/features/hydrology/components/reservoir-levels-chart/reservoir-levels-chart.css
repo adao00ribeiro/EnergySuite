@@ -57,4 +57,37 @@ mat-button-toggle.mat-button-toggle-checked {
 .echarts-wrapper {
   width: 100%;
   height: 350px;
+  position: relative;
+}
+
+.echarts-instance {
+  width: 100%;
+  height: 100%;
+}
+
+.chart-state {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #94a3b8;
+  text-align: center;
+}
+
+.chart-state mat-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  color: #64748b;
+}
+
+.chart-state p {
+  margin: 0;
+}
+
+.chart-state.error mat-icon {
+  color: #ef4444;
 }
