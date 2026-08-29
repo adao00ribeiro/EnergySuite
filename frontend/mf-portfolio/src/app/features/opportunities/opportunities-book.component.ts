@@ -9,18 +9,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { SimulationDialogComponent } from './components/simulation-dialog/simulation-dialog.component';
-
-interface Opportunity {
-  id: string;
-  name: string;
-  type: string;
-  strategyName: string;
-  suggestedVolumeMwm: number;
-  estimatedSpread: number;
-  score: number;
-  targetMonth: string;
-  targetSubmarket: string;
-}
+import { PortfolioService, Opportunity } from '../../core/services/portfolio.service';
 
 @Component({
   selector: 'app-opportunities-book',
@@ -44,12 +33,13 @@ export class OpportunitiesBookComponent implements OnInit {
   dataSource: MatTableDataSource<Opportunity> = new MatTableDataSource();
   dialog = inject(MatDialog);
   snackBar = inject(MatSnackBar);
+  portfolioService = inject(PortfolioService);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   ngOnInit() {
-    this.loadMockOpportunities();
+    this.loadOpportunities();
   }
 
   exportToCsv() {
@@ -104,44 +94,16 @@ export class OpportunitiesBookComponent implements OnInit {
     });
   }
 
-  loadMockOpportunities() {
-    const data: Opportunity[] = [
-      { 
-          id: '1', 
-          name: "Cobertura Déficit SE/CO (Julho)", 
-          type: "Compra", 
-          strategyName: "Hedge de Inverno", 
-          suggestedVolumeMwm: 15.5, 
-          estimatedSpread: -12.0, // Custo evitado
-          score: 95, 
-          targetMonth: "2026-07", 
-          targetSubmarket: "SE/CO" 
+  loadOpportunities() {
+    this.portfolioService.getOpportunities().subscribe({
+      next: (data) => {
+        this.dataSource.data = data;
       },
-      { 
-          id: '2', 
-          name: "Desova de Excedente (Eólico NE)", 
-          type: "Venda", 
-          strategyName: "Venda Excedente Eólica", 
-          suggestedVolumeMwm: 22.0, 
-          estimatedSpread: 45.0, 
-          score: 88, 
-          targetMonth: "2026-10", 
-          targetSubmarket: "NE" 
-      },
-      { 
-          id: '3', 
-          name: "Arbitragem Estrutural", 
-          type: "Compra", 
-          strategyName: "Arbitragem Sul x SE", 
-          suggestedVolumeMwm: 10.0, 
-          estimatedSpread: 25.5, 
-          score: 72, 
-          targetMonth: "2026-11", 
-          targetSubmarket: "SUL" 
+      error: (err) => {
+        this.snackBar.open('Erro ao carregar oportunidades.', 'Fechar', { duration: 3000 });
+        console.error(err);
       }
-    ];
-
-    this.dataSource = new MatTableDataSource(data);
+    });
   }
 
   ngAfterViewInit() {

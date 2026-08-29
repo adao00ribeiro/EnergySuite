@@ -108,41 +108,68 @@ async def get_precipitation_map(model: str = "GEFS", date: str = ""):
     Simula o processamento dos arquivos GRIB2 do Data Lakehouse.
     Bounds do Brasil: Lat -33 a 5, Lon -74 a -34
     """
-    import random
-    
-    data = []
+    import numpy as np
+
+    horizon_days = 8
+
     # Grid limits
     lat_min, lat_max = -33.0, 5.0
     lon_min, lon_max = -74.0, -34.0
-    
+
     # 40x40 grid (1600 points)
     lat_steps = 40
     lon_steps = 40
-    
-    lat_step_size = (lat_max - lat_min) / lat_steps
-    lon_step_size = (lon_max - lon_min) / lon_steps
-    
-    # Random seed based on model to show differences when filtering
-    seed_val = hash(model + date)
-    random.seed(seed_val)
-    
-    for i in range(lat_steps):
-        for j in range(lon_steps):
-            lat = lat_min + (i * lat_step_size)
-            lon = lon_min + (j * lon_step_size)
-            
-            # Gerar valores de chuva mais realistas (0 a 100mm)
-            # Maior chance de zero, e bolsões de chuva
-            if random.random() > 0.6:
-                precip = random.uniform(5.0, 100.0)
-            else:
-                precip = 0.0
-                
-            # ECharts scatter format: [lon, lat, value]
-            data.append([round(lon, 2), round(lat, 2), round(precip, 2)])
-            
+
+    lat = np.linspace(lat_min, lat_max, lat_steps)
+    lon = np.linspace(lon_min, lon_max, lon_steps)
+
+    # Vectorized grid of coordinates: each row [lon, lat]
+    grid_lon, grid_lat = np.meshgrid(lon, lat)
+    coords = np.stack([grid_lon.ravel(), grid_lat.ravel()], axis=-1)
+
+    def base_field(seed):
+        rng = np.random.default_rng(seed)
+        # Underlying smooth spatial pattern (large-scale weather system)
+        base = rng.random((lat_steps, lon_steps))
+        # Rainshowers: random pockets of intensity
+        pockets = rng.random((lat_steps, lon_steps))
+        field = base * 0.4 + pockets * 0.6
+        return field
+
+    def build_day(offset):
+        seed = hash((model, date, offset)) % (2 ** 32)
+        rng = np.random.default_rng(seed)
+        field = base_field(seed)
+        # Vectorized drift/decay across time: intensities decay and shift with horizon
+        factor = 0.3 + 0.7 * np.exp(-offset / 8.0)
+        # Small spatial drift of the wet system over days
+        drift = rng.normal(0.0, 0.15, size=(lat_steps, lon_steps))
+        values = (field + 0.25 * drift) * factor
+        # Water can't be negative
+        values = np.clip(values, 0.0, 1.0)
+        # Scale to realistic mm (0..100)
+        mm = values * 100.0
+        mm[mm < 15.0] = 0.0  # dry threshold for realism
+        return mm.ravel()
+
+    def to_points(mm_flat):
+        return [[round(float(c[0]), 2), round(float(c[1]), 2), round(float(v), 2)]
+                for c, v in zip(coords, mm_flat)]
+
+    # Day 1 keeps the "points" key for backward compatibility
+    days = [
+        {
+            "offset": offset,
+            "date": date,
+            "points": to_points(build_day(offset)),
+        }
+        for offset in range(1, horizon_days + 1)
+    ]
+
     return {
         "model": model,
         "date": date,
-        "points": data
+        "horizon_days": horizon_days,
+        "points": days[0]["points"],
+        "days": days,
     }

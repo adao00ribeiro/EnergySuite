@@ -4,7 +4,32 @@
     <p class="subtitle">Faça o download dos relatórios textuais no formato oficial ONS/CCEE gerados pela última simulação.</p>
   </div>
 
-  <table mat-table [dataSource]="exports()" class="mat-elevation-z8 custom-table">
+  <div class="execution-selector">
+    <mat-form-field appearance="outline" class="density-3">
+      <mat-label>Execução</mat-label>
+      <mat-select
+        [value]="selectedExecutionId()"
+        (selectionChange)="onExecutionChange($event.value)">
+        <mat-option *ngFor="let exec of executions()" [value]="exec.id">
+          {{ exec.modelName }} - {{ exec.status }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="isLoading()" class="loading-line">
+    <span>Carregando arquivos setoriais...</span>
+  </div>
+
+  <div *ngIf="error()" class="empty-line error-line">
+    <span>{{ error() }}</span>
+  </div>
+
+  <div *ngIf="!isLoading() && !error() && exports().length === 0" class="empty-line">
+    <span>Nenhum arquivo disponível para esta execução.</span>
+  </div>
+
+  <table mat-table *ngIf="!isLoading() && !error()" [dataSource]="exports()" class="mat-elevation-z8 custom-table">
     
     <ng-container matColumnDef="fileType">
       <th mat-header-cell *matHeaderCellDef> Tipo de Deck </th>

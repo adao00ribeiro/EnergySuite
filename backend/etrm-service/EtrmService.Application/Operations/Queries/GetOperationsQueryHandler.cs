@@ -28,6 +28,10 @@ public class GetOperationsQueryHandler : IRequestHandler<GetOperationsQuery, Lis
                 TicketId = o.TicketId,
                 PortfolioId = o.PortfolioId,
                 CounterpartyId = o.CounterpartyId,
+                TicketRef = o.Ticket.ReferenceNumber,
+                CounterpartyName = o.Counterparty.TradeName != null && o.Counterparty.TradeName != string.Empty
+                    ? o.Counterparty.TradeName
+                    : o.Counterparty.CorporateName,
                 Type = o.Type.ToString(),
                 State = o.State.ToString(),
                 VolumeMwMed = o.VolumeMwMed,

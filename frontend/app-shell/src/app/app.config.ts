@@ -10,6 +10,14 @@ import * as echarts from 'echarts';
 
 import { KeycloakService, KeycloakBearerInterceptor } from 'keycloak-angular';
 import { initializeKeycloak } from './core/auth/keycloak-init.factory';
+import { KeycloakSessionBridgeService } from './core/auth/keycloak-session-bridge';
+
+function initializeSessionBridge(
+  keycloak: KeycloakService,
+  bridge: KeycloakSessionBridgeService
+) {
+  return () => bridge.start();
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,6 +32,12 @@ export const appConfig: ApplicationConfig = {
       useFactory: initializeKeycloak,
       multi: true,
       deps: [KeycloakService]
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeSessionBridge,
+      multi: true,
+      deps: [KeycloakService, KeycloakSessionBridgeService]
     },
     {
       provide: HTTP_INTERCEPTORS,

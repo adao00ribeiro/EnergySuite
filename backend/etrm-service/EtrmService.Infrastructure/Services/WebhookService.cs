@@ -9,15 +9,16 @@ namespace EtrmService.Infrastructure.Services;
 public class WebhookService : IWebhookService
 {
     private readonly ILogger<WebhookService> _logger;
+    private readonly IHttpClientFactory _httpClientFactory;
 
-    public WebhookService(ILogger<WebhookService> logger)
+    public WebhookService(ILogger<WebhookService> logger, IHttpClientFactory httpClientFactory)
     {
         _logger = logger;
+        _httpClientFactory = httpClientFactory;
     }
 
-    public Task SendWebhookAsync(string eventName, object payload)
+    public async Task SendWebhookAsync(string eventName, object payload)
     {
-        // Mock implementation of a Webhook trigger.
         var json = JsonSerializer.Serialize(payload);
         
         _logger.LogInformation("==================================================");
@@ -25,6 +26,27 @@ public class WebhookService : IWebhookService
         _logger.LogInformation($"[WEBHOOK PAYLOAD]: {json}");
         _logger.LogInformation("==================================================");
 
-        return Task.CompletedTask;
+        try
+        {
+            var client = _httpClientFactory.CreateClient("WebhookClient");
+            // Fallback to a default if not configured, or use configuration in a real scenario
+            client.BaseAddress ??= new System.Uri("https://webhook.site/energy-suite-events"); 
+
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            var response = await client.PostAsync($"/events/{eventName}", content);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.LogInformation($"Webhook for event {eventName} successfully delivered.");
+            }
+            else
+            {
+                _logger.LogWarning($"Webhook delivery failed. Status Code: {response.StatusCode}");
+            }
+        }
+        catch (System.Exception ex)
+        {
+            _logger.LogError(ex, $"Error delivering webhook for event {eventName}");
+        }
     }
 }

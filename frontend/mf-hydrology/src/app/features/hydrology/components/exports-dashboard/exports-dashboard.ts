@@ -4,6 +4,9 @@ import { HttpClient } from '@angular/common/http';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
 
 interface ExportFile {
   fileName: string;
@@ -12,10 +15,27 @@ interface ExportFile {
   downloadUrl: string;
 }
 
+interface Execution {
+  id: string;
+  modelName: string;
+  status: string;
+  accuracy?: number;
+  startedAt?: string;
+  completedAt?: string;
+}
+
 @Component({
   selector: 'app-exports-dashboard',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSelectModule,
+    MatFormFieldModule
+  ],
   templateUrl: './exports-dashboard.html',
   styleUrl: './exports-dashboard.css'
 })
@@ -23,20 +43,62 @@ export class ExportsDashboardComponent implements OnInit {
   private http = inject(HttpClient);
   
   exports = signal<ExportFile[]>([]);
+  executions = signal<Execution[]>([]);
+  selectedExecutionId = signal<string>('');
+  isLoading = signal<boolean>(false);
+  error = signal<string | null>(null);
   displayedColumns: string[] = ['fileType', 'fileName', 'size', 'action'];
-  
-  // Using a mock GUID for the latest execution in this mock UI
-  private mockExecutionId = 'd290f1ee-6c54-4b01-90e6-d701748f0851';
 
   ngOnInit(): void {
-    this.loadExports();
+    this.loadExecutions();
   }
 
-  loadExports() {
-    this.http.get<ExportFile[]>(`/api/v1/pluvia/exports/${this.mockExecutionId}`).subscribe({
-      next: (data) => this.exports.set(data),
-      error: (err) => console.error('Failed to load exports', err)
+  loadExecutions() {
+    this.isLoading.set(true);
+    this.error.set(null);
+    this.http.get<Execution[]>('/api/v1/pluvia/executions').subscribe({
+      next: (data) => {
+        this.executions.set(data);
+        const completed = data.find((e) => e.status === 'completed');
+        const selected = completed ?? data[0];
+        this.selectedExecutionId.set(selected ? selected.id : '');
+        this.isLoading.set(false);
+        if (selected) {
+          this.loadExports(selected.id);
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load executions', err);
+        this.error.set('Falha ao carregar execuções.');
+        this.isLoading.set(false);
+      }
     });
+  }
+
+  loadExports(executionId: string) {
+    if (!executionId) {
+      this.exports.set([]);
+      return;
+    }
+    this.isLoading.set(true);
+    this.error.set(null);
+    this.http.get<ExportFile[]>(`/api/v1/pluvia/exports/${executionId}`).subscribe({
+      next: (data) => {
+        this.exports.set(data);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load exports', err);
+        this.error.set('Falha ao carregar dados do Lakehouse.');
+        this.exports.set([]);
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  onExecutionChange(id: string) {
+    this.selectedExecutionId.set(id);
+    this.loadExports(id);
   }
 
   formatBytes(bytes: number, decimals = 2) {

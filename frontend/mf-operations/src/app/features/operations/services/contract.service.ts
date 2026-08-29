@@ -1,11 +1,12 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { Observable, tap } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 export interface Contract {
   id?: string;
   counterpartyName: string;
-  type: string; // 'Compra' | 'Venda'
+  type: string;
   submarket: string;
   volumeMwMed: number;
   price: number;
@@ -16,31 +17,60 @@ export interface Contract {
   tenantId?: string;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+export interface ContractAmendment {
+  id: string;
+  version: number;
+  description: string;
+  effectiveDate: string;
+  previousPrice: number;
+  newPrice: number;
+  createdAt: string;
+}
+
+export interface ContractDetails {
+  id: string;
+  counterpartyName: string;
+  type: string;
+  submarket: string;
+  volumeMwMed: number;
+  price: number;
+  startDate: string;
+  endDate: string;
+  version: number;
+  priceIndexType: string;
+  flexibilityMargin: number;
+  amendments: ContractAmendment[];
+}
+
+@Injectable({ providedIn: 'root' })
 export class ContractService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/api/v1.0/Contracts';
+  private apiUrl = `${environment.apiUrl}/api/v1/contracts`;
 
-  // State Management
-  private contractsSubject = new BehaviorSubject<Contract[]>([]);
-  public contracts$ = this.contractsSubject.asObservable();
+  contracts = signal<Contract[]>([]);
+  isLoading = signal<boolean>(false);
 
-  constructor() {
-    this.loadContracts();
-  }
-
-  loadContracts() {
+  loadContracts(): void {
+    this.isLoading.set(true);
     this.http.get<Contract[]>(this.apiUrl).subscribe({
-      next: (data) => this.contractsSubject.next(data),
-      error: (err) => console.error('Error fetching contracts:', err)
+      next: (data) => {
+        this.contracts.set(data);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.contracts.set([]);
+        this.isLoading.set(false);
+      }
     });
   }
 
-  createContract(contract: Contract): Observable<any> {
+  createContract(contract: Contract): Observable<unknown> {
     return this.http.post(this.apiUrl, contract).pipe(
-      tap(() => this.loadContracts()) // Refresh list after creation
+      tap(() => this.loadContracts())
     );
+  }
+
+  getById(id: string): Observable<ContractDetails> {
+    return this.http.get<ContractDetails>(`${this.apiUrl}/${id}`);
   }
 }

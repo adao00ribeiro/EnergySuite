@@ -16,8 +16,13 @@
     <span>Carregando matriz geoespacial do Lakehouse...</span>
   </div>
 
+  <!-- Error State -->
+  <div *ngIf="error()" class="loading-overlay mat-elevation-z1 p-4 text-center">
+    <span class="error-message">{{ error() }}</span>
+  </div>
+
   <!-- Map Grid -->
-  <div class="map-grid" *ngIf="!isLoading()">
+  <div class="map-grid" *ngIf="!isLoading() && !error()">
     <mat-card *ngFor="let map of mapGrid()" class="map-card" (click)="openDialog(map)">
       <mat-card-header>
         <mat-card-title class="map-title">{{ map.model }}</mat-card-title>

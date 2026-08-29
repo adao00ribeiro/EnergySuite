@@ -58,3 +58,29 @@
 .download-link {
   text-decoration: none;
 }
+
+.execution-selector {
+  margin-bottom: 20px;
+  max-width: 360px;
+}
+
+.execution-selector ::ng-deep .mat-mdc-text-field-wrapper {
+  padding: 0 12px;
+  height: 44px;
+}
+
+.loading-line,
+.empty-line {
+  padding: 16px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.95rem;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.error-line {
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.3);
+}

@@ -1,6 +1,6 @@
 import { Component, OnInit, signal, effect, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
@@ -12,6 +12,20 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NgxEchartsModule, NGX_ECHARTS_CONFIG } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
 import { PrecipitationMapDialogComponent } from './precipitation-map-dialog.component';
+
+interface ForecastDay {
+  offset: number;
+  date: string;
+  points: number[][];
+}
+
+interface MapResponse {
+  model: string;
+  date: string;
+  horizon_days: number;
+  points: number[][];
+  days?: ForecastDay[];
+}
 
 @Component({
   selector: 'app-precipitation-map',
@@ -45,6 +59,7 @@ export class PrecipitationMapComponent implements OnInit {
   selectedModel = signal<string>('GEFS-00');
   selectedDate = signal<string>(new Date().toISOString().split('T')[0]);
   isLoading = signal<boolean>(false);
+  error = signal<string | null>(null);
 
   // Grid Data
   mapGrid = signal<any[]>([]);
@@ -59,48 +74,58 @@ export class PrecipitationMapComponent implements OnInit {
 
   fetchMapData(model: string, date: string) {
     this.isLoading.set(true);
-    // Call the Python API for the geospatial precipitation matrix
-    this.http.get<any>(`http://localhost:8000/api/v1/pluvia/precipitation-map?model=${model.split('-')[0]}&date=${date}`)
-      .subscribe({
-        next: (response) => {
-          this.buildGrid(response.points, model, date);
-          this.isLoading.set(false);
-        },
-        error: (err) => {
-          console.error('Failed to load precipitation map', err);
-          // Mock data for UI demonstration since API might fail during build/test
-          this.buildGrid(this.generateMockPoints(), model, date);
-          this.isLoading.set(false);
-        }
-      });
+    this.error.set(null);
+
+    let params = new HttpParams()
+      .set('model', model.split('-')[0])
+      .set('date', date);
+
+    this.http.get<any>(
+      `http://localhost:8000/api/v1/pluvia/precipitation-map`,
+      { params }
+    ).subscribe({
+      next: (response) => {
+        this.buildGrid(response, model, date);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load precipitation map', err);
+        this.error.set('Falha ao carregar dados do Lakehouse.');
+        this.mapGrid.set([]);
+        this.isLoading.set(false);
+      }
+    });
   }
 
-  generateMockPoints() {
-    let pts = [];
-    for(let i=0; i<100; i++) {
-      pts.push([Math.random()*10, Math.random()*10, Math.random()*100]);
-    }
-    return pts;
-  }
-
-  buildGrid(basePoints: any[], model: string, baseDate: string) {
-    const grid = [];
+  buildGrid(response: any, model: string, baseDate: string) {
     const base = new Date(baseDate);
-    
-    // Create 8 days of forecast maps
-    for(let i=1; i<=8; i++) {
-      const forecastDate = new Date(base);
-      forecastDate.setDate(base.getDate() + i);
-      
+    const grid: any[] = [];
+
+    const days: ForecastDay[] = Array.isArray(response.days) && response.days.length
+      ? response.days
+      : Array.from({ length: response.horizon_days || 8 }, (_, i) => {
+          const d = new Date(base);
+          d.setDate(base.getDate() + i + 1);
+          return {
+            offset: i + 1,
+            date: d.toISOString().split('T')[0],
+            points: response.points
+          };
+        });
+
+    days.forEach((day, index) => {
+      const forecastDate = new Date(day.date);
+      const points = day.points;
+
       grid.push({
         model: model,
         date: forecastDate,
-        dayLabel: `Dia ${i}`,
-        points: basePoints, // In reality, this would be day-specific data
-        chartOption: this.generateMiniChartOption(basePoints)
+        dayLabel: `Dia ${index + 1}`,
+        points: points,
+        chartOption: this.generateMiniChartOption(points)
       });
-    }
-    
+    });
+
     this.mapGrid.set(grid);
   }
 

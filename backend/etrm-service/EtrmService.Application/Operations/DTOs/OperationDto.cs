@@ -8,6 +8,8 @@ public class OperationDto
     public Guid TicketId { get; set; }
     public Guid PortfolioId { get; set; }
     public Guid CounterpartyId { get; set; }
+    public string TicketRef { get; set; } = string.Empty;
+    public string CounterpartyName { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty;
     public string State { get; set; } = string.Empty;
     public decimal VolumeMwMed { get; set; }

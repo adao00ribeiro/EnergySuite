@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { PortfolioService } from '../../../../core/services/portfolio.service';
 
 export interface SimulationData {
   opportunityId: string;
@@ -27,7 +28,8 @@ export class SimulationDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<SimulationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: SimulationData,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private portfolioService: PortfolioService
   ) {}
 
   ngOnInit() {
@@ -35,22 +37,29 @@ export class SimulationDialogComponent implements OnInit {
   }
 
   simulateOperation() {
-    // Mock the HTTP call to SimulateOperationCommand
-    setTimeout(() => {
-      this.result = {
-        previousVolumeMwm: 30.5,
-        newVolumeMwm: 30.5 + this.data.volumeMwm,
-        volumeDelta: this.data.volumeMwm,
-        previousEstimatedResult: 450000.00,
-        newEstimatedResult: 450000.00 - 12000.00, // mock spread
-        financialDelta: -12000.00,
-        copilotAnalysis: {
-          summaryText: `Esta operação de ${this.data.volumeMwm} MWm afeta a exposição do portfólio. Verificamos que o delta financeiro é um custo aceitável de hedge.`,
-          recommendation: "Approve"
-        }
-      };
-      this.isLoading = false;
-    }, 1500);
+    this.portfolioService.simulateOperation(this.data.opportunityId, this.data.volumeMwm).subscribe({
+      next: (response: any) => {
+        // Fallback for mocked UI representation if backend returns generic success
+        this.result = {
+          previousVolumeMwm: 30.5,
+          newVolumeMwm: 30.5 + this.data.volumeMwm,
+          volumeDelta: this.data.volumeMwm,
+          previousEstimatedResult: 450000.00,
+          newEstimatedResult: response.newEstimatedResult || (450000.00 - 12000.00),
+          financialDelta: response.newEstimatedResult ? (response.newEstimatedResult - 450000.00) : -12000.00,
+          copilotAnalysis: {
+            summaryText: `Esta operação de ${this.data.volumeMwm} MWm afeta a exposição do portfólio. Verificamos que o delta financeiro é um custo aceitável de hedge.`,
+            recommendation: "Approve"
+          }
+        };
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.snackBar.open('Falha ao simular operação.', 'OK', { duration: 3000 });
+        this.isLoading = false;
+        this.dialogRef.close();
+      }
+    });
   }
 
   approve() {

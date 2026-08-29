@@ -1,20 +1,11 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-
-export interface OperationItem {
-  id: string;
-  ticketRef: string;
-  type: string;
-  counterparty: string;
-  volume: number;
-  price: number;
-  state: string;
-}
+import { OperationsService, OperationListItem } from '../services/operations.service';
 
 @Component({
   selector: 'app-tickets-list',
@@ -24,15 +15,13 @@ export interface OperationItem {
   styleUrl: './tickets-list.scss'
 })
 export class TicketsListComponent implements OnInit {
+  private operationsService = inject(OperationsService);
+
   displayedColumns: string[] = ['ticketRef', 'type', 'counterparty', 'volume', 'price', 'state', 'actions'];
-  dataSource = signal<OperationItem[]>([]);
+  dataSource = this.operationsService.operations;
 
   ngOnInit(): void {
-    // Mock data
-    this.dataSource.set([
-      { id: '1', ticketRef: 'TKT-2023-001', type: 'Purchase', counterparty: 'Matrix Energia S/A', volume: 15.5, price: 120.5, state: 'Draft' },
-      { id: '2', ticketRef: 'TKT-2023-002', type: 'Sale', counterparty: 'Votener SA', volume: 10.0, price: 135.0, state: 'PendingApproval' }
-    ]);
+    this.operationsService.loadOperations();
   }
 
   onNewOperation() {

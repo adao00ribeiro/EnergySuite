@@ -11,11 +11,12 @@ import { ContractService, Contract } from '../../services/contract.service';
 })
 export class ContractsTableComponent implements OnInit {
   private contractService = inject(ContractService);
-  contracts: Contract[] = [];
+
+  get contracts() {
+    return this.contractService.contracts();
+  }
 
   ngOnInit(): void {
-    this.contractService.contracts$.subscribe(data => {
-      this.contracts = data;
-    });
+    this.contractService.loadContracts();
   }
 }

@@ -53,6 +53,7 @@ public static class NativeInjectorConfig
         services.AddMediatR(cfg => 
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateContractCommand).Assembly);
+            cfg.AddOpenBehavior(typeof(AuditLoggingBehavior<,>));
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
 
@@ -81,6 +82,7 @@ public static class NativeInjectorConfig
                 rider.AddConsumer<EtrmService.API.Consumers.ProspectModelRunnerConsumer>();
                 rider.AddProducer<ContractCreatedIntegrationEvent>("contract-events");
                 rider.AddProducer<SimulationRequestedIntegrationEvent>("pluvia-events");
+                rider.AddProducer<OperationPublishedIntegrationEvent>("operation-events");
 
                 rider.UsingKafka((context, k) =>
                 {
