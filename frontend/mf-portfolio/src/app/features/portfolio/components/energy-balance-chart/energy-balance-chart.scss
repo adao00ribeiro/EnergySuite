@@ -4,6 +4,7 @@
   flex-direction: column;
   gap: 16px;
   width: 100%;
+  animation-delay: 300ms;
 }
 .chart-header {
   display: flex;
@@ -18,7 +19,7 @@
 }
 .btn-icon {
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   color: var(--color-muted-foreground);
   width: 36px;
@@ -27,10 +28,10 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 200ms ease;
 }
 .btn-icon:hover {
-  background: rgba(255,255,255,0.05);
+  background: var(--color-muted);
   color: var(--color-foreground);
 }
 .chart-wrapper {
@@ -50,18 +51,18 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  color: var(--color-muted-foreground, #94a3b8);
+  color: var(--color-muted-foreground);
   text-align: center;
 }
 .chart-state mat-icon {
   font-size: 36px;
   width: 36px;
   height: 36px;
-  color: var(--color-muted-foreground, #94a3b8);
+  color: var(--color-muted-foreground);
 }
 .chart-state p {
   margin: 0;
 }
 .chart-state.error mat-icon {
-  color: #ef4444;
+  color: var(--color-destructive);
 }

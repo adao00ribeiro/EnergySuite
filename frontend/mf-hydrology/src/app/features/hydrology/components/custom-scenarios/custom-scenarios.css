@@ -6,17 +6,21 @@
   margin: 0 auto;
 }
 
+.hidden-file-input {
+  display: none;
+}
+
 .action-card {
-  background-color: #1e293b;
-  color: #f8fafc;
+  background-color: var(--color-card);
+  color: var(--color-foreground);
 }
 
 .action-card mat-card-title {
-  color: #38bdf8;
+  color: var(--color-hydrology);
 }
 
 .action-card mat-card-subtitle {
-  color: #94a3b8;
+  color: var(--color-muted-foreground);
   margin-bottom: 16px;
 }
 
@@ -34,7 +38,7 @@
 }
 
 .file-name {
-  color: #10b981;
+  color: var(--color-success);
   font-size: 0.9rem;
 }
 
@@ -54,7 +58,7 @@
 .model-label {
   min-width: 120px;
   font-weight: 500;
-  color: #cbd5e1;
+  color: var(--color-foreground);
 }
 
 mat-slider {
@@ -65,12 +69,12 @@ mat-slider {
   margin-top: 16px;
   font-size: 1.1rem;
   font-weight: bold;
-  color: #10b981;
+  color: var(--color-success);
   text-align: right;
 }
 
 .total-weight.invalid {
-  color: #ef4444;
+  color: var(--color-destructive);
 }
 
 .mt-4 {

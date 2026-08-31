@@ -3,34 +3,34 @@
 }
 .sidenav {
   width: 250px;
-  background-color: #1e1e2d;
-  color: white;
+  background-color: var(--color-secondary);
+  color: var(--color-on-secondary);
 }
 .logo-container {
   height: 64px;
   display: flex;
   align-items: center;
   padding: 0 16px;
-  background-color: #1a1a27;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: var(--color-primary);
+  border-bottom: 1px solid var(--color-border);
   
   h2 {
     margin: 0;
     font-weight: 500;
     font-size: 1.2rem;
-    color: #ffffff;
+    color: var(--color-on-primary);
   }
 }
 .mat-mdc-nav-list {
   padding-top: 0;
 }
 .mat-mdc-list-item {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-muted-foreground);
   
   &.active-link {
-    color: #ffffff;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-left: 4px solid #69b3ff;
+    color: var(--color-foreground);
+    background-color: var(--color-muted);
+    border-left: 4px solid var(--color-accent);
   }
   
   .mat-icon {
@@ -38,9 +38,9 @@
   }
 }
 .toolbar {
-  background-color: #ffffff;
-  color: #333333;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: var(--color-card);
+  color: var(--color-foreground);
+  box-shadow: var(--shadow-sm);
 }
 .spacer {
   flex: 1 1 auto;
@@ -49,6 +49,6 @@
   padding: 24px;
   height: calc(100vh - 64px - 48px);
   overflow: auto;
-  background-color: #f5f8fa;
-  color: #333333;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
 }

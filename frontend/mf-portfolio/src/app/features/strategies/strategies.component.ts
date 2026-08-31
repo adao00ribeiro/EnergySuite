@@ -17,7 +17,7 @@ interface Strategy {
   standalone: true,
   imports: [CommonModule, DragDropModule, MatCardModule, MatButtonModule, MatIconModule, MatSnackBarModule],
   templateUrl: './strategies.component.html',
-  styleUrls: ['./strategies.component.scss']
+  styleUrl: './strategies.component.scss'
 })
 export class StrategiesComponent {
   private snackBar = inject(MatSnackBar);

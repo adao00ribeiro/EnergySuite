@@ -5,23 +5,22 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using EtrmService.Application.IntegrationEvents;
-using EtrmService.Application.Interfaces;
 using EtrmService.Application.Services;
+using EtrmService.Domain.Interfaces;
 using MassTransit;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace EtrmService.API.Consumers;
 
 public class OperationPublishedEventConsumer : IConsumer<OperationPublishedIntegrationEvent>
 {
-    private readonly IEtrmDbContext _context;
+    private readonly IWebhookRepository _webhookRepository;
     private readonly ILogger<OperationPublishedEventConsumer> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
 
-    public OperationPublishedEventConsumer(IEtrmDbContext context, ILogger<OperationPublishedEventConsumer> logger, IHttpClientFactory httpClientFactory)
+    public OperationPublishedEventConsumer(IWebhookRepository webhookRepository, ILogger<OperationPublishedEventConsumer> logger, IHttpClientFactory httpClientFactory)
     {
-        _context = context;
+        _webhookRepository = webhookRepository;
         _logger = logger;
         _httpClientFactory = httpClientFactory;
     }
@@ -31,9 +30,7 @@ public class OperationPublishedEventConsumer : IConsumer<OperationPublishedInteg
         var message = context.Message;
         _logger.LogInformation($"Operation {message.OperationId} published. Checking for webhooks...");
 
-        var subscriptions = await _context.WebhookSubscriptions
-            .Where(w => w.CompanyId == message.CounterpartyId && w.IsActive)
-            .ToListAsync(context.CancellationToken);
+        var subscriptions = (await _webhookRepository.GetActiveSubscriptionsByCompanyAsync(message.CounterpartyId, context.CancellationToken)).ToList();
 
         if (!subscriptions.Any())
         {
@@ -64,8 +61,6 @@ public class OperationPublishedEventConsumer : IConsumer<OperationPublishedInteg
                     Content = new StringContent(jsonPayload, Encoding.UTF8, "application/json")
                 };
 
-                // Assinatura HMAC-SHA256 do payload canonizado (JSON serializado).
-                // A chave secreta do webhook nunca transita em texto claro no header.
                 var signature = WebhookSigningService.ComputeSignature(sub.SecretKey, jsonPayload);
                 if (!string.IsNullOrEmpty(signature))
                     request.Headers.Add("X-EnergySuite-Signature", signature);
@@ -88,3 +83,4 @@ public class OperationPublishedEventConsumer : IConsumer<OperationPublishedInteg
         }
     }
 }
+

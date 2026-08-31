@@ -31,7 +31,7 @@ import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
     ReactiveFormsModule
   ],
   templateUrl: './ccee-dashboard.html',
-  styleUrls: ['./ccee-dashboard.scss']
+  styleUrl: './ccee-dashboard.scss'
 })
 export class CceeDashboardComponent {
   cceeService = inject(CceeIntegrationService);
@@ -56,13 +56,22 @@ export class CceeDashboardComponent {
     const startStr = start.toISOString().split('T')[0];
     const endStr = end.toISOString().split('T')[0];
 
-    this.cceeService.exportCceal(startStr, endStr).subscribe(blob => {
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `cceal_export_${startStr}_${endStr}.xml`;
-      a.click();
-      window.URL.revokeObjectURL(url);
+    this.cceeService.exportCceal(startStr, endStr).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `cceal_export_${startStr}_${endStr}.xml`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Erro ao exportar CCEAL:', err);
+        this.snackBar.open('Erro ao exportar arquivo CCEAL. Tente novamente.', 'Fechar', {
+          duration: 5000,
+          panelClass: 'error-snackbar'
+        });
+      }
     });
   }
 

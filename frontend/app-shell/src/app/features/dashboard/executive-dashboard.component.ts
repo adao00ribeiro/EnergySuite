@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { NgxEchartsModule } from 'ngx-echarts';
 import type { EChartsOption } from 'echarts';
@@ -8,9 +9,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
-import { Subscription } from 'rxjs';
 import { MlopsService, PriceForecastPoint, RiskMetricsSummary } from '../../core/services/mlops.service';
 import { RiskSignalrService, RiskCalculatedEvent } from '../../core/services/risk-signalr.service';
+import { token } from '../../core/theme-token';
 
 @Component({
   selector: 'app-executive-dashboard',
@@ -26,51 +27,41 @@ import { RiskSignalrService, RiskCalculatedEvent } from '../../core/services/ris
     NgxEchartsModule
   ],
   templateUrl: './executive-dashboard.component.html',
-  styleUrls: ['./executive-dashboard.component.scss']
+  styleUrl: './executive-dashboard.component.scss'
 })
-export class ExecutiveDashboardComponent implements OnInit, OnDestroy {
+export class ExecutiveDashboardComponent implements OnInit {
   public forecastData: PriceForecastPoint[] = [];
   public riskSummary!: RiskMetricsSummary;
   public realTimeEvents: RiskCalculatedEvent[] = [];
   public selectedSubmarket: 'pldSE' | 'pldS' | 'pldNE' | 'pldN' = 'pldSE';
-  
-  public chartOptions: EChartsOption = {};
-  
-  private signalrSub!: Subscription;
 
-  constructor(
-    private mlopsService: MlopsService,
-    private riskSignalrService: RiskSignalrService
-  ) {}
+  public chartOptions: EChartsOption = {};
+
+  private destroyRef = inject(DestroyRef);
+  private mlopsService = inject(MlopsService);
+  private riskSignalrService = inject(RiskSignalrService);
 
   ngOnInit(): void {
-    this.mlopsService.getPriceForecasts().subscribe(data => {
+    this.mlopsService.getPriceForecasts().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(data => {
       this.forecastData = data;
       this.updateChartOptions();
     });
 
-    this.mlopsService.getRiskSummary().subscribe(data => {
+    this.mlopsService.getRiskSummary().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(data => {
       this.riskSummary = data;
     });
 
     this.riskSignalrService.startConnection();
-    this.signalrSub = this.riskSignalrService.riskCalculated$.subscribe(event => {
+    this.riskSignalrService.riskCalculated$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(event => {
       this.realTimeEvents.unshift(event);
       if (this.realTimeEvents.length > 10) {
         this.realTimeEvents.pop();
       }
-      // Dynamically update total exposure
       if (this.riskSummary) {
         this.riskSummary.totalExposure += event.financialExposure;
         this.riskSummary.lastUpdated = new Date().toLocaleTimeString('pt-BR');
       }
     });
-  }
-
-  ngOnDestroy(): void {
-    if (this.signalrSub) {
-      this.signalrSub.unsubscribe();
-    }
   }
 
   public setSubmarket(market: 'pldSE' | 'pldS' | 'pldNE' | 'pldN'): void {
@@ -89,9 +80,9 @@ export class ExecutiveDashboardComponent implements OnInit, OnDestroy {
       tooltip: {
         trigger: 'axis',
         axisPointer: { type: 'shadow' },
-        backgroundColor: '#1e293b',
+        backgroundColor: token('--color-card'),
         borderColor: 'rgba(255, 255, 255, 0.15)',
-        textStyle: { color: '#f8fafc' }
+        textStyle: { color: token('--color-card-foreground') }
       },
       grid: {
         left: '2%',
@@ -103,14 +94,14 @@ export class ExecutiveDashboardComponent implements OnInit, OnDestroy {
       xAxis: {
         type: 'category',
         data: dates,
-        axisLine: { lineStyle: { color: '#64748b' } },
-        axisLabel: { color: '#94a3b8' }
+        axisLine: { lineStyle: { color: token('--chart-slate') } },
+        axisLabel: { color: token('--chart-tick') }
       },
       yAxis: {
         type: 'value',
-        splitLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.05)' } },
+        splitLine: { lineStyle: { color: token('--chart-grid') } },
         axisLabel: {
-          color: '#94a3b8',
+          color: token('--chart-tick'),
           formatter: 'R$ {value}'
         }
       },
@@ -126,15 +117,15 @@ export class ExecutiveDashboardComponent implements OnInit, OnDestroy {
               type: 'linear',
               x: 0, y: 0, x2: 0, y2: 1,
               colorStops: [
-                { offset: 0, color: '#38bdf8' },
-                { offset: 1, color: '#1e40af' }
+                { offset: 0, color: token('--color-info') },
+                { offset: 1, color: token('--chart-navy') }
               ]
             }
           },
           label: {
             show: true,
             position: 'top',
-            color: '#38bdf8',
+            color: token('--color-info'),
             formatter: 'R$ {@value}'
           },
           animationEasing: 'elasticOut',

@@ -86,6 +86,13 @@ public static class NativeInjectorConfig
 
         // Repositórios
         services.AddScoped<IContractRepository, ContractRepository>();
+        services.AddScoped<IPortfolioRepository, PortfolioRepository>();
+        services.AddScoped<ICompanyRepository, CompanyRepository>();
+        services.AddScoped<IWebhookRepository, WebhookRepository>();
+        services.AddScoped<IHydrologyRepository, HydrologyRepository>();
+        services.AddScoped<IProspectRepository, ProspectRepository>();
+        services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+
 
         // MediatR (CQRS)
         services.AddMediatR(cfg => 

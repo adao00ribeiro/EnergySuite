@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
 import * as signalR from '@microsoft/signalr';
 import { Subject } from 'rxjs';
 
@@ -19,8 +20,9 @@ export class RiskSignalrService {
   public riskCalculated$ = new Subject<RiskCalculatedEvent>();
 
   public startConnection = () => {
+    const hubUrl = environment.apiUrl.replace(/\/api\/v1\/?$/, '') + '/hubs/risk';
     this.hubConnection = new signalR.HubConnectionBuilder()
-                            .withUrl('http://localhost:8080/hubs/risk')
+                            .withUrl(hubUrl)
                             .withAutomaticReconnect()
                             .build();
 

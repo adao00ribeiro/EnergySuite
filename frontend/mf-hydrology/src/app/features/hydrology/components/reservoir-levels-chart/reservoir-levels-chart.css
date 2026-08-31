@@ -3,9 +3,9 @@
   height: 100%;
   padding: 16px;
   box-sizing: border-box;
-  background-color: rgba(30, 41, 59, 0.4);
+  background-color: color-mix(in srgb, var(--color-background) 88%, var(--color-foreground));
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
 }
 
 .chart-header {
@@ -17,13 +17,13 @@
 
 .header-titles h3 {
   margin: 0;
-  color: #e2e8f0;
+  color: var(--color-foreground);
   font-size: 1.1rem;
 }
 
 .header-titles .subtitle {
   margin: 4px 0 0 0;
-  color: #94a3b8;
+  color: var(--color-muted-foreground);
   font-size: 0.85rem;
 }
 
@@ -34,23 +34,23 @@
 }
 
 .evolution-label {
-  color: #cbd5e1;
+  color: var(--color-foreground);
   font-size: 0.9rem;
   font-weight: 500;
 }
 
 mat-button-toggle-group {
-  background-color: #1e293b;
-  border: 1px solid #334155;
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
 }
 
 mat-button-toggle {
-  color: #94a3b8;
+  color: var(--color-muted-foreground);
 }
 
 mat-button-toggle.mat-button-toggle-checked {
-  background-color: #38bdf8;
-  color: #0f172a;
+  background-color: var(--color-hydrology);
+  color: var(--color-on-accent);
   font-weight: 500;
 }
 
@@ -73,7 +73,7 @@ mat-button-toggle.mat-button-toggle-checked {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  color: #94a3b8;
+  color: var(--color-muted-foreground);
   text-align: center;
 }
 
@@ -81,7 +81,7 @@ mat-button-toggle.mat-button-toggle-checked {
   font-size: 36px;
   width: 36px;
   height: 36px;
-  color: #64748b;
+  color: var(--color-muted-foreground);
 }
 
 .chart-state p {
@@ -89,5 +89,5 @@ mat-button-toggle.mat-button-toggle-checked {
 }
 
 .chart-state.error mat-icon {
-  color: #ef4444;
+  color: var(--color-destructive);
 }

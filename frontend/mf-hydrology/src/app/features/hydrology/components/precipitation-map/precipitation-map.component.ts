@@ -13,6 +13,7 @@ import { NgxEchartsModule, NGX_ECHARTS_CONFIG } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
 import { PrecipitationMapDialogComponent } from './precipitation-map-dialog.component';
 import { environment } from '../../../../../environments/environment';
+import { token } from '../../../../core/theme-token';
 
 interface ForecastDay {
   offset: number;
@@ -44,7 +45,7 @@ interface MapResponse {
     NgxEchartsModule
   ],
   templateUrl: './precipitation-map.component.html',
-  styleUrls: ['./precipitation-map.component.scss'],
+  styleUrl: './precipitation-map.component.scss',
   providers: [
     {
       provide: NGX_ECHARTS_CONFIG,
@@ -144,9 +145,9 @@ export class PrecipitationMapComponent implements OnInit {
           itemStyle: {
             color: (params: any) => {
               const v = params.value[2];
-              if (v < 15) return '#22c55e';
-              if (v < 30) return '#eab308';
-              return '#ef4444';
+              if (v < 15) return token('--chart-green');
+              if (v < 30) return token('--chart-yellow');
+              return token('--chart-red');
             }
           }
         }

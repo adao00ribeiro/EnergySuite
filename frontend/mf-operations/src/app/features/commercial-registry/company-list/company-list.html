@@ -13,7 +13,7 @@
 
   <main class="dashboard-content">
     <div class="glass-panel p-0">
-      <table mat-table [dataSource]="dataSource()" matSort class="w-full bg-transparent">
+      <table mat-table [dataSource]="dataSource" matSort class="table-full-width bg-transparent">
         
         <ng-container matColumnDef="cnpj">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> CNPJ </th>
@@ -22,7 +22,7 @@
 
         <ng-container matColumnDef="tradeName">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Nome Fantasia </th>
-          <td mat-cell *matCellDef="let element" class="font-semibold" style="color: var(--color-text);"> {{element.tradeName}} </td>
+          <td mat-cell *matCellDef="let element" class="font-semibold"> {{element.tradeName}} </td>
         </ng-container>
 
         <ng-container matColumnDef="category">

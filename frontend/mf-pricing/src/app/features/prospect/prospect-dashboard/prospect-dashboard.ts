@@ -24,7 +24,7 @@ import { NewStudyDialogComponent } from '../components/new-study-dialog/new-stud
     MatSnackBarModule
   ],
   templateUrl: './prospect-dashboard.html',
-  styleUrls: ['./prospect-dashboard.css']
+  styleUrl: './prospect-dashboard.css'
 })
 export class ProspectDashboardComponent implements OnInit {
   private prospectService = inject(ProspectService);

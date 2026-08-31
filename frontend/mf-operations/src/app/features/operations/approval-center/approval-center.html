@@ -8,11 +8,11 @@
 
   <main class="dashboard-content">
     <div class="glass-panel p-0">
-      <table mat-table [dataSource]="pendingItems()" matSort class="w-full bg-transparent">
+      <table mat-table [dataSource]="dataSource" matSort class="table-full-width bg-transparent">
         
         <ng-container matColumnDef="ticketRef">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Boleta Ref </th>
-          <td mat-cell *matCellDef="let element" class="font-bold text-amber-500"> {{element.ticketRef}} </td>
+          <td mat-cell *matCellDef="let element" class="font-bold"> {{element.ticketRef}} </td>
         </ng-container>
 
         <ng-container matColumnDef="type">
@@ -26,7 +26,7 @@
 
         <ng-container matColumnDef="counterparty">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Contraparte </th>
-          <td mat-cell *matCellDef="let element" style="color: var(--color-text);"> {{element.counterparty}} </td>
+          <td mat-cell *matCellDef="let element"> {{element.counterparty}} </td>
         </ng-container>
 
         <ng-container matColumnDef="details">
@@ -37,10 +37,10 @@
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef class="text-right"> Decisão </th>
           <td mat-cell *matCellDef="let element" class="text-right">
-            <button mat-icon-button color="primary" class="text-emerald-500 mx-1" (click)="approve(element.id)">
+            <button mat-icon-button color="primary" (click)="approve(element.id)">
               <mat-icon>check_circle</mat-icon>
             </button>
-            <button mat-icon-button color="warn" class="text-red-500 mx-1" (click)="reject(element.id)">
+            <button mat-icon-button color="warn" (click)="reject(element.id)">
               <mat-icon>cancel</mat-icon>
             </button>
           </td>
@@ -49,7 +49,7 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover-row"></tr>
       </table>
-      <div class="empty-table" *ngIf="pendingItems().length === 0">
+      <div class="empty-table" *ngIf="dataSource.data.length === 0">
         <mat-icon>task_alt</mat-icon>
         <p>Nenhuma operação aguardando aprovação no momento.</p>
       </div>

@@ -6,11 +6,10 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using EtrmService.Application.IntegrationEvents;
-using EtrmService.Application.Interfaces;
 using EtrmService.Application.Services;
 using EtrmService.Domain.Entities;
+using EtrmService.Domain.Interfaces;
 using MassTransit;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -18,18 +17,21 @@ namespace EtrmService.API.Consumers;
 
 public class EnaCalculatedEventConsumer : IConsumer<EnaCalculatedIntegrationEvent>
 {
-    private readonly IEtrmDbContext _context;
+    private readonly IHydrologyRepository _hydrologyRepository;
+    private readonly IWebhookRepository _webhookRepository;
     private readonly ILogger<EnaCalculatedEventConsumer> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfiguration _configuration;
 
     public EnaCalculatedEventConsumer(
-        IEtrmDbContext context,
+        IHydrologyRepository hydrologyRepository,
+        IWebhookRepository webhookRepository,
         ILogger<EnaCalculatedEventConsumer> logger,
         IHttpClientFactory httpClientFactory,
         IConfiguration configuration)
     {
-        _context = context;
+        _hydrologyRepository = hydrologyRepository;
+        _webhookRepository = webhookRepository;
         _logger = logger;
         _httpClientFactory = httpClientFactory;
         _configuration = configuration;
@@ -48,13 +50,10 @@ public class EnaCalculatedEventConsumer : IConsumer<EnaCalculatedIntegrationEven
             targetDate: message.TargetDate
         );
 
-        _context.HydrologicalResults.Add(result);
-        await _context.SaveChangesAsync(context.CancellationToken);
+        await _hydrologyRepository.AddResultAsync(result, context.CancellationToken);
 
         _logger.LogInformation($"Saved ENA result for Execution {message.ExecutionId} - {message.Submarket}: {message.ValueMwMed} MWmed ({message.ValuePercentageMlt}%)");
 
-        // Disparo do Webhook B2B (Sprint 7 / BK-12b): URL vem de subscription ou configuração.
-        // Nenhuma URL pública de teste é usada como default.
         await DispatchWebhookAsync(message, context.CancellationToken);
     }
 
@@ -74,12 +73,8 @@ public class EnaCalculatedEventConsumer : IConsumer<EnaCalculatedIntegrationEven
 
         var jsonPayload = JsonSerializer.Serialize(webhookPayload);
 
-        // Preferência 1: subscriptions ativas registradas no banco (URL + secret por assinante)
-        var subscriptions = await _context.WebhookSubscriptions
-            .Where(w => w.IsActive)
-            .ToListAsync(cancellationToken);
+        var subscriptions = (await _webhookRepository.GetActiveSubscriptionsAsync(cancellationToken)).ToList();
 
-        // Preferência 2: URL configurada (Webhooks:Customer:BaseUrl)
         var configuredCustomerUrl = _configuration["Webhooks:Customer:BaseUrl"];
         var configuredSecret = _configuration["Webhooks:DefaultSecretKey"] ?? string.Empty;
 

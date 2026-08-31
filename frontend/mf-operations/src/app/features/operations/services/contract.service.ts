@@ -45,7 +45,7 @@ export interface ContractDetails {
 @Injectable({ providedIn: 'root' })
 export class ContractService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/v1/contracts`;
+  private apiUrl = `${environment.apiUrl}/contracts`;
 
   contracts = signal<Contract[]>([]);
   isLoading = signal<boolean>(false);

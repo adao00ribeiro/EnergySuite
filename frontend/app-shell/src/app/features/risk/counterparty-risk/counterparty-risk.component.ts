@@ -4,6 +4,7 @@ import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import type { EChartsOption } from 'echarts';
 import { RiskService, CounterpartyRisk } from '../../../core/services/risk.service';
 import { ThemeService } from '../../../core/services/theme.service';
+import { token } from '../../../core/theme-token';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -16,7 +17,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     provideEchartsCore({ echarts: () => import('echarts') }),
   ],
   templateUrl: './counterparty-risk.component.html',
-  styleUrls: ['./counterparty-risk.component.scss']
+  styleUrl: './counterparty-risk.component.scss'
 })
 export class CounterpartyRiskComponent implements OnInit {
   private riskService = inject(RiskService);
@@ -71,7 +72,7 @@ export class CounterpartyRiskComponent implements OnInit {
           name: 'Exposição Financeira (R$)',
           type: 'bar',
           data: exposures,
-          itemStyle: { color: '#3f51b5' }
+          itemStyle: { color: token('--color-accent') }
         },
         {
           name: 'Mark-to-Market (R$)',
@@ -80,7 +81,7 @@ export class CounterpartyRiskComponent implements OnInit {
           itemStyle: {
             color: (params: any) => {
               // Verde para MtM positivo, vermelho para negativo
-              return params.value >= 0 ? '#4caf50' : '#f44336';
+              return params.value >= 0 ? token('--color-success') : token('--color-destructive');
             }
           }
         }

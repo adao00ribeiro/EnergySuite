@@ -7,10 +7,10 @@
   <div class="runs-list">
     <div class="run-item" *ngFor="let run of runs()">
       <div class="run-icon" [ngClass]="run.status">
-        <i class="fas fa-check-circle" *ngIf="run.status === 'completed'"></i>
-        <i class="fas fa-spinner fa-spin" *ngIf="run.status === 'running'"></i>
-        <i class="fas fa-clock" *ngIf="run.status === 'pending'"></i>
-        <i class="fas fa-times-circle" *ngIf="run.status === 'failed'"></i>
+        <mat-icon *ngIf="run.status === 'completed'">check_circle</mat-icon>
+        <mat-icon *ngIf="run.status === 'running'" class="spin-animation">autorenew</mat-icon>
+        <mat-icon *ngIf="run.status === 'pending'">schedule</mat-icon>
+        <mat-icon *ngIf="run.status === 'failed'">error</mat-icon>
       </div>
       <div class="run-details">
         <div class="model-name">{{ run.modelName }}</div>

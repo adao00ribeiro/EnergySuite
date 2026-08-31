@@ -19,7 +19,7 @@
         </mat-form-field>
 
         <div class="file-upload">
-          <input type="file" #fileInput (change)="onFileSelected($event)" accept=".csv,.grib2" style="display: none">
+          <input type="file" #fileInput (change)="onFileSelected($event)" accept=".csv,.grib2" class="hidden-file-input">
           <button mat-stroked-button type="button" (click)="fileInput.click()">
             Selecionar Arquivo
           </button>

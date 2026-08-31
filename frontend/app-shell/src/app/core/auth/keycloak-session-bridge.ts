@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { KeycloakEventType } from 'keycloak-angular';
+import { KeycloakEventTypeLegacy } from 'keycloak-angular';
 import { KeycloakService } from 'keycloak-angular';
 
 const TOKEN_KEY = 'energysuite_token';
@@ -15,10 +15,10 @@ export class KeycloakSessionBridgeService {
   start(): void {
     this.sync();
     this.keycloak.keycloakEvents$.subscribe((event) => {
-      if (event.type === KeycloakEventType.OnAuthRefreshSuccess) {
+      if (event.type === KeycloakEventTypeLegacy.OnAuthRefreshSuccess) {
         this.sync();
       }
-      if (event.type === KeycloakEventType.OnAuthLogout) {
+      if (event.type === KeycloakEventTypeLegacy.OnAuthLogout) {
         this.clear();
       }
     });

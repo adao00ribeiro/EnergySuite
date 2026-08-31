@@ -37,7 +37,7 @@
     align-items: center;
     gap: 8px;
     margin-bottom: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--color-border);
     padding-bottom: 12px;
     
     h3 {
@@ -98,11 +98,10 @@
 
 .operations-table {
   width: 100%;
-  background: transparent !important;
   
   th.mat-header-cell {
     color: var(--color-muted-foreground);
-    border-bottom-color: rgba(255, 255, 255, 0.05);
+    border-bottom-color: var(--color-border);
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -110,11 +109,11 @@
   
   td.mat-cell {
     color: var(--color-foreground);
-    border-bottom-color: rgba(255, 255, 255, 0.02);
+    border-bottom-color: var(--color-border);
   }
 
   .text-success {
-    color: var(--status-success);
+    color: var(--color-success);
     font-weight: 500;
   }
 }
@@ -127,8 +126,8 @@
   display: inline-block;
   
   &.info {
-    background: rgba(14, 165, 233, 0.15);
-    color: #0ea5e9;
+    background: color-mix(in srgb, var(--color-info) 15%, transparent);
+    color: var(--color-info);
   }
 }
 

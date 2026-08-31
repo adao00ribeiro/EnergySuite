@@ -6,6 +6,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../../../environments/environment';
+import { token } from '../../../../core/theme-token';
 
 interface EnaPoint {
   targetDate: string;
@@ -65,13 +66,13 @@ export class ReservoirLevelsChartComponent {
           tooltip: {
             trigger: 'axis',
             axisPointer: { type: 'cross' },
-            backgroundColor: 'rgba(30, 41, 59, 0.9)',
+            backgroundColor: token('--color-card'),
             borderColor: 'rgba(255,255,255,0.1)',
-            textStyle: { color: '#f8fafc' }
+            textStyle: { color: token('--color-card-foreground') }
           },
           legend: {
             data: ['ENA (MWmed)', 'ENA (%MLT)'],
-            textStyle: { color: '#94a3b8' },
+            textStyle: { color: token('--chart-tick') },
             top: 0
           },
           grid: {
@@ -81,22 +82,22 @@ export class ReservoirLevelsChartComponent {
             type: 'category',
             boundaryGap: false,
             data: months,
-            axisLine: { lineStyle: { color: '#334155' } },
-            axisLabel: { color: '#94a3b8' }
+            axisLine: { lineStyle: { color: token('--chart-grid') } },
+            axisLabel: { color: token('--chart-tick') }
           },
           yAxis: [
             {
               type: 'value',
               name: 'MWmed',
               axisLine: { show: false },
-              axisLabel: { color: '#94a3b8' },
-              splitLine: { lineStyle: { color: 'rgba(255,255,255,0.05)' } }
+              axisLabel: { color: token('--chart-tick') },
+              splitLine: { lineStyle: { color: token('--chart-grid') } }
             },
             {
               type: 'value',
               name: '%MLT',
               axisLine: { show: false },
-              axisLabel: { color: '#94a3b8', formatter: '{value}%' },
+              axisLabel: { color: token('--chart-tick'), formatter: '{value}%' },
               splitLine: { show: false }
             }
           ],
@@ -109,8 +110,8 @@ export class ReservoirLevelsChartComponent {
               smooth: true,
               symbol: 'circle',
               symbolSize: 6,
-              lineStyle: { width: 3, color: '#0ea5e9' },
-              itemStyle: { color: '#0ea5e9' },
+              lineStyle: { width: 3, color: token('--color-info') },
+              itemStyle: { color: token('--color-info') },
               areaStyle: {
                 color: {
                   type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
@@ -126,8 +127,8 @@ export class ReservoirLevelsChartComponent {
               smooth: true,
               symbol: 'circle',
               symbolSize: 6,
-              lineStyle: { width: 3, color: '#10b981', type: 'dashed' },
-              itemStyle: { color: '#10b981' }
+              lineStyle: { width: 3, color: token('--color-success'), type: 'dashed' },
+              itemStyle: { color: token('--color-success') }
             }
           ],
           animationDuration: 1000,

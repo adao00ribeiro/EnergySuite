@@ -1,6 +1,6 @@
 .mlops-container {
-  background-color: rgba(30, 41, 59, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: color-mix(in srgb, var(--color-background) 88%, var(--color-foreground));
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 16px;
   height: 100%;
@@ -15,22 +15,22 @@
 
 .header h3 {
   margin: 0;
-  color: #e2e8f0;
+  color: var(--color-foreground);
   font-size: 1.1rem;
 }
 
 .live-indicator {
   width: 8px;
   height: 8px;
-  background-color: #10b981;
+  background-color: var(--color-success);
   border-radius: 50%;
   animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-  70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-success) 40%, transparent); }
+  70% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-success) 0%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-success) 0%, transparent); }
 }
 
 .runs-list {
@@ -44,7 +44,7 @@
   align-items: center;
   gap: 16px;
   padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .run-item:last-child {
@@ -53,28 +53,46 @@
 }
 
 .run-icon {
-  font-size: 1.2rem;
   width: 24px;
+  height: 24px;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.run-icon.completed { color: #10b981; }
-.run-icon.running { color: #38bdf8; }
-.run-icon.failed { color: #ef4444; }
-.run-icon.pending { color: #f59e0b; }
+.run-icon mat-icon {
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+}
+
+.spin-animation {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.run-icon.completed { color: var(--color-success); }
+.run-icon.running { color: var(--color-info); }
+.run-icon.failed { color: var(--color-destructive); }
+.run-icon.pending { color: var(--color-warning); }
 
 .run-details {
   flex: 1;
 }
 
 .model-name {
-  color: #f1f5f9;
+  color: var(--color-foreground);
   font-weight: 500;
   margin-bottom: 4px;
 }
 
 .metrics {
-  color: #94a3b8;
+  color: var(--color-muted-foreground);
   font-size: 0.85rem;
 }
 
@@ -87,10 +105,10 @@
   font-weight: 600;
   padding: 4px 8px;
   border-radius: 12px;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--color-muted);
 }
 
-.status-badge.completed { color: #10b981; background-color: rgba(16, 185, 129, 0.1); }
-.status-badge.running { color: #38bdf8; background-color: rgba(56, 189, 248, 0.1); }
-.status-badge.failed { color: #ef4444; background-color: rgba(239, 68, 68, 0.1); }
-.status-badge.pending { color: #f59e0b; background-color: rgba(245, 158, 11, 0.1); }
+.status-badge.completed { color: var(--color-success); background-color: color-mix(in srgb, var(--color-success) 10%, transparent); }
+.status-badge.running { color: var(--color-info); background-color: color-mix(in srgb, var(--color-info) 10%, transparent); }
+.status-badge.failed { color: var(--color-destructive); background-color: color-mix(in srgb, var(--color-destructive) 10%, transparent); }
+.status-badge.pending { color: var(--color-warning); background-color: color-mix(in srgb, var(--color-warning) 10%, transparent); }

@@ -50,16 +50,16 @@
     }
     
     &.receivable {
-      background: rgba(16, 185, 129, 0.15);
-      color: #10b981;
+      background: color-mix(in srgb, var(--color-success) 15%, transparent);
+      color: var(--color-success);
     }
     &.payable {
-      background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
+      background: color-mix(in srgb, var(--color-destructive) 15%, transparent);
+      color: var(--color-destructive);
     }
     &.balance {
-      background: rgba(14, 165, 233, 0.15);
-      color: #0ea5e9;
+      background: color-mix(in srgb, var(--color-info) 15%, transparent);
+      color: var(--color-info);
     }
   }
   
@@ -82,8 +82,8 @@
   }
 }
 
-.text-success { color: var(--status-success) !important; }
-.text-danger { color: var(--status-danger) !important; }
+.text-success { color: var(--color-success); }
+.text-danger { color: var(--color-destructive); }
 
 .table-panel {
   padding: 16px 24px 24px 24px;
@@ -96,11 +96,10 @@
 
 .finance-table {
   width: 100%;
-  background: transparent !important;
   
   th.mat-header-cell {
     color: var(--color-muted-foreground);
-    border-bottom-color: rgba(255, 255, 255, 0.05);
+    border-bottom-color: var(--color-border);
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -108,7 +107,7 @@
   
   td.mat-cell {
     color: var(--color-foreground);
-    border-bottom-color: rgba(255, 255, 255, 0.02);
+    border-bottom-color: var(--color-border);
   }
 }
 
@@ -120,18 +119,18 @@
   display: inline-block;
   
   &.payable {
-    background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
+    background: color-mix(in srgb, var(--color-destructive) 15%, transparent);
+    color: var(--color-destructive);
   }
   
   &.receivable {
-    background: rgba(16, 185, 129, 0.15);
-    color: #10b981;
+    background: color-mix(in srgb, var(--color-success) 15%, transparent);
+    color: var(--color-success);
   }
   
   &.open {
-    background: rgba(245, 158, 11, 0.15);
-    color: #f59e0b;
+    background: color-mix(in srgb, var(--color-warning) 15%, transparent);
+    color: var(--color-warning);
   }
 }
 

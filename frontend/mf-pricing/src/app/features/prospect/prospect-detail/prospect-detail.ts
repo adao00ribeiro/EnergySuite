@@ -42,7 +42,7 @@ interface DeckItem {
     }
   ],
   templateUrl: './prospect-detail.html',
-  styleUrls: ['./prospect-detail.css']
+  styleUrl: './prospect-detail.css'
 })
 export class ProspectDetailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);

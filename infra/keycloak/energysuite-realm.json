@@ -8,7 +8,7 @@
   "duplicateEmailsAllowed": false,
   "resetPasswordAllowed": true,
   "editUsernameAllowed": false,
-  "roles": {
+    "roles": {
     "realm": [
       {
         "name": "Trader",
@@ -21,8 +21,38 @@
       {
         "name": "Executive",
         "description": "Executive Portfolio View Role"
+      },
+      {
+        "name": "Portfolio Manager",
+        "description": "Portfolio Manager Role"
       }
-    ]
+    ],
+    "client": {
+      "energysuite-frontend": [
+        {
+          "name": "Trader",
+          "description": "Energy Trader Role"
+        },
+        {
+          "name": "RiskAnalyst",
+          "description": "Risk Analyst Role"
+        },
+        {
+          "name": "Executive",
+          "description": "Executive Portfolio View Role"
+        },
+        {
+          "name": "Portfolio Manager",
+          "description": "Portfolio Manager Role"
+        }
+      ],
+      "energysuite-backend": [
+        {
+          "name": "CanViewENA",
+          "description": "Can view ENA projections (B2B)"
+        }
+      ]
+    }
   },
   "clients": [
     {
@@ -40,13 +70,29 @@
       "webOrigins": [
         "*"
       ],
-      "fullScopeAllowed": true
+      "fullScopeAllowed": true,
+      "defaultRoles": [
+        "Trader",
+        "RiskAnalyst",
+        "Executive",
+        "Portfolio Manager"
+      ]
     },
     {
       "clientId": "energysuite-backend",
       "name": "EnergySuite Backend APIs",
       "enabled": true,
       "bearerOnly": true
+    },
+    {
+      "clientId": "etrm-admin-client",
+      "name": "ETRM Backend Admin API",
+      "enabled": true,
+      "bearerOnly": true,
+      "serviceAccountsEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "standardFlowEnabled": false,
+      "secret": "change-me"
     }
   ],
   "users": [
@@ -64,9 +110,15 @@
           "temporary": false
         }
       ],
+      "attributes": {
+        "permissions": [
+          "CanViewENA"
+        ]
+      },
       "realmRoles": [
         "Trader",
-        "Executive"
+        "Executive",
+        "Portfolio Manager"
       ]
     },
     {

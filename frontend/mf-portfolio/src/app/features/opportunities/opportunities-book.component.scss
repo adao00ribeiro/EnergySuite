@@ -38,9 +38,9 @@ table {
   display: block;
   margin-bottom: 4px;
 }
-.score-high { color: #10b981; }
-.score-med { color: #f59e0b; }
-.score-low { color: #ef4444; }
+.score-high { color: var(--color-success); }
+.score-med { color: var(--color-warning); }
+.score-low { color: var(--color-destructive); }
 
 .badge {
   padding: 4px 8px;
@@ -49,12 +49,12 @@ table {
   font-weight: bold;
   text-transform: uppercase;
 }
-.badge-buy { background: #fee2e2; color: #ef4444; }
-.badge-sell { background: #dcfce3; color: #10b981; }
+.badge-buy { background: color-mix(in srgb, var(--color-destructive) 12%, transparent); color: var(--color-destructive); }
+.badge-sell { background: color-mix(in srgb, var(--color-success) 12%, transparent); color: var(--color-success); }
 
-.text-green { color: #10b981; font-weight: 500; }
-.text-red { color: #ef4444; font-weight: 500; }
+.text-green { color: var(--color-success); font-weight: 500; }
+.text-red { color: var(--color-destructive); font-weight: 500; }
 
 .opportunity-row:hover {
-  background: rgba(255,255,255,0.05);
+  background: var(--color-muted);
 }

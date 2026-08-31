@@ -25,7 +25,7 @@ import { effect } from '@angular/core';
     MatIconModule
   ],
   templateUrl: './ccee-comparison-list.html',
-  styleUrls: ['./ccee-comparison-list.scss']
+  styleUrl: './ccee-comparison-list.scss'
 })
 export class CceeComparisonListComponent implements OnInit {
   cceeService = inject(CceeIntegrationService);

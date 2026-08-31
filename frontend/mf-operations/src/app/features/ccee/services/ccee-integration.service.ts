@@ -19,7 +19,7 @@ export interface CceeComparisonDto {
 })
 export class CceeIntegrationService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/v1/ccee-integration`;
+  private apiUrl = `${environment.apiUrl}/ccee-integration`;
 
   // Signals for state management
   comparisons = signal<CceeComparisonDto[]>([]);

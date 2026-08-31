@@ -16,7 +16,7 @@
 }
 
 .header p {
-  color: #666;
+  color: var(--color-muted-foreground);
   margin-top: 8px;
 }
 
@@ -24,16 +24,28 @@
   padding: 24px 0;
 }
 
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.results-chart {
+  height: 400px;
+  margin-top: 24px;
+}
+
 .mt-16 {
   margin-top: 16px;
 }
 
 .console {
-  background-color: #1e1e1e;
-  color: #00ff00;
-  font-family: 'Courier New', Courier, monospace;
+  background-color: var(--color-card);
+  color: var(--color-success);
+  font-family: var(--font-display);
   padding: 16px;
-  border-radius: 4px;
+  border-radius: 8px;
   min-height: 400px;
   max-height: 600px;
   overflow-y: auto;
@@ -45,18 +57,18 @@
 }
 
 .log-line.muted {
-  color: #888;
+  color: var(--color-muted-foreground);
 }
 
 .version-chip {
   display: inline-block;
-  background-color: #fff3cd;
-  color: #856404;
+  background-color: color-mix(in srgb, var(--color-warning) 20%, var(--color-card));
+  color: var(--color-warning);
   font-size: 11px;
   padding: 2px 6px;
   border-radius: 4px;
   margin-left: 8px;
-  border: 1px solid #ffeeba;
+  border: 1px solid var(--color-border);
   font-weight: 500;
 }
 
@@ -66,7 +78,7 @@
   align-items: center;
   justify-content: center;
   padding: 48px;
-  color: #666;
+  color: var(--color-muted-foreground);
 }
 
 .empty-state mat-icon {
@@ -74,5 +86,5 @@
   width: 48px;
   height: 48px;
   margin-bottom: 16px;
-  color: #ccc;
+  color: var(--color-muted-foreground);
 }

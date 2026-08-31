@@ -24,7 +24,7 @@
   height: 2px;
   background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue), var(--accent-purple));
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 200ms ease;
 }
 
 .metric-card:hover::before {
@@ -38,7 +38,7 @@
 }
 
 .metric-title {
-  color: var(--text-secondary);
+  color: var(--color-muted-foreground);
   font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -53,12 +53,12 @@
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
-  background: rgba(255,255,255,0.05);
+  background: var(--color-muted);
 }
 
-.trend-badge.up { color: var(--status-success); background: rgba(16, 185, 129, 0.1); }
-.trend-badge.down { color: var(--status-danger); background: rgba(239, 68, 68, 0.1); }
-.trend-badge.neutral { color: var(--text-secondary); }
+.trend-badge.up { color: var(--color-success); background: color-mix(in srgb, var(--color-success) 12%, transparent); }
+.trend-badge.down { color: var(--color-destructive); background: color-mix(in srgb, var(--color-destructive) 12%, transparent); }
+.trend-badge.neutral { color: var(--color-muted-foreground); }
 
 .metric-value {
   font-size: 36px;
@@ -66,7 +66,7 @@
 }
 
 .metric-desc {
-  color: var(--text-secondary);
+  color: var(--color-muted-foreground);
   font-size: 13px;
   margin: 8px 0 0 0;
 }

@@ -71,14 +71,14 @@ import { MatIconModule } from '@angular/material/icon';
     }
     .premium-card {
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      transition: transform 0.2s, box-shadow 0.2s;
-      background: rgba(0, 0, 0, 0.4) !important;
-      color: var(--text-primary) !important;
+      box-shadow: var(--shadow-sm);
+      transition: transform 200ms ease, box-shadow 200ms ease;
+      background: var(--color-card);
+      color: var(--color-foreground);
     }
     .premium-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      box-shadow: var(--shadow-lg);
     }
     .icon-avatar {
       display: flex;
@@ -87,17 +87,17 @@ import { MatIconModule } from '@angular/material/icon';
       border-radius: 50%;
       width: 40px;
       height: 40px;
-      color: white;
+      color: var(--color-on-accent);
     }
-    .bg-blue { background-color: #3b82f6; }
-    .bg-orange { background-color: #f97316; }
-    .bg-purple { background-color: #8b5cf6; }
-    .bg-green { background-color: #10b981; }
+    .bg-blue { background-color: var(--color-info); }
+    .bg-orange { background-color: var(--color-warning); }
+    .bg-purple { background-color: var(--color-operations); }
+    .bg-green { background-color: var(--color-success); }
     
-    .text-blue { color: #3b82f6; }
-    .text-orange { color: #f97316; }
-    .text-purple { color: #8b5cf6; }
-    .text-green { color: #10b981; }
+    .text-blue { color: var(--color-info); }
+    .text-orange { color: var(--color-warning); }
+    .text-purple { color: var(--color-operations); }
+    .text-green { color: var(--color-success); }
 
     .value {
       font-size: 2rem;

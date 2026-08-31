@@ -20,10 +20,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--color-muted);
       
       &.operations-bg {
-        background: rgba(79, 70, 229, 0.15);
+        background: color-mix(in srgb, var(--accent-indigo) 15%, transparent);
         color: var(--color-operations);
       }
       
@@ -48,23 +48,28 @@
     }
   }
 
-  .action-cards {
+  .hidden-file-input {
+  display: none;
+}
+
+.action-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 24px;
     margin-bottom: 40px;
+    animation-delay: 100ms;
 
     .action-card {
       display: flex;
       flex-direction: column;
       padding: 24px;
       border-radius: 16px;
-      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
       
       &:hover {
         transform: translateY(-2px);
-        border-color: rgba(255, 255, 255, 0.15);
-        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+        border-color: var(--color-border);
+        box-shadow: var(--shadow-xl);
       }
 
       .card-header {
@@ -82,12 +87,12 @@
           height: 48px;
           
           &.primary-bg {
-            background-color: rgba(14, 165, 233, 0.15);
+            background-color: color-mix(in srgb, var(--color-info) 15%, transparent);
             color: var(--color-portfolio);
           }
           
           &.accent-bg {
-            background-color: rgba(79, 70, 229, 0.15);
+            background-color: color-mix(in srgb, var(--accent-indigo) 15%, transparent);
             color: var(--color-operations);
           }
         }
@@ -121,13 +126,13 @@
 
         .upload-area {
           padding: 32px 24px;
-          border: 2px dashed rgba(255, 255, 255, 0.1);
+          border: 2px dashed var(--color-border);
           border-radius: 12px;
-          background-color: rgba(0, 0, 0, 0.2);
+          background-color: var(--color-muted);
           text-align: center;
           color: var(--color-muted-foreground);
           cursor: pointer;
-          transition: all 0.2s;
+          transition: all 200ms ease;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -148,7 +153,7 @@
           
           &:hover {
             border-color: var(--color-operations);
-            background-color: rgba(79, 70, 229, 0.05);
+            background-color: color-mix(in srgb, var(--accent-indigo) 5%, transparent);
             color: var(--color-foreground);
             mat-icon { opacity: 1; color: var(--color-operations); }
           }
@@ -164,16 +169,16 @@
         }
         
         .glow-button {
-          background-color: rgba(255, 255, 255, 0.05);
+          background-color: var(--color-muted);
           color: var(--color-foreground);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          border: 1px solid var(--color-border);
           border-radius: 8px;
           padding: 0 20px;
           height: 40px;
           display: flex;
           align-items: center;
           gap: 8px;
-          transition: all 0.2s;
+          transition: all 200ms ease;
           
           mat-icon {
             font-size: 20px;
@@ -182,15 +187,15 @@
           }
           
           &:hover {
-            background-color: rgba(14, 165, 233, 0.2);
-            border-color: rgba(14, 165, 233, 0.4);
-            box-shadow: 0 0 15px rgba(14, 165, 233, 0.3);
+            background-color: color-mix(in srgb, var(--color-info) 20%, transparent);
+            border-color: color-mix(in srgb, var(--color-info) 40%, transparent);
+            box-shadow: 0 0 15px color-mix(in srgb, var(--color-info) 30%, transparent);
           }
           
           &.accent-glow:hover {
-            background-color: rgba(79, 70, 229, 0.2);
-            border-color: rgba(79, 70, 229, 0.4);
-            box-shadow: 0 0 15px rgba(79, 70, 229, 0.3);
+            background-color: color-mix(in srgb, var(--accent-indigo) 20%, transparent);
+            border-color: color-mix(in srgb, var(--accent-indigo) 40%, transparent);
+            box-shadow: 0 0 15px color-mix(in srgb, var(--accent-indigo) 30%, transparent);
           }
           
           &:disabled {
@@ -205,5 +210,6 @@
 
   .comparison-section {
     width: 100%;
+    animation-delay: 200ms;
   }
 }

@@ -11,7 +11,7 @@ import { ContractService } from '../../data-access/contract.service';
   standalone: true,
   imports: [CommonModule, RouterModule, MatTableModule, MatButtonModule, MatIconModule],
   templateUrl: './contract-list.component.html',
-  styleUrls: ['./contract-list.component.scss']
+  styleUrl: './contract-list.component.scss'
 })
 export class ContractListComponent implements OnInit {
   public contractService = inject(ContractService);

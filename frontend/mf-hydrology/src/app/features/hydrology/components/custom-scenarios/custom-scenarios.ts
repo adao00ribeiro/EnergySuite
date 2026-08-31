@@ -5,6 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
 
@@ -17,7 +18,8 @@ import { environment } from '../../../../../environments/environment';
     MatCardModule,
     MatButtonModule,
     MatInputModule,
-    MatSliderModule
+    MatSliderModule,
+    MatSnackBarModule
   ],
   templateUrl: './custom-scenarios.html',
   styleUrl: './custom-scenarios.css'
@@ -29,7 +31,11 @@ export class CustomScenariosComponent {
   isUploading = false;
   isBlending = false;
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(
+    private fb: FormBuilder,
+    private http: HttpClient,
+    private snackBar: MatSnackBar
+  ) {
     this.uploadForm = this.fb.group({
       scenarioName: ['', Validators.required],
       horizonDays: [14, [Validators.required, Validators.min(1)]]
@@ -62,11 +68,14 @@ export class CustomScenariosComponent {
       this.http.post(`${environment.apiUrl}/pluvia/custom-maps/upload`, formData).subscribe({
         next: (res) => {
           this.isUploading = false;
-          alert('Upload concluído com sucesso!');
+          this.snackBar.open('Upload de mapa customizado concluído com sucesso!', 'OK', { duration: 4000 });
         },
         error: (err) => {
           this.isUploading = false;
-          alert('Erro ao enviar mapa customizado.');
+          this.snackBar.open('Erro ao enviar mapa customizado. Tente novamente.', 'Fechar', {
+            duration: 5000,
+            panelClass: 'warn-snackbar'
+          });
         }
       });
     }
@@ -78,7 +87,10 @@ export class CustomScenariosComponent {
       const totalWeight = this.blendForm.value.gefsWeight + this.blendForm.value.etaWeight + this.blendForm.value.ecmwfWeight;
       
       if (totalWeight !== 100) {
-        alert('A soma dos pesos deve ser exatamente 100%.');
+        this.snackBar.open('A soma dos pesos (GEFS + ETA + ECMWF) deve ser exatamente 100%.', 'Atenção', {
+          duration: 4000,
+          panelClass: 'warn-snackbar'
+        });
         this.isBlending = false;
         return;
       }
@@ -97,13 +109,17 @@ export class CustomScenariosComponent {
       this.http.post(`${environment.apiUrl}/pluvia/custom-maps/blend`, payload).subscribe({
         next: (res) => {
           this.isBlending = false;
-          alert('Cenário combinado criado com sucesso!');
+          this.snackBar.open('Cenário combinado gerado com sucesso!', 'OK', { duration: 4000 });
         },
         error: (err) => {
           this.isBlending = false;
-          alert('Erro ao combinar cenários.');
+          this.snackBar.open('Erro ao combinar cenários hidrológicos.', 'Fechar', {
+            duration: 5000,
+            panelClass: 'warn-snackbar'
+          });
         }
       });
     }
   }
 }
+

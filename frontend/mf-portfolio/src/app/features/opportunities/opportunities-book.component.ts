@@ -26,7 +26,7 @@ import { PortfolioService, Opportunity } from '../../core/services/portfolio.ser
     MatSnackBarModule
   ],
   templateUrl: './opportunities-book.component.html',
-  styleUrls: ['./opportunities-book.component.scss']
+  styleUrl: './opportunities-book.component.scss'
 })
 export class OpportunitiesBookComponent implements OnInit {
   displayedColumns: string[] = ['score', 'name', 'type', 'target', 'volume', 'spread', 'actions'];

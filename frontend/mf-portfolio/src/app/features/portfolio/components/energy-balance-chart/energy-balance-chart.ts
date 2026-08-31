@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { MatIconModule } from '@angular/material/icon';
 import { PortfolioService } from '../../../../core/services/portfolio.service';
+import { token } from '../../../../core/theme-token';
 
 @Component({
   selector: 'app-energy-balance-chart',
@@ -41,13 +42,13 @@ export class EnergyBalanceChartComponent implements OnInit {
           tooltip: {
             trigger: 'axis',
             axisPointer: { type: 'shadow' },
-            backgroundColor: 'rgba(30, 41, 59, 0.9)',
+            backgroundColor: token('--color-card'),
             borderColor: 'rgba(255,255,255,0.1)',
-            textStyle: { color: '#f8fafc' }
+            textStyle: { color: token('--color-card-foreground') }
           },
           legend: {
             data: ['Compras (Recursos)', 'Vendas (Requisitos)'],
-            textStyle: { color: '#94a3b8' },
+            textStyle: { color: token('--chart-tick') },
             top: 0
           },
           grid: {
@@ -56,14 +57,14 @@ export class EnergyBalanceChartComponent implements OnInit {
           xAxis: {
             type: 'category',
             data: months,
-            axisLine: { lineStyle: { color: '#334155' } },
-            axisLabel: { color: '#94a3b8' }
+            axisLine: { lineStyle: { color: token('--chart-grid') } },
+            axisLabel: { color: token('--chart-tick') }
           },
           yAxis: {
             type: 'value',
             axisLine: { show: false },
-            axisLabel: { color: '#94a3b8', formatter: '{value} MWm' },
-            splitLine: { lineStyle: { color: 'rgba(255,255,255,0.05)' } }
+            axisLabel: { color: token('--chart-tick'), formatter: '{value} MWm' },
+            splitLine: { lineStyle: { color: token('--chart-grid') } }
           },
           series: [
             {
@@ -71,7 +72,7 @@ export class EnergyBalanceChartComponent implements OnInit {
               type: 'bar',
               data: resources,
               itemStyle: {
-                color: '#0ea5e9',
+                color: token('--color-info'),
                 borderRadius: [4, 4, 0, 0]
               }
             },
@@ -80,7 +81,7 @@ export class EnergyBalanceChartComponent implements OnInit {
               type: 'bar',
               data: requirements,
               itemStyle: {
-                color: '#f43f5e',
+                color: token('--chart-rose'),
                 borderRadius: [4, 4, 0, 0]
               }
             }

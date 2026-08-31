@@ -21,7 +21,7 @@ import { ThemeService } from '../../core/services/theme.service';
     MatButtonModule
   ],
   templateUrl: './app-layout.component.html',
-  styleUrls: ['./app-layout.component.scss']
+  styleUrl: './app-layout.component.scss'
 })
 export class AppLayoutComponent {
   public themeService = inject(ThemeService);

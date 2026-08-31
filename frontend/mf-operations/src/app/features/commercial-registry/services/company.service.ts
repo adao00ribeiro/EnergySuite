@@ -17,7 +17,7 @@ export interface Company {
 @Injectable({ providedIn: 'root' })
 export class CompanyService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/v1/companies`;
+  private apiUrl = `${environment.apiUrl}/companies`;
 
   companies = signal<Company[]>([]);
   isLoading = signal<boolean>(false);

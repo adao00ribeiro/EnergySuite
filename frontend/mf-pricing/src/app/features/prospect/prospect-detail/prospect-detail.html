@@ -96,14 +96,14 @@
     <mat-tab label="Resultados (PLD)">
       <div class="tab-content">
         <mat-card *ngIf="chartOptions; else noResults">
-          <mat-card-header style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <mat-card-header class="results-header">
             <mat-card-title>Análise de Resultados</mat-card-title>
             <button mat-stroked-button color="primary" (click)="exportToCsv()">
               <mat-icon>file_download</mat-icon> Exportar para CSV
             </button>
           </mat-card-header>
           <mat-card-content>
-            <div echarts [options]="chartOptions" style="height: 400px; margin-top: 24px;"></div>
+            <div echarts [options]="chartOptions" class="results-chart"></div>
           </mat-card-content>
         </mat-card>
 

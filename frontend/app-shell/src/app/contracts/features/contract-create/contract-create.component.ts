@@ -8,6 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ContractService, CreateContractPayload } from '../../data-access/contract.service';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -24,15 +25,17 @@ import { MatIconModule } from '@angular/material/icon';
     MatButtonModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatIconModule
+    MatIconModule,
+    MatSnackBarModule
   ],
   templateUrl: './contract-create.component.html',
-  styleUrls: ['./contract-create.component.scss']
+  styleUrl: './contract-create.component.scss'
 })
 export class ContractCreateComponent {
   private fb = inject(FormBuilder);
   public contractService = inject(ContractService);
   private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
 
   public contractForm = this.fb.nonNullable.group({
     counterpartyName: ['', Validators.required],
@@ -86,13 +89,18 @@ export class ContractCreateComponent {
 
       this.contractService.createContract(payload).subscribe({
         next: () => {
+          this.snackBar.open('Contrato cadastrado com sucesso!', 'OK', { duration: 3000 });
           this.router.navigate(['/contracts']);
         },
         error: (err) => {
           console.error('Erro ao criar contrato:', err);
-          alert('Erro ao criar contrato.');
+          this.snackBar.open('Não foi possível salvar o contrato. Verifique os dados e tente novamente.', 'Fechar', {
+            duration: 5000,
+            panelClass: 'warn-snackbar'
+          });
         }
       });
     }
   }
 }
+

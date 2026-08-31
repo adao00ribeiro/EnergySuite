@@ -25,8 +25,8 @@
   gap: 16px;
 }
 .kpi-badge {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
   padding: 12px 20px;
   border-radius: 12px;
   display: flex;

@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatListModule } from '@angular/material/list';
+import { environment } from '../../../environments/environment';
 import * as signalR from '@microsoft/signalr';
 
 export interface AlertMessage {
@@ -23,10 +24,11 @@ export interface AlertMessage {
   standalone: true,
   imports: [CommonModule, MatTabsModule, MatCardModule, MatIconModule, MatButtonModule, MatChipsModule, MatListModule],
   templateUrl: './alerts-dashboard.component.html',
-  styleUrls: ['./alerts-dashboard.component.scss']
+  styleUrl: './alerts-dashboard.component.scss'
 })
 export class AlertsDashboardComponent implements OnInit, OnDestroy {
   private hubConnection: signalR.HubConnection | undefined;
+  private hubUrl = environment.apiUrl.replace(/\/api\/v1\/?$/, '') + '/hubs/alerts';
 
   alerts: AlertMessage[] = [];
 
@@ -42,7 +44,7 @@ export class AlertsDashboardComponent implements OnInit, OnDestroy {
 
   private connectSignalR() {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('http://localhost:8080/hubs/alerts')
+      .withUrl(this.hubUrl)
       .withAutomaticReconnect()
       .build();
 

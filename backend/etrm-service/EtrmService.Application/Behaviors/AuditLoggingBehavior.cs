@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EtrmService.Application.Interfaces;
 using EtrmService.Domain.Entities;
+using EtrmService.Domain.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -12,16 +13,16 @@ namespace EtrmService.Application.Behaviors;
 public class AuditLoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
 {
     private readonly ILogger<AuditLoggingBehavior<TRequest, TResponse>> _logger;
-    private readonly IEtrmDbContext _context;
+    private readonly IAuditLogRepository _auditLogRepository;
     private readonly ICurrentUserService _currentUserService;
 
     public AuditLoggingBehavior(
         ILogger<AuditLoggingBehavior<TRequest, TResponse>> logger,
-        IEtrmDbContext context,
+        IAuditLogRepository auditLogRepository,
         ICurrentUserService currentUserService)
     {
         _logger = logger;
-        _context = context;
+        _auditLogRepository = auditLogRepository;
         _currentUserService = currentUserService;
     }
 
@@ -66,8 +67,7 @@ public class AuditLoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequ
                 changedBy: _currentUserService.UserId ?? "system",
                 tenantId: _currentUserService.TenantId);
 
-            _context.AuditLogs.Add(auditLog);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _auditLogRepository.AddAsync(auditLog, cancellationToken);
         }
         catch (System.Exception ex)
         {
@@ -103,3 +103,4 @@ public class AuditLoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequ
         }
     }
 }
+

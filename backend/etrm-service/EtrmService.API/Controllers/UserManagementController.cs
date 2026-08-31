@@ -1,6 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using EtrmService.API.Services;
+using EtrmService.Application.AuditLogs.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +16,13 @@ namespace EtrmService.API.Controllers
     {
         private readonly ILogger<UserManagementController> _logger;
         private readonly IKeycloakAdminService _keycloakAdminService;
+        private readonly IMediator _mediator;
 
-        public UserManagementController(ILogger<UserManagementController> logger, IKeycloakAdminService keycloakAdminService)
+        public UserManagementController(ILogger<UserManagementController> logger, IKeycloakAdminService keycloakAdminService, IMediator mediator)
         {
             _logger = logger;
             _keycloakAdminService = keycloakAdminService;
+            _mediator = mediator;
         }
 
         [HttpGet]
@@ -51,6 +55,15 @@ namespace EtrmService.API.Controllers
                 _logger.LogError(ex, "Falha ao atualizar roles do usuário {id} no Keycloak Admin API", id);
                 return StatusCode(StatusCodes.Status502BadGateway, ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status502BadGateway, "Keycloak indisponível", detail: ex.Message));
             }
+        }
+
+        [HttpGet("{id}/audit-logs")]
+        public async Task<IActionResult> GetAuditLogs(string id, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Buscando audit logs do usuário {id}", id);
+            var query = new GetAuditLogsByUserQuery { UserId = id };
+            var result = await _mediator.Send(query, cancellationToken);
+            return Ok(result);
         }
     }
 }

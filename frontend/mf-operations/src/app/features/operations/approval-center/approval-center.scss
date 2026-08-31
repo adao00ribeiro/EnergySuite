@@ -19,20 +19,36 @@
   font-weight: 500;
   
   &.status-purchase {
-    background: rgba(16, 185, 129, 0.1);
-    color: rgb(16, 185, 129);
-    border: 1px solid rgba(16, 185, 129, 0.2);
+    background: color-mix(in srgb, var(--color-success) 12%, transparent);
+    color: var(--color-success);
+    border: 1px solid color-mix(in srgb, var(--color-success) 25%, transparent);
   }
 
   &.status-sale {
-    background: rgba(139, 92, 246, 0.1);
-    color: rgb(139, 92, 246);
-    border: 1px solid rgba(139, 92, 246, 0.2);
+    background: color-mix(in srgb, var(--accent-violet) 12%, transparent);
+    color: var(--accent-violet);
+    border: 1px solid color-mix(in srgb, var(--accent-violet) 25%, transparent);
   }
 }
 
 .hover-row:hover {
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: var(--color-muted);
+}
+
+.table-full-width {
+  width: 100%;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.bg-transparent {
+  background: transparent;
 }
 
 .empty-table {
@@ -42,7 +58,7 @@
   justify-content: center;
   gap: 8px;
   padding: 40px 16px;
-  color: var(--color-muted-foreground, #94a3b8);
+  color: var(--color-muted-foreground);
   text-align: center;
 }
 

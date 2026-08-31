@@ -73,14 +73,14 @@
   padding: var(--space-lg) var(--space-2xl);
   cursor: pointer;
   position: relative;
-  transition: all 0.2s;
+  transition: all 200ms ease;
   
   &:hover {
     background-color: var(--color-muted);
   }
   
   &.active {
-    background-color: rgba(3, 105, 161, 0.15); /* Accent tint */
+    background-color: color-mix(in srgb, var(--color-accent) 15%, transparent);
     
     .nav-text {
       color: var(--color-accent);
@@ -154,7 +154,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.2s;
+  transition: color 200ms ease;
   &:hover { color: var(--color-foreground); }
 }
 
@@ -236,7 +236,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 200ms ease, box-shadow 200ms ease;
   box-shadow: var(--shadow-md);
   
   &:hover {
@@ -287,7 +287,7 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 200ms ease;
   font-family: var(--font-sans);
   
   &:hover {

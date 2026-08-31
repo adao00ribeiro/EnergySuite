@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   height: 250px;
-  color: #64748b;
+  color: var(--color-muted-foreground);
   
   p { margin-top: 16px; font-size: 1.1rem; }
 }
@@ -16,7 +16,7 @@
 .opp-name {
   font-size: 1.2rem;
   font-weight: 500;
-  color: #0f172a;
+  color: var(--color-foreground);
   margin-bottom: 24px;
 }
 
@@ -28,15 +28,15 @@
 }
 
 .metric-card {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 16px;
 
   h3 {
     margin: 0 0 16px 0;
     font-size: 0.9rem;
-    color: #475569;
+    color: var(--color-muted-foreground);
     text-transform: uppercase;
     font-weight: 600;
   }
@@ -49,7 +49,7 @@
   margin-bottom: 12px;
 
   .arrow-icon {
-    color: #94a3b8;
+    color: var(--color-muted-foreground);
   }
 }
 
@@ -59,11 +59,11 @@
   
   span {
     font-size: 0.8rem;
-    color: #64748b;
+    color: var(--color-muted-foreground);
   }
   strong {
     font-size: 1.1rem;
-    color: #1e293b;
+    color: var(--color-foreground);
   }
 }
 
@@ -75,35 +75,41 @@
   display: inline-block;
   
   &.positive {
-    background: #dcfce3;
-    color: #10b981;
+    background: color-mix(in srgb, var(--color-success) 15%, transparent);
+    color: var(--color-success);
   }
   &.negative {
-    background: #fee2e2;
-    color: #ef4444;
+    background: color-mix(in srgb, var(--color-destructive) 15%, transparent);
+    color: var(--color-destructive);
   }
 }
 
 .copilot-container {
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
+  background: color-mix(in srgb, var(--color-success) 10%, var(--color-card));
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   overflow: hidden;
 }
 
+.submitting-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .copilot-header {
-  background: #dcfce3;
+  background: color-mix(in srgb, var(--color-success) 15%, var(--color-card));
   padding: 8px 16px;
   display: flex;
   align-items: center;
   gap: 8px;
   
   mat-icon {
-    color: #166534;
+    color: var(--color-success);
   }
   span {
     font-weight: 600;
-    color: #166534;
+    color: var(--color-success);
     flex-grow: 1;
   }
 }
@@ -116,18 +122,18 @@
   text-transform: uppercase;
 
   &.rec-approve {
-    background: #166534;
-    color: white;
+    background: var(--color-success);
+    color: var(--color-on-primary);
   }
   &.rec-warning {
-    background: #f59e0b;
-    color: white;
+    background: var(--color-warning);
+    color: var(--color-on-primary);
   }
 }
 
 .copilot-body {
   padding: 16px;
-  color: #14532d;
+  color: var(--color-foreground);
   font-size: 1rem;
   line-height: 1.5;
   p { margin: 0; }

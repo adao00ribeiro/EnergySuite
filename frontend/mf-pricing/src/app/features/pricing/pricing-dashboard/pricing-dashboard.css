@@ -19,23 +19,23 @@
 }
 
 .page-subtitle {
-  color: var(--text-secondary);
+  color: var(--color-muted-foreground);
   margin: 0;
   font-size: 15px;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-  color: white;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
   border: none;
-  padding: 12px 24px;
+  padding: var(--space-lg) var(--space-2xl);
   border-radius: 8px;
   font-family: var(--font-sans);
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
-  transition: opacity 0.2s, transform 0.1s;
-  box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
+  transition: all 200ms ease;
+  box-shadow: var(--shadow-md);
 }
 
 .btn-primary:hover {

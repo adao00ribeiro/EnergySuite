@@ -4,6 +4,7 @@ import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { HttpClient } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 import { environment } from '../../../../../environments/environment';
+import { token } from '../../../../core/theme-token';
 
 interface ForwardCurvePoint {
   month: string;
@@ -58,13 +59,13 @@ export class ForwardCurveChartComponent implements OnInit {
       tooltip: {
         trigger: 'axis',
         axisPointer: { type: 'cross' },
-        backgroundColor: 'rgba(30, 41, 59, 0.9)',
+        backgroundColor: token('--color-card'),
         borderColor: 'rgba(255,255,255,0.1)',
-        textStyle: { color: '#f8fafc' }
+        textStyle: { color: token('--color-card-foreground') }
       },
       legend: {
         data: ['Submercado SE/CO', 'Submercado S'],
-        textStyle: { color: '#94a3b8' },
+        textStyle: { color: token('--chart-tick') },
         top: 0
       },
       grid: {
@@ -74,14 +75,14 @@ export class ForwardCurveChartComponent implements OnInit {
         type: 'category',
         boundaryGap: false,
         data: months,
-        axisLine: { lineStyle: { color: '#334155' } },
-        axisLabel: { color: '#94a3b8' }
+        axisLine: { lineStyle: { color: token('--chart-grid') } },
+        axisLabel: { color: token('--chart-tick') }
       },
       yAxis: {
         type: 'value',
         axisLine: { show: false },
-        axisLabel: { color: '#94a3b8', formatter: 'R$ {value}' },
-        splitLine: { lineStyle: { color: 'rgba(255,255,255,0.05)' } }
+        axisLabel: { color: token('--chart-tick'), formatter: 'R$ {value}' },
+        splitLine: { lineStyle: { color: token('--chart-grid') } }
       },
       series: [
         {
@@ -90,7 +91,7 @@ export class ForwardCurveChartComponent implements OnInit {
           data: pricesSE,
           smooth: true,
           symbol: 'none',
-          lineStyle: { width: 3, color: '#06b6d4', shadowColor: 'rgba(6, 182, 212, 0.5)', shadowBlur: 10 },
+          lineStyle: { width: 3, color: token('--color-pricing'), shadowColor: 'rgba(6, 182, 212, 0.5)', shadowBlur: 10 },
           areaStyle: {
             color: {
               type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
@@ -104,7 +105,7 @@ export class ForwardCurveChartComponent implements OnInit {
           data: pricesS,
           smooth: true,
           symbol: 'none',
-          lineStyle: { width: 3, color: '#8b5cf6', shadowColor: 'rgba(139, 92, 246, 0.5)', shadowBlur: 10 },
+          lineStyle: { width: 3, color: token('--chart-purple'), shadowColor: 'rgba(139, 92, 246, 0.5)', shadowBlur: 10 },
         }
       ],
       animationDuration: 2000,

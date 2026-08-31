@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RiskMetricsComponent } from '../components/risk-metrics/risk-metrics';
+import { RiskMetricsComponent, RiskMetric } from '../components/risk-metrics/risk-metrics';
 import { ForwardCurveChartComponent } from '../components/forward-curve-chart/forward-curve-chart';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -26,6 +26,37 @@ export class PricingDashboardComponent {
   private prospectService = inject(ProspectService);
 
   currentDate = new Date();
+
+  riskMetrics: RiskMetric[] = [
+    {
+      title: 'Value at Risk (VaR)',
+      value: 'R$ 2.4M',
+      trend: 'up',
+      trendValue: '+12.3%',
+      description: 'VaR 95% da posição consolidada'
+    },
+    {
+      title: 'Exposição Financeira',
+      value: 'R$ 18.7M',
+      trend: 'down',
+      trendValue: '-5.1%',
+      description: 'Exposição total por contraparte'
+    },
+    {
+      title: 'Mark-to-Market',
+      value: 'R$ 3.2M',
+      trend: 'up',
+      trendValue: '+8.7%',
+      description: 'Resultado não realizado'
+    },
+    {
+      title: 'Volatilidade Implícita',
+      value: '24.6%',
+      trend: 'neutral',
+      trendValue: '0.2%',
+      description: 'Média ponderada dos contratos'
+    }
+  ];
 
   onNewSimulation() {
     const dialogRef = this.dialog.open(NewSimulationDialogComponent, {

@@ -12,7 +12,7 @@
 }
 .table-container {
   position: relative;
-  background: white;
+  background: var(--color-card);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -22,7 +22,7 @@ table {
 .loading-shade {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(255, 255, 255, 0.8);
+  background: color-mix(in srgb, var(--color-card) 80%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;

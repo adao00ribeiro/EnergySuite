@@ -1,27 +1,86 @@
 /* Design System - Portfolio (mf-portfolio) */
 :root {
-  /* Color Palette - Premium Dark Mode */
-  --color-background: #0f172a; /* Slate 900 */
-  --color-card: rgba(30, 41, 59, 0.7);
-  --color-muted: rgba(30, 41, 59, 0.9);
-  
-  --color-foreground: #f8fafc;
-  --color-muted-foreground: #94a3b8;
-  
-  /* Executive Accents - Portfolio Theme (Bright Blue & Rose) */
-  --accent-blue: #0ea5e9; /* Sky 500 - Physical Assets */
-  --accent-rose: #f43f5e; /* Rose 500 - MCP Exposure */
-  --accent-slate: #cbd5e1;
-  
-  /* Status Colors */
-  --status-success: #10b981;
-  --status-warning: #f59e0b;
-  --status-danger: #ef4444;
-  --status-info: #0ea5e9;
+  /* Core Design System - EnergySuite Enterprise UI (shared from app-shell) */
+  --color-primary: #0F172A;
+  --color-on-primary: #FFFFFF;
+  --color-secondary: #1E293B;
+  --color-on-secondary: #FFFFFF;
+  --color-accent: #0369A1;
+  --color-on-accent: #FFFFFF;
+
+  --color-background: #0F172A;
+  --color-foreground: #F8FAFC;
+  --color-card: #1E293B;
+  --color-card-foreground: #F8FAFC;
+
+  --color-muted: #334155;
+  --color-muted-foreground: #94A3B8;
+  --color-border: #334155;
+
+  --color-destructive: #DC2626;
+  --color-on-destructive: #FFFFFF;
+  --color-ring: #0F172A;
+
+  /* Semantic Status */
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-info: #0EA5E9;
 
   /* Typography */
-  --font-sans: 'Inter', sans-serif;
-  --font-display: 'Outfit', sans-serif;
+  --font-sans: 'Fira Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-display: 'Fira Code', monospace;
+
+  /* Spacing */
+  --space-xs: 2px;
+  --space-sm: 4px;
+  --space-md: 8px;
+  --space-lg: 12px;
+  --space-xl: 16px;
+  --space-2xl: 24px;
+  --space-3xl: 32px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+  --shadow-xl: 0 20px 25px rgba(0,0,0,0.15);
+
+  /* Module Specific Accents */
+  --color-hydrology: #00875a;
+  --color-pricing: #00b8d9;
+  --color-operations: #6554c0;
+  --color-portfolio: #0052cc;
+  --color-risk: #ff5630;
+
+  /* Chart / DataViz Palette */
+  --chart-bg: #1E293B;
+  --chart-grid: #334155;
+  --chart-tick: #94A3B8;
+  --chart-title: #F8FAFC;
+  --chart-white: #FFFFFF;
+  --chart-pale: #DCFCE7;
+  --chart-lime: #86EFAC;
+  --chart-green: #22C55E;
+  --chart-emerald: #16A34A;
+  --chart-yellow: #EAB308;
+  --chart-orange: #F59E0B;
+  --chart-red: #EF4444;
+  --chart-rose: #F43F5E;
+  --chart-maroon: #B91C1C;
+  --chart-violet: #D946EF;
+  --chart-purple: #8B5CF6;
+  --chart-magenta: #701A75;
+  --chart-navy: #1E40AF;
+  --chart-slate: #64748B;
+  --chart-indigo: #3F51B5;
+  --chart-cyan: #06B6D4;
+  --chart-mgreen: #4CAF50;
+  --chart-mred: #F44336;
+
+  /* Executive Accents - Portfolio Theme (data accents, Regra 2) */
+  --accent-blue: #0ea5e9;
+  --accent-rose: #f43f5e;
+  --accent-slate: #cbd5e1;
 }
 
 body {
@@ -33,9 +92,9 @@ body {
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   /* Portfolio subtle background */
-  background-image: 
-    radial-gradient(circle at 15% 30%, rgba(14, 165, 233, 0.1), transparent 45%),
-    radial-gradient(circle at 85% 70%, rgba(244, 63, 94, 0.08), transparent 40%);
+  background-image:
+    radial-gradient(circle at 15% 30%, color-mix(in srgb, var(--color-accent) 10%, transparent), transparent 45%),
+    radial-gradient(circle at 85% 70%, color-mix(in srgb, var(--accent-rose) 8%, transparent), transparent 40%);
 }
 
 /* Glassmorphism Utilities */
@@ -43,42 +102,24 @@ body {
   background: var(--color-card);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
-  transition: all 0.3s ease;
+  box-shadow: var(--shadow-lg);
+  transition: all 200ms ease;
 }
 
 .glass-panel:hover {
   background: var(--color-muted);
-  border-color: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-xl);
 }
 
-/* Micro-animations */
-.animate-fade-in {
-  animation: fadeIn 0.4s ease-out forwards;
-}
-
-.animate-slide-up {
-  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { transform: translateY(15px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
+/* Micro-animations (single source in app-shell) */
 /* Typography Helpers */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   margin-top: 0;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .text-gradient {
@@ -88,14 +129,185 @@ h1, h2, h3, h4, h5, h6 {
   background-clip: text;
 }
 
-/* Material Table Overrides for Dark/Light themes */
-.mat-mdc-table, .mat-table {
-  background-color: transparent !important;
+/* ==========================================================================
+   ENTERPRISE MATERIAL DIALOGS & FORM FIELDS SYSTEM
+   ========================================================================== */
+
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: 16px !important;
+  padding: 0 !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35) !important;
+  overflow: hidden !important;
 }
-.mat-mdc-header-cell, .mat-mdc-cell, .mat-header-cell, .mat-cell {
-  color: var(--color-foreground) !important;
-  border-bottom-color: rgba(255,255,255,0.1) !important;
+
+/* Light Theme Dialog Panel */
+body.light-theme .mat-mdc-dialog-container .mdc-dialog__surface {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #e2e8f0 !important;
 }
-body.light-theme .mat-mdc-header-cell, body.light-theme .mat-mdc-cell, body.light-theme .mat-header-cell, body.light-theme .mat-cell {
-  border-bottom-color: rgba(0,0,0,0.1) !important;
+
+/* Dark Theme & Glass Panel Dialog */
+body:not(.light-theme) .mat-mdc-dialog-container .mdc-dialog__surface,
+.glass-panel-dialog .mdc-dialog__surface {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Dialog Title Styling */
+h2[mat-dialog-title], .mat-mdc-dialog-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 20px 24px 16px 24px !important;
+  margin: 0 !important;
+  font-size: 1.2rem !important;
+  font-weight: 600 !important;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
+}
+
+body:not(.light-theme) h2[mat-dialog-title],
+.glass-panel-dialog h2[mat-dialog-title] {
+  border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+  color: #f8fafc !important;
+}
+
+/* Dialog Content Padding */
+.mat-mdc-dialog-content {
+  padding: 20px 24px !important;
+  max-height: 75vh !important;
+}
+
+/* Dialog Action Bar */
+.mat-mdc-dialog-actions {
+  padding: 16px 24px 20px 24px !important;
+  margin: 0 !important;
+  gap: 12px !important;
+  border-top: 1px solid rgba(226, 232, 240, 0.8) !important;
+}
+
+body:not(.light-theme) .mat-mdc-dialog-actions,
+.glass-panel-dialog .mat-mdc-dialog-actions {
+  border-top-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.mat-mdc-dialog-actions button[mat-flat-button] {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  padding: 0 20px !important;
+  height: 42px !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
+  transition: all 0.2s ease !important;
+}
+
+.mat-mdc-dialog-actions button[mat-flat-button]:hover:not([disabled]) {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4) !important;
+}
+
+.mat-mdc-dialog-actions button[mat-button] {
+  color: #64748b !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  height: 42px !important;
+}
+
+body:not(.light-theme) .mat-mdc-dialog-actions button[mat-button],
+.glass-panel-dialog .mat-mdc-dialog-actions button[mat-button] {
+  color: #94a3b8 !important;
+}
+
+/* MDC Outlined Form Fields Styling */
+.mat-mdc-form-field-has-icon-suffix .mat-mdc-form-field-icon-suffix {
+  align-items: center;
+  display: flex;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-form-field-subscript-wrapper {
+  font-size: 0.75rem !important;
+  margin-top: 4px !important;
+}
+
+.mat-mdc-text-field-wrapper.mdc-text-field--outlined {
+  border-radius: 8px !important;
+}
+
+/* Dark Mode Form Fields */
+body:not(.light-theme) .mat-mdc-form-field,
+.glass-panel-dialog .mat-mdc-form-field {
+  --mdc-outlined-text-field-outline-color: rgba(255, 255, 255, 0.18) !important;
+  --mdc-outlined-text-field-hover-outline-color: #60a5fa !important;
+  --mdc-outlined-text-field-focus-outline-color: #3b82f6 !important;
+  --mdc-outlined-text-field-label-text-color: #94a3b8 !important;
+  --mdc-outlined-text-field-hover-label-text-color: #cbd5e1 !important;
+  --mdc-outlined-text-field-focus-label-text-color: #60a5fa !important;
+  --mdc-outlined-text-field-input-text-color: #f8fafc !important;
+  --mat-select-enabled-trigger-text-color: #f8fafc !important;
+  --mat-select-arrow-color: #94a3b8 !important;
+  --mat-datepicker-toggle-icon-color: #94a3b8 !important;
+}
+
+/* Light Mode Form Fields */
+body.light-theme .mat-mdc-form-field {
+  --mdc-outlined-text-field-outline-color: #cbd5e1 !important;
+  --mdc-outlined-text-field-hover-outline-color: #3b82f6 !important;
+  --mdc-outlined-text-field-focus-outline-color: #2563eb !important;
+  --mdc-outlined-text-field-label-text-color: #64748b !important;
+  --mdc-outlined-text-field-hover-label-text-color: #334155 !important;
+  --mdc-outlined-text-field-focus-label-text-color: #2563eb !important;
+  --mdc-outlined-text-field-input-text-color: #0f172a !important;
+  --mat-select-enabled-trigger-text-color: #0f172a !important;
+  --mat-select-arrow-color: #64748b !important;
+  --mat-datepicker-toggle-icon-color: #64748b !important;
+}
+
+/* Dropdown Options (Overlay Panel) Styling */
+.cdk-overlay-container .mat-mdc-select-panel {
+  border-radius: 10px !important;
+  padding: 6px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4) !important;
+}
+
+body:not(.light-theme) .cdk-overlay-container .mat-mdc-select-panel {
+  background: #1e293b !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+body.light-theme .cdk-overlay-container .mat-mdc-select-panel {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+body:not(.light-theme) .mat-mdc-option {
+  color: #f8fafc !important;
+  border-radius: 6px !important;
+}
+
+body:not(.light-theme) .mat-mdc-option:hover:not(.mdc-list-item--disabled),
+body:not(.light-theme) .mat-mdc-option.mdc-list-item--selected {
+  background: rgba(59, 130, 246, 0.15) !important;
+  color: #60a5fa !important;
+}
+
+body.light-theme .mat-mdc-option {
+  color: #0f172a !important;
+  border-radius: 6px !important;
+}
+
+body.light-theme .mat-mdc-option:hover:not(.mdc-list-item--disabled),
+body.light-theme .mat-mdc-option.mdc-list-item--selected {
+  background: #eff6ff !important;
+  color: #2563eb !important;
+}
+
+.warn-snackbar {
+  --mdc-snackbar-container-color: #DC2626 !important;
+  --mdc-snackbar-supporting-text-color: #FFFFFF !important;
 }

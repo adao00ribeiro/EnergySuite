@@ -4,6 +4,7 @@
   flex-direction: column;
   gap: 16px;
   width: 100%;
+  animation-delay: 300ms;
 }
 
 .chart-header {
@@ -13,7 +14,7 @@
 }
 
 .chart-title {
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-size: 18px;
   margin: 0;
   font-weight: 500;
@@ -21,21 +22,21 @@
 
 .btn-icon {
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  color: var(--text-secondary);
+  color: var(--color-muted-foreground);
   width: 36px;
   height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 200ms ease;
 }
 
 .btn-icon:hover {
-  background: rgba(255,255,255,0.05);
-  color: var(--text-primary);
+  background: var(--color-muted);
+  color: var(--color-foreground);
 }
 
 .chart-wrapper {
@@ -60,14 +61,14 @@
   justify-content: center;
   gap: 8px;
   text-align: center;
-  color: var(--text-secondary);
+  color: var(--color-muted-foreground);
 }
 
 .chart-state mat-icon {
   font-size: 40px;
   width: 40px;
   height: 40px;
-  color: var(--text-secondary);
+  color: var(--color-muted-foreground);
 }
 
 .chart-state p {
@@ -77,5 +78,5 @@
 }
 
 .error-state mat-icon {
-  color: var(--status-danger);
+  color: var(--color-destructive);
 }

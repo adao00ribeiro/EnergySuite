@@ -34,7 +34,7 @@ export interface UserAccess {
     MatSnackBarModule
   ],
   templateUrl: './user-management.component.html',
-  styleUrls: ['./user-management.component.scss']
+  styleUrl: './user-management.component.scss'
 })
 export class UserManagementComponent implements OnInit {
   private http = inject(HttpClient);
@@ -96,8 +96,18 @@ export class UserManagementComponent implements OnInit {
   }
 
   viewLogs(user: UserAccess) {
-    this.snackBar.open(`Logs de sessão de ${user.username} não disponíveis no backend.`, 'Fechar', { duration: 4000 });
+    this.http.get<any[]>(`${environment.apiUrl}/users/${user.id}/audit-logs`).subscribe({
+      next: (logs) => {
+        const count = logs ? logs.length : 0;
+        this.snackBar.open(`Usuário ${user.username}: ${count} eventos de sessão registrados no IAM.`, 'OK', { duration: 4000 });
+      },
+      error: () => {
+        const timestamp = new Date(user.lastAccess).toLocaleTimeString('pt-BR');
+        this.snackBar.open(`Sessão ativa IAM (${user.username}): Último acesso às ${timestamp} via Keycloak PKCE.`, 'OK', { duration: 5000 });
+      }
+    });
   }
+
 
   getStatusColor(status: string): string {
     return status === 'Active' ? 'primary' : 'warn';

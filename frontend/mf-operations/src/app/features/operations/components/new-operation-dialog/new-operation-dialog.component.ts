@@ -6,12 +6,16 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { CompanyService, Company } from '../../../commercial-registry/services/company.service';
 import { ContractService, Contract } from '../../services/contract.service';
 
 @Component({
   selector: 'app-new-operation-dialog',
   standalone: true,
+  providers: [provideNativeDateAdapter()],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -19,7 +23,9 @@ import { ContractService, Contract } from '../../services/contract.service';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatButtonModule
+    MatButtonModule,
+    MatIconModule,
+    MatDatepickerModule
   ],
   templateUrl: './new-operation-dialog.component.html',
   styleUrl: './new-operation-dialog.component.css'

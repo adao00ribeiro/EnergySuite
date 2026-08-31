@@ -1,10 +1,10 @@
 .dashboard-container {
   padding: 24px;
-  color: #e2e8f0;
+  color: var(--color-foreground);
   display: flex;
   flex-direction: column;
   gap: 24px;
-  background: #0f172a;
+  background: var(--color-background);
   min-height: 100vh;
 
   .dashboard-header {
@@ -17,13 +17,13 @@
       font-size: 1.8rem;
       font-weight: 700;
       margin: 0;
-      background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+      background: linear-gradient(135deg, var(--color-info), var(--color-pricing));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .subtitle {
-      color: #94a3b8;
+      color: var(--color-muted-foreground);
       margin: 4px 0 0 0;
       font-size: 0.95rem;
     }
@@ -39,18 +39,18 @@
         font-size: 0.85rem;
         padding: 6px 14px;
         border-radius: 20px;
-        background: rgba(30, 41, 59, 0.7);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: var(--color-card);
+        border: 1px solid var(--color-border);
         backdrop-filter: blur(10px);
 
         &.online {
-          color: #4ade80;
-          border-color: rgba(74, 222, 128, 0.3);
+          color: var(--color-success);
+          border-color: color-mix(in srgb, var(--color-success) 30%, transparent);
         }
 
         &.ml-badge {
-          color: #38bdf8;
-          border-color: rgba(56, 189, 248, 0.3);
+          color: var(--color-info);
+          border-color: color-mix(in srgb, var(--color-info) 30%, transparent);
         }
 
         .pulse-icon {
@@ -61,11 +61,11 @@
   }
 
   .glass-card {
-    background: rgba(30, 41, 59, 0.6);
+    background: var(--color-card);
     backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
   }
 
   .metrics-grid {
@@ -78,11 +78,11 @@
       display: flex;
       align-items: center;
       gap: 16px;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: transform 200ms ease, box-shadow 200ms ease;
 
       &:hover {
         transform: translateY(-4px);
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+        box-shadow: var(--shadow-xl);
       }
 
       .metric-icon {
@@ -97,14 +97,14 @@
           font-size: 28px;
           width: 28px;
           height: 28px;
-          color: #ffffff;
+          color: var(--color-on-primary);
         }
       }
 
-      .blue-gradient { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
-      .orange-gradient { background: linear-gradient(135deg, #f97316, #c2410c); }
-      .purple-gradient { background: linear-gradient(135deg, #a855f7, #6b21a8); }
-      .red-gradient { background: linear-gradient(135deg, #ef4444, #991b1b); }
+      .blue-gradient { background: linear-gradient(135deg, var(--color-info), color-mix(in srgb, var(--color-info) 40%, var(--color-background))); }
+      .orange-gradient { background: linear-gradient(135deg, var(--color-warning), color-mix(in srgb, var(--color-warning) 40%, var(--color-background))); }
+      .purple-gradient { background: linear-gradient(135deg, var(--color-operations), color-mix(in srgb, var(--color-operations) 40%, var(--color-background))); }
+      .red-gradient { background: linear-gradient(135deg, var(--color-destructive), color-mix(in srgb, var(--color-destructive) 40%, var(--color-background))); }
 
       .metric-content {
         display: flex;
@@ -112,14 +112,14 @@
 
         .metric-label {
           font-size: 0.85rem;
-          color: #94a3b8;
+          color: var(--color-muted-foreground);
         }
 
         .metric-value {
           font-size: 1.35rem;
           font-weight: 700;
           margin: 4px 0;
-          color: #f8fafc;
+          color: var(--color-foreground);
         }
 
         .metric-sub {
@@ -158,14 +158,14 @@
         gap: 8px;
 
         .header-icon {
-          color: #38bdf8;
+          color: var(--color-info);
         }
       }
 
       .card-subtitle {
         margin: 2px 0 0 0;
         font-size: 0.85rem;
-        color: #94a3b8;
+        color: var(--color-muted-foreground);
       }
 
       .submarket-selector {
@@ -174,12 +174,12 @@
 
         button {
           border-radius: 8px;
-          background: rgba(51, 65, 85, 0.6);
-          color: #cbd5e1;
+          background: var(--color-muted);
+          color: var(--color-muted-foreground);
 
           &.mat-primary {
-            background: #3b82f6;
-            color: #ffffff;
+            background: var(--color-accent);
+            color: var(--color-on-accent);
           }
         }
       }
@@ -221,9 +221,9 @@
       .live-dot {
         width: 10px;
         height: 10px;
-        background: #22c55e;
+        background: var(--color-success);
         border-radius: 50%;
-        box-shadow: 0 0 10px #22c55e;
+        box-shadow: 0 0 10px var(--color-success);
         animation: pulse 1.5s infinite;
       }
     }
@@ -240,9 +240,9 @@
         align-items: center;
         gap: 12px;
         padding: 10px 14px;
-        background: rgba(51, 65, 85, 0.3);
-        border-radius: 10px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        background: var(--color-muted);
+        border-radius: 8px;
+        border: 1px solid var(--color-border);
 
         .stream-icon {
           width: 36px;
@@ -251,8 +251,8 @@
           display: flex;
           align-items: center;
           justify-content: center;
-          background: rgba(59, 130, 246, 0.2);
-          color: #3b82f6;
+          background: color-mix(in srgb, var(--color-info) 20%, transparent);
+          color: var(--color-info);
         }
 
         .stream-details {
@@ -264,14 +264,14 @@
             display: flex;
             justify-content: space-between;
             font-size: 0.85rem;
-            color: #f1f5f9;
+            color: var(--color-foreground);
 
             .stream-category {
               font-size: 0.72rem;
               padding: 2px 6px;
               border-radius: 4px;
-              background: rgba(34, 197, 94, 0.2);
-              color: #4ade80;
+              background: color-mix(in srgb, var(--color-success) 20%, transparent);
+              color: var(--color-success);
             }
           }
 
@@ -279,7 +279,7 @@
             display: flex;
             justify-content: space-between;
             font-size: 0.78rem;
-            color: #94a3b8;
+            color: var(--color-muted-foreground);
             margin-top: 2px;
           }
         }
@@ -291,7 +291,7 @@
         align-items: center;
         justify-content: center;
         height: 200px;
-        color: #64748b;
+        color: var(--color-muted-foreground);
         text-align: center;
 
         .large-icon {

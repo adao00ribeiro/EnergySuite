@@ -1,15 +1,18 @@
 using System;
-using System.Threading;
-using System.Threading.Tasks;
-using EtrmService.Application.Interfaces;
-using EtrmService.Domain.Entities;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using EtrmService.Application.Interfaces;
+using EtrmService.Application.Settings.Commands;
+using EtrmService.Application.Settings.DTOs;
+using EtrmService.Application.Settings.Queries;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+
 
 namespace EtrmService.API.Controllers
 {
@@ -19,14 +22,18 @@ namespace EtrmService.API.Controllers
     public class SettingsController : ControllerBase
     {
         private readonly ILogger<SettingsController> _logger;
-        private readonly IEtrmDbContext _context;
+        private readonly IMediator _mediator;
         private readonly ICurrentUserService _currentUser;
         private readonly IConfiguration _configuration;
 
-        public SettingsController(ILogger<SettingsController> logger, IEtrmDbContext context, ICurrentUserService currentUser, IConfiguration configuration)
+        public SettingsController(
+            ILogger<SettingsController> logger,
+            IMediator mediator,
+            ICurrentUserService currentUser,
+            IConfiguration configuration)
         {
             _logger = logger;
-            _context = context;
+            _mediator = mediator;
             _currentUser = currentUser;
             _configuration = configuration;
         }
@@ -34,30 +41,16 @@ namespace EtrmService.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSettings(CancellationToken cancellationToken)
         {
-            var settings = await _context.AppSettings
-                .AsNoTracking()
-                .Where(s => s.TenantId == _currentUser.TenantId)
-                .ToListAsync(cancellationToken);
-
-            return Ok(new
-            {
-                theme = GetValue(settings, "theme"),
-                language = GetValue(settings, "language"),
-                timezone = GetValue(settings, "timezone")
-            });
+            var settings = await _mediator.Send(new GetSettingsQuery(_currentUser.TenantId), cancellationToken);
+            return Ok(settings);
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateSettings([FromBody] SettingsDto settings, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Updating settings for tenant {TenantId}: {Settings}", _currentUser.TenantId, settings);
-
-            await UpsertAsync("theme", settings.Theme, cancellationToken);
-            await UpsertAsync("language", settings.Language, cancellationToken);
-            await UpsertAsync("timezone", settings.Timezone, cancellationToken);
-
-            await _context.SaveChangesAsync(cancellationToken);
-            return Ok();
+            var result = await _mediator.Send(new UpdateSettingsCommand(_currentUser.TenantId, settings), cancellationToken);
+            return Ok(result);
         }
 
         [HttpPost("m2m-tokens")]
@@ -104,29 +97,5 @@ namespace EtrmService.API.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
-        private async Task UpsertAsync(string key, string? value, CancellationToken cancellationToken)
-        {
-            if (string.IsNullOrWhiteSpace(value))
-                return;
-
-            var existing = await _context.AppSettings
-                .FirstOrDefaultAsync(s => s.TenantId == _currentUser.TenantId && s.Key == key, cancellationToken);
-
-            if (existing == null)
-                _context.AppSettings.Add(new AppSetting(_currentUser.TenantId, key, value));
-            else
-                existing.UpdateValue(value);
-        }
-
-        private static string GetValue(IReadOnlyCollection<AppSetting> settings, string key)
-            => settings.FirstOrDefault(s => s.Key == key)?.Value ?? string.Empty;
-    }
-
-    public class SettingsDto
-    {
-        public string? Theme { get; set; }
-        public string? Language { get; set; }
-        public string? Timezone { get; set; }
     }
 }

@@ -55,15 +55,15 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
       border-radius: 8px;
       overflow: hidden;
       margin-top: 16px;
-      background: white;
+      background: var(--color-card);
     }
     table {
       width: 100%;
     }
-    .text-blue { color: #3b82f6; }
-    .text-orange { color: #f97316; }
-    .text-red { color: #ef4444; }
-    .text-green { color: #10b981; }
+    .text-blue { color: var(--color-info); }
+    .text-orange { color: var(--color-warning); }
+    .text-red { color: var(--color-destructive); }
+    .text-green { color: var(--color-success); }
   `]
 })
 export class PositionGridComponent implements OnChanges {

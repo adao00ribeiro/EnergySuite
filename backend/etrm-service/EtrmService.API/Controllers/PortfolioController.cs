@@ -20,19 +20,17 @@ public class PortfolioController : ApiControllerBase
 {
     private readonly IMediator _mediator;
     private readonly ICurrentUserService _currentUser;
-    private readonly IEtrmDbContext _context;
 
-    public PortfolioController(IMediator mediator, ICurrentUserService currentUser, IEtrmDbContext context)
+    public PortfolioController(IMediator mediator, ICurrentUserService currentUser)
     {
         _mediator = mediator;
         _currentUser = currentUser;
-        _context = context;
     }
 
     [HttpGet("position")]
     public async Task<IActionResult> GetPosition([FromQuery] Guid? portfolioId, [FromQuery] int? year)
     {
-        var resolvedPortfolioId = await ResolvePortfolioIdAsync(portfolioId);
+        var resolvedPortfolioId = await _mediator.Send(new GetDefaultPortfolioIdQuery(portfolioId, _currentUser.TenantId));
 
         var query = new GetPortfolioPositionQuery(
             resolvedPortfolioId,
@@ -70,16 +68,5 @@ public class PortfolioController : ApiControllerBase
             return BadRequest(result);
 
         return Ok(result);
-    }
-
-    private async Task<Guid> ResolvePortfolioIdAsync(Guid? portfolioId)
-    {
-        if (portfolioId.HasValue && portfolioId.Value != Guid.Empty)
-            return portfolioId.Value;
-
-        return await _context.Portfolios
-            .Where(p => p.TenantId == _currentUser.TenantId)
-            .Select(p => p.Id)
-            .FirstOrDefaultAsync();
     }
 }

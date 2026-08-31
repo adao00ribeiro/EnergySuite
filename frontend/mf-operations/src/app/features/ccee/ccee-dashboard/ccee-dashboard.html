@@ -11,7 +11,7 @@
     </div>
   </div>
 
-  <div class="action-cards animate-slide-up" style="animation-delay: 0.1s">
+  <div class="action-cards animate-slide-up">
     <!-- CCEAL Export Card -->
     <div class="glass-panel action-card">
       <div class="card-header">
@@ -65,7 +65,7 @@
         </div>
       </div>
       <div class="card-actions end-align">
-        <input type="file" #fileInput (change)="onFileSelected($event)" accept=".csv" style="display:none">
+        <input type="file" #fileInput (change)="onFileSelected($event)" accept=".csv" class="hidden-file-input">
         <button mat-flat-button class="glow-button accent-glow" (click)="fileInput.click()" [disabled]="isUploading()">
           <mat-icon *ngIf="isUploading()">hourglass_empty</mat-icon>
           <mat-icon *ngIf="!isUploading()">attach_file</mat-icon>
@@ -75,7 +75,7 @@
     </div>
   </div>
 
-  <div class="comparison-section animate-slide-up" style="animation-delay: 0.2s">
+  <div class="comparison-section animate-slide-up">
     <app-ccee-comparison-list></app-ccee-comparison-list>
   </div>
 </div>

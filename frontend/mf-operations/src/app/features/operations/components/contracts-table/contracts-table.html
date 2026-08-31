@@ -1,4 +1,4 @@
-<div class="glass-panel table-container animate-slide-up" style="animation-delay: 0.2s">
+<div class="glass-panel table-container animate-slide-up">
   <div class="table-header">
     <h3 class="table-title">Contratos Recentes</h3>
     <div class="table-actions">
@@ -38,7 +38,7 @@
           </td>
         </tr>
         <tr *ngIf="contracts.length === 0">
-          <td colspan="6" class="text-center" style="padding: 24px; color: var(--color-muted-foreground);">
+          <td colspan="6" class="text-center" class="empty-cell">
             Nenhum contrato encontrado.
           </td>
         </tr>

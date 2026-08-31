@@ -8,6 +8,6 @@ import { MatTabsModule } from '@angular/material/tabs';
   standalone: true,
   imports: [CommonModule, RouterModule, MatTabsModule],
   templateUrl: './layout.component.html',
-  styleUrls: ['./layout.component.scss']
+  styleUrl: './layout.component.scss'
 })
 export class LayoutComponent {}

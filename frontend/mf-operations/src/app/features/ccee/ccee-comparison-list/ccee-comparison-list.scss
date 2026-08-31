@@ -16,21 +16,21 @@
     }
     
     button {
-      background-color: rgba(79, 70, 229, 0.15);
+      background-color: color-mix(in srgb, var(--accent-indigo) 15%, transparent);
       color: var(--color-operations);
-      border: 1px solid rgba(79, 70, 229, 0.3);
+      border: 1px solid color-mix(in srgb, var(--accent-indigo) 30%, transparent);
       border-radius: 8px;
       padding: 0 20px;
       height: 40px;
       display: flex;
       align-items: center;
       gap: 8px;
-      transition: all 0.2s;
+      transition: all 200ms ease;
       
       &:not([disabled]):hover {
-        background-color: rgba(79, 70, 229, 0.25);
-        border-color: rgba(79, 70, 229, 0.5);
-        box-shadow: 0 0 15px rgba(79, 70, 229, 0.2);
+        background-color: color-mix(in srgb, var(--accent-indigo) 25%, transparent);
+        border-color: color-mix(in srgb, var(--accent-indigo) 50%, transparent);
+        box-shadow: 0 0 15px color-mix(in srgb, var(--accent-indigo) 20%, transparent);
         color: var(--color-foreground);
       }
       
@@ -46,32 +46,32 @@
     max-height: 600px;
     overflow: auto;
     border-radius: 12px;
-    background-color: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background-color: var(--color-muted);
+    border: 1px solid var(--color-border);
 
     table {
       width: 100%;
       background: transparent;
       
       th.mat-header-cell {
-        background-color: rgba(255, 255, 255, 0.02);
+        background-color: var(--color-muted);
         color: var(--color-muted-foreground);
         font-weight: 600;
         font-size: 13px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid var(--color-border);
       }
       
       td.mat-cell {
         color: var(--color-foreground);
         font-size: 14px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid var(--color-border);
       }
       
       tr.mat-row {
-        transition: background-color 0.2s;
+        transition: background-color 200ms ease;
         
         &:hover {
-          background-color: rgba(255, 255, 255, 0.02);
+          background-color: var(--color-muted);
         }
       }
     }
@@ -82,7 +82,7 @@
       left: 0;
       bottom: 0;
       right: 0;
-      background: rgba(0, 0, 0, 0.5);
+      background: var(--color-card);
       z-index: 1;
       display: flex;
       align-items: center;
@@ -96,16 +96,5 @@
       color: var(--color-risk);
       font-weight: 600;
     }
-  }
-}
-
-::ng-deep .mat-mdc-paginator {
-  background: transparent !important;
-  color: var(--color-muted-foreground) !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  
-  .mat-mdc-select-value,
-  .mat-mdc-paginator-icon {
-    color: var(--color-foreground) !important;
   }
 }

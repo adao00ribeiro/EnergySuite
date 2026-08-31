@@ -19,20 +19,20 @@
   font-weight: 500;
   
   &.status-active {
-    background: rgba(16, 185, 129, 0.1);
-    color: rgb(16, 185, 129);
-    border: 1px solid rgba(16, 185, 129, 0.2);
+    background: color-mix(in srgb, var(--color-success) 12%, transparent);
+    color: var(--color-success);
+    border: 1px solid color-mix(in srgb, var(--color-success) 25%, transparent);
   }
 
   &.status-inactive {
-    background: rgba(107, 114, 128, 0.1);
-    color: rgb(107, 114, 128);
-    border: 1px solid rgba(107, 114, 128, 0.2);
+    background: color-mix(in srgb, var(--color-muted-foreground) 12%, transparent);
+    color: var(--color-muted-foreground);
+    border: 1px solid color-mix(in srgb, var(--color-muted-foreground) 25%, transparent);
   }
 }
 
 .hover-row:hover {
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: var(--color-muted);
 }
 
 .empty-table {
@@ -42,7 +42,7 @@
   justify-content: center;
   gap: 8px;
   padding: 40px 16px;
-  color: var(--color-muted-foreground, #94a3b8);
+  color: var(--color-muted-foreground);
   text-align: center;
 }
 

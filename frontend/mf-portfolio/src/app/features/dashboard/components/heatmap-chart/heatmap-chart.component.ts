@@ -4,6 +4,7 @@ import { NgxEchartsModule, provideEchartsCore } from 'ngx-echarts';
 import * as echarts from 'echarts';
 import type { EChartsOption } from 'echarts';
 import { MatCardModule } from '@angular/material/card';
+import { token } from '../../../../core/theme-token';
 
 @Component({
   selector: 'app-heatmap-chart',
@@ -83,7 +84,7 @@ export class HeatmapChartComponent implements OnChanges {
         left: 'center',
         bottom: '5%',
         inRange: {
-          color: ['#ef4444', '#f8fafc', '#3b82f6'] // Red (Deficit), White/Gray (Neutral), Blue (Surplus)
+          color: [token('--color-destructive'), token('--color-card-foreground'), token('--color-info')] // Red (Deficit), White/Gray (Neutral), Blue (Surplus)
         }
       },
       series: [

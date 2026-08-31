@@ -13,6 +13,7 @@ import { HttpClient } from '@angular/common/http';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
 import { environment } from '../../../../../environments/environment';
+import { token } from '../../../../core/theme-token';
 
 export interface EnaResult {
   targetDate: string;
@@ -37,7 +38,7 @@ export interface EnaResult {
     NgxEchartsModule
   ],
   templateUrl: './ena-analytics.html',
-  styleUrls: ['./ena-analytics.scss']
+  styleUrl: './ena-analytics.scss'
 })
 export class EnaAnalyticsComponent implements OnInit {
   private http = inject(HttpClient);
@@ -101,7 +102,7 @@ export class EnaAnalyticsComponent implements OnInit {
       legend: {
         data: ['ENA'],
         bottom: 0,
-        textStyle: { color: '#64748B' }
+        textStyle: { color: token('--chart-tick') }
       },
       grid: {
         left: '5%',
@@ -113,21 +114,21 @@ export class EnaAnalyticsComponent implements OnInit {
       xAxis: {
         type: 'category',
         data: labels,
-        axisLine: { lineStyle: { color: '#CBD5E1' } },
-        axisLabel: { color: '#64748B' }
+        axisLine: { lineStyle: { color: token('--chart-grid') } },
+        axisLabel: { color: token('--chart-tick') }
       },
       yAxis: {
         type: 'value',
         min: 0,
-        splitLine: { lineStyle: { color: '#F1F5F9', type: 'solid' } },
-        axisLabel: { color: '#64748B' }
+        splitLine: { lineStyle: { color: token('--chart-grid'), type: 'solid' } },
+        axisLabel: { color: token('--chart-tick') }
       },
       series: [
         {
           name: 'ENA',
           type: 'line',
           data: values,
-          itemStyle: { color: '#0369A1' },
+          itemStyle: { color: token('--color-accent') },
           lineStyle: { width: 3 },
           areaStyle: {
             color: {

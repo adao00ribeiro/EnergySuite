@@ -18,7 +18,7 @@ export interface SimulationData {
   standalone: true,
   imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatSnackBarModule],
   templateUrl: './simulation-dialog.component.html',
-  styleUrls: ['./simulation-dialog.component.scss']
+  styleUrl: './simulation-dialog.component.scss'
 })
 export class SimulationDialogComponent implements OnInit {
   isLoading = true;

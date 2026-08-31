@@ -1,12 +1,12 @@
-import { Component, OnInit, inject, computed } from '@angular/core';
+import { Component, OnInit, AfterViewInit, inject, effect, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { OperationsService } from '../services/operations.service';
+import { OperationsService, OperationListItem } from '../services/operations.service';
 
 @Component({
   selector: 'app-approval-center',
@@ -15,15 +15,28 @@ import { OperationsService } from '../services/operations.service';
   templateUrl: './approval-center.html',
   styleUrl: './approval-center.scss'
 })
-export class ApprovalCenterComponent implements OnInit {
+export class ApprovalCenterComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['ticketRef', 'type', 'counterparty', 'details', 'actions'];
 
   private operationsService = inject(OperationsService);
   private snackBar = inject(MatSnackBar);
 
-  pendingItems = computed(() =>
-    this.operationsService.operations().filter(op => op.state === 'PendingApproval')
-  );
+  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  dataSource = new MatTableDataSource<OperationListItem>([]);
+
+  constructor() {
+    effect(() => {
+      const pending = this.operationsService.operations().filter(op => op.state === 'PendingApproval');
+      this.dataSource.data = pending;
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+  }
 
   ngOnInit(): void {
     this.operationsService.loadOperations();

@@ -7,7 +7,7 @@
     
     <div class="forecast-evolution">
       <span class="evolution-label">Evolução da Previsão:</span>
-      <mat-button-toggle-group [(ngModel)]="selectedOffset" (change)="selectedOffset.set($event.value)" aria-label="Evolução da Previsão">
+      <mat-button-toggle-group [ngModel]="selectedOffset()" (ngModelChange)="selectedOffset.set($event)" aria-label="Evolução da Previsão">
         <mat-button-toggle [value]="0">Hoje</mat-button-toggle>
         <mat-button-toggle [value]="-1">-1 Dia</mat-button-toggle>
         <mat-button-toggle [value]="-2">-2 Dias</mat-button-toggle>

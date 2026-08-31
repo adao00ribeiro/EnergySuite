@@ -17,7 +17,7 @@
   position: absolute;
   top: 0; left: 0; right: 0; height: 2px;
   background: transparent;
-  transition: background 0.3s;
+  transition: background 200ms ease;
 }
 .action-card:hover {
   transform: translateY(-2px);
@@ -34,9 +34,9 @@
   justify-content: center;
   flex-shrink: 0;
 }
-.icon-wrapper.indigo { background: rgba(79, 70, 229, 0.15); color: var(--accent-indigo); }
-.icon-wrapper.violet { background: rgba(124, 58, 237, 0.15); color: var(--accent-violet); }
-.icon-wrapper.amber { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); }
+.icon-wrapper.indigo { background: color-mix(in srgb, var(--accent-indigo) 15%, transparent); color: var(--accent-indigo); }
+.icon-wrapper.violet { background: color-mix(in srgb, var(--accent-violet) 15%, transparent); color: var(--accent-violet); }
+.icon-wrapper.amber { background: color-mix(in srgb, var(--accent-amber) 15%, transparent); color: var(--accent-amber); }
 
 .icon-placeholder {
   width: 20px;
@@ -48,10 +48,10 @@
 .card-title {
   font-size: 16px;
   margin: 0 0 4px 0;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 .card-description {
   font-size: 13px;
   margin: 0;
-  color: var(--text-secondary);
+  color: var(--color-muted-foreground);
 }

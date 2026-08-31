@@ -43,7 +43,7 @@ interface ApiKey {
     MatSnackBarModule
   ],
   templateUrl: './settings-dashboard.component.html',
-  styleUrls: ['./settings-dashboard.component.scss']
+  styleUrl: './settings-dashboard.component.scss'
 })
 export class SettingsDashboardComponent implements OnInit {
   private fb = inject(FormBuilder);

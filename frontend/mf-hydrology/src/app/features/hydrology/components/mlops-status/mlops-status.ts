@@ -1,5 +1,6 @@
 import { Component, OnInit, signal, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
 
@@ -14,7 +15,7 @@ interface MlopsRun {
 @Component({
   selector: 'app-mlops-status',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatIconModule],
   templateUrl: './mlops-status.html',
   styleUrl: './mlops-status.css'
 })

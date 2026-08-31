@@ -24,7 +24,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatDatepickerModule
   ],
   templateUrl: './new-study-dialog.component.html',
-  styleUrls: ['./new-study-dialog.component.scss']
+  styleUrl: './new-study-dialog.component.scss'
 })
 export class NewStudyDialogComponent {
   private fb = inject(FormBuilder);

@@ -4,6 +4,7 @@ import { NgxEchartsModule, provideEchartsCore } from 'ngx-echarts';
 import * as echarts from 'echarts';
 import type { EChartsOption } from 'echarts';
 import { MatCardModule } from '@angular/material/card';
+import { token } from '../../../../core/theme-token';
 
 @Component({
   selector: 'app-position-chart',
@@ -78,20 +79,20 @@ export class PositionChartComponent implements OnChanges {
           name: 'Comprado',
           type: 'bar',
           stack: 'total',
-          itemStyle: { color: '#3b82f6' },
+          itemStyle: { color: token('--color-info') },
           data: purchased
         },
         {
           name: 'Vendido',
           type: 'bar',
           stack: 'total',
-          itemStyle: { color: '#f97316' },
+          itemStyle: { color: token('--color-warning') },
           data: sold.map(v => -v)
         },
         {
           name: 'Posição Líquida',
           type: 'line',
-          itemStyle: { color: '#8b5cf6' },
+          itemStyle: { color: token('--color-operations') },
           lineStyle: { width: 3 },
           data: net
         }

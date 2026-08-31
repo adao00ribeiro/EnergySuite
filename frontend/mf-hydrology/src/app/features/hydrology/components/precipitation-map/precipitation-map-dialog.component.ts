@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
+import { token } from '../../../../core/theme-token';
 
 @Component({
   selector: 'app-precipitation-map-dialog',
@@ -51,7 +52,7 @@ import { EChartsOption } from 'echarts';
     .scale-bar {
       height: 12px;
       width: 100%;
-      background: linear-gradient(to right, #ffffff, #dcfce7, #86efac, #22c55e, #16a34a, #eab308, #f59e0b, #ef4444, #b91c1c, #d946ef, #701a75, #64748B);
+      background: linear-gradient(to right, var(--chart-white), var(--chart-pale), var(--chart-lime), var(--chart-green), var(--chart-emerald), var(--chart-yellow), var(--chart-orange), var(--chart-red), var(--chart-maroon), var(--chart-violet), var(--chart-magenta), var(--chart-slate));
     }
     .scale-labels {
       display: flex;
@@ -93,11 +94,11 @@ export class PrecipitationMapDialogComponent implements OnInit {
           itemStyle: {
             color: (params: any) => {
               const v = params.value[2];
-              if (v < 5) return '#86efac';
-              if (v < 15) return '#22c55e';
-              if (v < 30) return '#eab308';
-              if (v < 75) return '#ef4444';
-              return '#d946ef';
+              if (v < 5) return token('--chart-lime');
+              if (v < 15) return token('--chart-green');
+              if (v < 30) return token('--chart-yellow');
+              if (v < 75) return token('--chart-red');
+              return token('--chart-violet');
             }
           }
         }

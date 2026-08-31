@@ -137,11 +137,11 @@
 }
 
 .btn-main {
-  background-color: var(--color-accent) !important;
-  color: #fff !important;
+  background-color: var(--color-accent);
+  color: var(--color-on-accent);
 }
 
 .btn-outline {
-  border-color: var(--color-accent) !important;
-  color: var(--color-accent) !important;
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }

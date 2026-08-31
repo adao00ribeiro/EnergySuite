@@ -28,7 +28,7 @@ export interface EditRolesDialogData {
     MatIconModule
   ],
   templateUrl: './edit-roles-dialog.component.html',
-  styleUrls: ['./edit-roles-dialog.component.scss']
+  styleUrl: './edit-roles-dialog.component.scss'
 })
 export class EditRolesDialogComponent {
   private fb = inject(FormBuilder);

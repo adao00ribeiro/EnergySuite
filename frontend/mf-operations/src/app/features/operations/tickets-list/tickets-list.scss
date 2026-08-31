@@ -19,36 +19,52 @@
   font-weight: 500;
   
   &.status-purchase {
-    background: rgba(16, 185, 129, 0.1);
-    color: rgb(16, 185, 129);
-    border: 1px solid rgba(16, 185, 129, 0.2);
+    background: color-mix(in srgb, var(--color-success) 12%, transparent);
+    color: var(--color-success);
+    border: 1px solid color-mix(in srgb, var(--color-success) 25%, transparent);
   }
 
   &.status-sale {
-    background: rgba(139, 92, 246, 0.1);
-    color: rgb(139, 92, 246);
-    border: 1px solid rgba(139, 92, 246, 0.2);
+    background: color-mix(in srgb, var(--accent-violet) 12%, transparent);
+    color: var(--accent-violet);
+    border: 1px solid color-mix(in srgb, var(--accent-violet) 25%, transparent);
   }
   
   &.status-draft {
-    background: rgba(156, 163, 175, 0.1);
-    color: rgb(156, 163, 175);
-    border: 1px solid rgba(156, 163, 175, 0.2);
+    background: color-mix(in srgb, var(--color-muted-foreground) 12%, transparent);
+    color: var(--color-muted-foreground);
+    border: 1px solid color-mix(in srgb, var(--color-muted-foreground) 25%, transparent);
   }
   
   &.status-pending {
-    background: rgba(245, 158, 11, 0.1);
-    color: rgb(245, 158, 11);
-    border: 1px solid rgba(245, 158, 11, 0.2);
+    background: color-mix(in srgb, var(--color-warning) 12%, transparent);
+    color: var(--color-warning);
+    border: 1px solid color-mix(in srgb, var(--color-warning) 25%, transparent);
   }
   
   &.status-official {
-    background: rgba(59, 130, 246, 0.1);
-    color: rgb(59, 130, 246);
-    border: 1px solid rgba(59, 130, 246, 0.2);
+    background: color-mix(in srgb, var(--color-info) 12%, transparent);
+    color: var(--color-info);
+    border: 1px solid color-mix(in srgb, var(--color-info) 25%, transparent);
   }
 }
 
 .hover-row:hover {
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: var(--color-muted);
+}
+
+.table-full-width {
+  width: 100%;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.bg-transparent {
+  background: transparent;
 }

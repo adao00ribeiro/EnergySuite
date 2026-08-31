@@ -1,11 +1,8 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
-using EtrmService.Application.Interfaces;
 using EtrmService.Application.Pluvia.Commands;
-using EtrmService.Domain.Enums;
+using EtrmService.Application.Pluvia.Queries;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Quartz;
 
@@ -14,13 +11,11 @@ namespace EtrmService.API.Jobs;
 public class HydrologicalSimulationJob : IJob
 {
     private readonly IMediator _mediator;
-    private readonly IEtrmDbContext _context;
     private readonly ILogger<HydrologicalSimulationJob> _logger;
 
-    public HydrologicalSimulationJob(IMediator mediator, IEtrmDbContext context, ILogger<HydrologicalSimulationJob> logger)
+    public HydrologicalSimulationJob(IMediator mediator, ILogger<HydrologicalSimulationJob> logger)
     {
         _mediator = mediator;
-        _context = context;
         _logger = logger;
     }
 
@@ -30,11 +25,7 @@ public class HydrologicalSimulationJob : IJob
 
         try
         {
-            // O modelo de PrecipitationScenario não possui um marcador "IsDefault". 
-            // O cenário hidrológico padrão do dia é representado pelo mais recente criado.
-            var scenario = await _context.PrecipitationScenarios
-                .OrderByDescending(s => s.CreatedAt)
-                .FirstOrDefaultAsync(context.CancellationToken);
+            var scenario = await _mediator.Send(new GetLatestPrecipitationScenarioQuery(), context.CancellationToken);
 
             if (scenario == null)
             {
@@ -58,3 +49,4 @@ public class HydrologicalSimulationJob : IJob
         }
     }
 }
+

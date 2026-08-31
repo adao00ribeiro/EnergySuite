@@ -39,7 +39,7 @@ export interface FinanceDashboardResponse {
 @Injectable({ providedIn: 'root' })
 export class FinanceService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/v1/finance`;
+  private apiUrl = `${environment.apiUrl}/finance`;
 
   openSettlements = signal<FinancialSettlementItem[]>([]);
   operationsToBill = signal<OperationToBillItem[]>([]);
