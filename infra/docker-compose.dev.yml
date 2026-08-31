@@ -25,12 +25,11 @@
 #     cd backend/etrm-service/EtrmService.API
 #     dotnet watch run
 #
-#  2/3) FRONTENDS — TUDO de uma vez (app-shell + 4 MFEs) via wrapper
-#     na raiz de frontend/ (usa `concurrently`; basta instalar uma vez):
-#     cd frontend && npm install    # primeira vez apenas
-#     cd frontend && npm start
+#  2/3) FRONTENDS — TUDO de uma vez via script bash (não baixa nada):
+#     na raiz de frontend/, usando o ng local de cada projeto:
+#     cd frontend && ./start.sh
 #     # Portas: app-shell 4200, portfolio 4201, operations 4202,
-#     #         pricing 4203, hydrology 4204
+#     #         pricing 4203, hydrology 4204. (Ctrl+C para parar todos.)
 #
 #     (Opcional, individualmente:)
 #     cd frontend/app-shell && ng serve --port 4200
