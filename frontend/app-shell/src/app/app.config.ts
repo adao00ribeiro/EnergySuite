@@ -9,6 +9,7 @@ import * as echarts from 'echarts';
 import { KeycloakService } from 'keycloak-angular';
 import { initializeKeycloak } from './core/auth/keycloak-init.factory';
 import { KeycloakSessionBridgeService } from './core/auth/keycloak-session-bridge';
+import { httpErrorInterceptor } from './core/interceptors/http-error.interceptor';
 
 function initializeSessionBridge(
   keycloak: KeycloakService,
@@ -35,7 +36,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([keycloakBearerInterceptor])),
+    provideHttpClient(withInterceptors([keycloakBearerInterceptor, httpErrorInterceptor])),
     provideAnimationsAsync(),
     provideEchartsCore({ echarts }),
     KeycloakService,

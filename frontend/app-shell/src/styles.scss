@@ -825,8 +825,23 @@ body:not(.light-theme) .mat-mdc-dialog-actions button[mat-button],
   font-family: var(--font-sans) !important;
 }
 
-.warn-snackbar {
+.error-snackbar {
   --mdc-snackbar-container-color: #DC2626 !important;
+  --mdc-snackbar-supporting-text-color: #FFFFFF !important;
+}
+
+.warn-snackbar {
+  --mdc-snackbar-container-color: #F59E0B !important;
+  --mdc-snackbar-supporting-text-color: #FFFFFF !important;
+}
+
+.success-snackbar {
+  --mdc-snackbar-container-color: #10B981 !important;
+  --mdc-snackbar-supporting-text-color: #FFFFFF !important;
+}
+
+.info-snackbar {
+  --mdc-snackbar-container-color: #0EA5E9 !important;
   --mdc-snackbar-supporting-text-color: #FFFFFF !important;
 }
 

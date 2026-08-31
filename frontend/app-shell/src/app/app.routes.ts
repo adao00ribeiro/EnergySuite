@@ -58,6 +58,11 @@ export const routes: Routes = [
       {
         path: 'risk/counterparty',
         loadComponent: () => import('./features/risk/counterparty-risk/counterparty-risk.component').then(m => m.CounterpartyRiskComponent)
+      },
+      {
+        path: '**',
+        loadComponent: () => import('./core/components/error-fallback/error-fallback.component').then(m => m.ErrorFallbackComponent),
+        data: { title: 'Página não encontrada', message: 'Página não encontrada.' }
       }
     ]
   }
