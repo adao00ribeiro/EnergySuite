@@ -20,7 +20,7 @@ public class CurrentUserService : ICurrentUserService
         {
             var user = _httpContextAccessor.HttpContext?.User;
             if (user == null || !user.Identity!.IsAuthenticated)
-                return Guid.Empty; // Ou lançar exceção dependendo do design (fallback temporário)
+                return Guid.Parse("00000000-0000-0000-0000-000000000001"); // Fallback dev: mesmo tenant da entidade
 
             var tenantClaim = user.FindFirst("tenant_id")?.Value 
                               ?? user.FindFirst("azp")?.Value 

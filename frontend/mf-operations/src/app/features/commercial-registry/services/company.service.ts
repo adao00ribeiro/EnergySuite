@@ -35,4 +35,23 @@ export class CompanyService {
       }
     });
   }
+
+  createCompany(payload: CreateCompanyPayload) {
+    const normalized = { ...payload, cnpj: payload.cnpj.replace(/\D/g, '') };
+    return this.http.post<{ id: string }>(this.apiUrl, normalized);
+  }
+}
+
+export interface CreateCompanyPayload {
+  cnpj: string;
+  corporateName: string;
+  tradeName: string;
+  category: 'Parte' | 'Contraparte';
+  zipCode: string;
+  street: string;
+  number: string;
+  complement?: string;
+  neighborhood: string;
+  city: string;
+  state: string;
 }

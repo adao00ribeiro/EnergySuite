@@ -1,0 +1,87 @@
+<h2 mat-dialog-title class="dialog-title">
+  <mat-icon class="title-icon">business</mat-icon>
+  <span>Novo Registro Empresarial</span>
+</h2>
+
+<mat-dialog-content class="dialog-content">
+  <p class="dialog-subtitle">Preencha os dados da empresa ou contraparte para registrar no Cadastro Comercial.</p>
+
+  <form [formGroup]="form" class="dialog-form">
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="flex-field">
+        <mat-label>CNPJ</mat-label>
+        <input matInput formControlName="cnpj" placeholder="00.000.000/0000-00">
+        <mat-error *ngIf="form.get('cnpj')?.hasError('required')">CNPJ é obrigatório</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="flex-field">
+        <mat-label>Categoria</mat-label>
+        <mat-select formControlName="category">
+          <mat-option value="Parte">Parte</mat-option>
+          <mat-option value="Contraparte">Contraparte</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Razão Social</mat-label>
+      <input matInput formControlName="corporateName" placeholder="Razão social completa">
+      <mat-error *ngIf="form.get('corporateName')?.hasError('required')">Razão social é obrigatória</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nome Fantasia</mat-label>
+      <input matInput formControlName="tradeName" placeholder="Nome comercial / fantasia">
+      <mat-error *ngIf="form.get('tradeName')?.hasError('required')">Nome fantasia é obrigatório</mat-error>
+    </mat-form-field>
+
+    <div class="section-label">Endereço</div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="flex-field">
+        <mat-label>CEP</mat-label>
+        <input matInput formControlName="zipCode" placeholder="00000-000">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="flex-field">
+        <mat-label>Número</mat-label>
+        <input matInput formControlName="number" placeholder="1234">
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Logradouro</mat-label>
+      <input matInput formControlName="street" placeholder="Rua, avenida...">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Bairro</mat-label>
+      <input matInput formControlName="neighborhood" placeholder="Bairro">
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="flex-field">
+        <mat-label>Cidade</mat-label>
+        <input matInput formControlName="city" placeholder="Cidade">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="flex-field">
+        <mat-label>UF</mat-label>
+        <input matInput formControlName="state" placeholder="SP">
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Complemento</mat-label>
+      <input matInput formControlName="complement" placeholder="Complemento (opcional)">
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-button mat-dialog-close [disabled]="isSaving">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="onSave()" [disabled]="form.invalid || isSaving">
+    <span *ngIf="!isSaving">Salvar Registro</span>
+    <span *ngIf="isSaving">Salvando...</span>
+  </button>
+</mat-dialog-actions>
