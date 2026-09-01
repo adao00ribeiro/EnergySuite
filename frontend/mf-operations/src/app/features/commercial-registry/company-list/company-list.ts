@@ -37,7 +37,8 @@ export class CompanyListComponent implements OnInit, AfterViewInit {
 
   onNewCompany(): void {
     const dialogRef = this.dialog.open(NewCompanyDialogComponent, {
-      width: '620px',
+      width: '640px',
+      maxWidth: '95vw',
       panelClass: 'glass-panel-dialog'
     });
 

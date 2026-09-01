@@ -136,7 +136,7 @@ h1, h2, h3, h4, h5, h6 {
 .mat-mdc-dialog-container .mdc-dialog__surface {
   border-radius: 16px !important;
   padding: 0 !important;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35) !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
   overflow: hidden !important;
 }
 
@@ -159,7 +159,7 @@ body:not(.light-theme) .mat-mdc-dialog-container .mdc-dialog__surface,
 h2[mat-dialog-title], .mat-mdc-dialog-title {
   display: flex !important;
   align-items: center !important;
-  gap: 10px !important;
+  gap: 12px !important;
   padding: 20px 24px 16px 24px !important;
   margin: 0 !important;
   font-size: 1.2rem !important;
@@ -173,10 +173,12 @@ body:not(.light-theme) h2[mat-dialog-title],
   color: #f8fafc !important;
 }
 
-/* Dialog Content Padding */
+/* Dialog Content Padding & Overflow Prevention */
 .mat-mdc-dialog-content {
   padding: 20px 24px !important;
   max-height: 75vh !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
 }
 
 /* Dialog Action Bar */
@@ -208,6 +210,12 @@ body:not(.light-theme) .mat-mdc-dialog-actions,
   box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4) !important;
 }
 
+.mat-mdc-dialog-actions button[mat-flat-button][disabled] {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: none !important;
+}
+
 .mat-mdc-dialog-actions button[mat-button] {
   color: #64748b !important;
   font-weight: 500 !important;
@@ -218,6 +226,12 @@ body:not(.light-theme) .mat-mdc-dialog-actions,
 body:not(.light-theme) .mat-mdc-dialog-actions button[mat-button],
 .glass-panel-dialog .mat-mdc-dialog-actions button[mat-button] {
   color: #94a3b8 !important;
+}
+
+body:not(.light-theme) .mat-mdc-dialog-actions button[mat-button]:hover:not([disabled]),
+.glass-panel-dialog .mat-mdc-dialog-actions button[mat-button]:hover:not([disabled]) {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #f8fafc !important;
 }
 
 /* MDC Outlined Form Fields Styling */
@@ -252,6 +266,52 @@ body:not(.light-theme) .mat-mdc-form-field,
   --mat-select-enabled-trigger-text-color: #f8fafc !important;
   --mat-select-arrow-color: #94a3b8 !important;
   --mat-datepicker-toggle-icon-color: #94a3b8 !important;
+}
+
+/* Explicit Dark Mode Text Color Overrides for Form Inputs and Select Triggers */
+body:not(.light-theme) .mat-mdc-input-element,
+body:not(.light-theme) .mat-mdc-select-value,
+body:not(.light-theme) .mat-mdc-select-value-text,
+body:not(.light-theme) .mat-mdc-select-trigger,
+.glass-panel-dialog .mat-mdc-input-element,
+.glass-panel-dialog .mat-mdc-select-value,
+.glass-panel-dialog .mat-mdc-select-value-text,
+.glass-panel-dialog .mat-mdc-select-trigger {
+  color: #f8fafc !important;
+  -webkit-text-fill-color: #f8fafc !important;
+}
+
+/* Floating labels in Dark Mode */
+body:not(.light-theme) .mat-mdc-form-field .mdc-floating-label,
+body:not(.light-theme) .mat-mdc-form-field .mat-mdc-floating-label,
+.glass-panel-dialog .mat-mdc-form-field .mdc-floating-label,
+.glass-panel-dialog .mat-mdc-form-field .mat-mdc-floating-label {
+  color: #94a3b8 !important;
+}
+
+body:not(.light-theme) .mat-mdc-form-field.mat-focused .mdc-floating-label,
+body:not(.light-theme) .mat-mdc-form-field.mat-focused .mat-mdc-floating-label,
+.glass-panel-dialog .mat-mdc-form-field.mat-focused .mdc-floating-label,
+.glass-panel-dialog .mat-mdc-form-field.mat-focused .mat-mdc-floating-label {
+  color: #60a5fa !important;
+}
+
+body:not(.light-theme) .mat-mdc-select-placeholder,
+.glass-panel-dialog .mat-mdc-select-placeholder {
+  color: #94a3b8 !important;
+  -webkit-text-fill-color: #94a3b8 !important;
+}
+
+body:not(.light-theme) .mat-mdc-input-element::placeholder,
+.glass-panel-dialog .mat-mdc-input-element::placeholder {
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+}
+
+body:not(.light-theme) mat-error,
+.glass-panel-dialog mat-error {
+  color: #f87171 !important;
+  font-weight: 500 !important;
 }
 
 /* Light Mode Form Fields */
@@ -305,6 +365,32 @@ body.light-theme .mat-mdc-option:hover:not(.mdc-list-item--disabled),
 body.light-theme .mat-mdc-option.mdc-list-item--selected {
   background: #eff6ff !important;
   color: #2563eb !important;
+}
+
+/* Datepicker Popup Dark Mode Styling */
+body:not(.light-theme) .cdk-overlay-container .mat-datepicker-content {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5) !important;
+}
+
+body:not(.light-theme) .cdk-overlay-container .mat-calendar-body-cell-content {
+  color: #cbd5e1 !important;
+}
+
+body:not(.light-theme) .cdk-overlay-container .mat-calendar-body-selected {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+body:not(.light-theme) .cdk-overlay-container .mat-calendar-table-header,
+body:not(.light-theme) .cdk-overlay-container .mat-calendar-period-button,
+body:not(.light-theme) .cdk-overlay-container .mat-calendar-arrow {
+  color: #f8fafc !important;
+  fill: #f8fafc !important;
 }
 
 .warn-snackbar {

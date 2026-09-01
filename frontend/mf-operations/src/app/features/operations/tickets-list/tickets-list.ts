@@ -55,7 +55,8 @@ export class TicketsListComponent implements OnInit, AfterViewInit {
 
   onNewOperation(): void {
     const dialogRef = this.dialog.open(NewOperationDialogComponent, {
-      width: '520px',
+      width: '600px',
+      maxWidth: '95vw',
       panelClass: 'glass-panel-dialog',
       data: { actionType: 'Compra' }
     });
@@ -70,7 +71,8 @@ export class TicketsListComponent implements OnInit, AfterViewInit {
 
   onEditOperation(id: string): void {
     const dialogRef = this.dialog.open(NewOperationDialogComponent, {
-      width: '520px',
+      width: '600px',
+      maxWidth: '95vw',
       panelClass: 'glass-panel-dialog',
       data: { actionType: 'Venda' }
     });

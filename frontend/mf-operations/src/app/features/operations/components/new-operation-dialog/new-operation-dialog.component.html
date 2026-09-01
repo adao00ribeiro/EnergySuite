@@ -1,13 +1,33 @@
-<h2 mat-dialog-title class="dialog-title">
-  <mat-icon class="title-icon">receipt_long</mat-icon>
-  <span>Nova Operação — <span class="action-type-badge" [class.buy]="data.actionType === 'Compra'" [class.sell]="data.actionType === 'Venda'">{{ data.actionType }}</span></span>
-</h2>
+<div class="dialog-header-row">
+  <h2 mat-dialog-title class="dialog-title">
+    <div class="title-icon-badge">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <polyline points="14 2 14 8 20 8" />
+        <line x1="16" y1="13" x2="8" y2="13" />
+        <line x1="16" y1="17" x2="8" y2="17" />
+      </svg>
+    </div>
+    <span class="dialog-title-text">
+      Nova Operação
+      <span class="action-type-badge" [class.buy]="data.actionType === 'Compra'"
+        [class.sell]="data.actionType === 'Venda'">
+        {{ data.actionType }}
+      </span>
+    </span>
+  </h2>
+  <button mat-icon-button mat-dialog-close class="dialog-close-btn" aria-label="Fechar">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
 
 <mat-dialog-content class="dialog-content">
-  <p class="dialog-subtitle">Preencha os parâmetros abaixo para registrar uma nova operação comercial de energia no sistema ETRM.</p>
+  <p class="dialog-subtitle">Preencha os parâmetros abaixo para registrar uma nova operação comercial de energia no
+    sistema ETRM.</p>
 
   <form [formGroup]="form" class="dialog-form">
-    <mat-form-field appearance="outline" class="full-width">
+    <mat-form-field appearance="fill" class="full-width">
       <mat-label>Contraparte</mat-label>
       <mat-select formControlName="counterparty" placeholder="Selecione a empresa contraparte">
         <mat-option *ngFor="let company of companies()" [value]="company.id">
@@ -18,15 +38,15 @@
     </mat-form-field>
 
     <div class="form-row">
-      <mat-form-field appearance="outline" class="flex-field">
-        <mat-label>Tipo</mat-label>
+      <mat-form-field class="flex-field">
+        <mat-label>Tipo de Operação</mat-label>
         <mat-select formControlName="type">
           <mat-option value="Purchase">Compra</mat-option>
           <mat-option value="Sale">Venda</mat-option>
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="flex-field">
+      <mat-form-field class="flex-field">
         <mat-label>Submercado</mat-label>
         <mat-select formControlName="submarket">
           <mat-option *ngFor="let sm of submarkets" [value]="sm">{{ sm }}</mat-option>
@@ -35,14 +55,14 @@
     </div>
 
     <div class="form-row">
-      <mat-form-field appearance="outline" class="flex-field">
+      <mat-form-field class="flex-field">
         <mat-label>Volume (MWmed)</mat-label>
         <input matInput type="number" formControlName="volumeMwMed" min="1" step="0.1" placeholder="0.0">
         <mat-error *ngIf="form.get('volumeMwMed')?.hasError('required')">Volume é obrigatório</mat-error>
         <mat-error *ngIf="form.get('volumeMwMed')?.hasError('min')">Mínimo de 1.0 MWmed</mat-error>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="flex-field">
+      <mat-form-field class="flex-field">
         <mat-label>Preço (R$/MWh)</mat-label>
         <input matInput type="number" formControlName="price" min="0" step="0.5" placeholder="0.00">
         <mat-error *ngIf="form.get('price')?.hasError('required')">Preço é obrigatório</mat-error>
@@ -50,7 +70,7 @@
     </div>
 
     <div class="form-row">
-      <mat-form-field appearance="outline" class="flex-field">
+      <mat-form-field class="flex-field">
         <mat-label>Data Início</mat-label>
         <input matInput [matDatepicker]="startPicker" formControlName="startDate" placeholder="DD/MM/AAAA">
         <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
@@ -58,7 +78,7 @@
         <mat-error *ngIf="form.get('startDate')?.hasError('required')">Data inicial é obrigatória</mat-error>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="flex-field">
+      <mat-form-field class="flex-field">
         <mat-label>Data Fim</mat-label>
         <input matInput [matDatepicker]="endPicker" formControlName="endDate" placeholder="DD/MM/AAAA">
         <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>

@@ -1,29 +1,58 @@
+.dialog-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 12px;
+}
+
 .dialog-title {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 600;
+  letter-spacing: -0.2px;
 }
 
-.title-icon {
-  color: #3b82f6;
+.title-icon-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(37, 99, 235, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  flex-shrink: 0;
+}
+
+.dialog-close-btn {
+  color: #94a3b8 !important;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.dialog-close-btn:hover {
+  opacity: 1;
+  color: #f8fafc !important;
 }
 
 .dialog-subtitle {
   font-size: 0.875rem;
-  color: var(--color-muted-foreground, #64748b);
+  color: #94a3b8;
   margin-top: 0;
-  margin-bottom: 18px;
-  line-height: 1.4;
+  margin-bottom: 20px;
+  line-height: 1.5;
 }
 
 .dialog-form {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  min-width: 520px;
+  width: 100%;
+  box-sizing: border-box;
   padding-top: 4px;
 }
 
@@ -35,7 +64,15 @@
   display: flex;
   gap: 16px;
   width: 100%;
+  box-sizing: border-box;
   align-items: flex-start;
+}
+
+@media (max-width: 540px) {
+  .form-row {
+    flex-direction: column;
+    gap: 12px;
+  }
 }
 
 .flex-field {
@@ -43,13 +80,23 @@
   min-width: 0;
 }
 
-.section-label {
-  font-size: 0.8rem;
-  font-weight: 600;
+.section-divider {
+  display: flex;
+  align-items: center;
+  margin: 12px 0 6px 0;
+  font-size: 0.75rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--color-muted-foreground, #64748b);
-  margin-top: 6px;
+  letter-spacing: 0.8px;
+  color: #60a5fa;
+}
+
+.section-divider::after {
+  content: '';
+  flex: 1;
+  margin-left: 12px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .dialog-actions {
@@ -57,3 +104,4 @@
   justify-content: flex-end;
   gap: 12px;
 }
+

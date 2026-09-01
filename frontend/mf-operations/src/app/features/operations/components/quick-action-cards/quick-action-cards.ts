@@ -24,7 +24,9 @@ export class QuickActionCardsComponent {
   handleAction(action: { actionType: 'Compra' | 'Venda' | null }) {
     if (action.actionType) {
       this.dialog.open(NewOperationDialogComponent, {
-        width: '500px',
+        width: '600px',
+        maxWidth: '95vw',
+        panelClass: 'glass-panel-dialog',
         data: { actionType: action.actionType }
       });
     } else {
