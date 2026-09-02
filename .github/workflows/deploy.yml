@@ -4,37 +4,97 @@ on:
   push:
     branches:
       - master
+      - main
   workflow_dispatch:
 
 jobs:
-  deploy:
+  detect-changes:
     runs-on: self-hosted
-    
+    outputs:
+      k8s: ${{ steps.filter.outputs.k8s }}
+      app-shell: ${{ steps.filter.outputs.app-shell }}
+      mf-hydrology: ${{ steps.filter.outputs.mf-hydrology }}
+      mf-operations: ${{ steps.filter.outputs.mf-operations }}
+      mf-portfolio: ${{ steps.filter.outputs.mf-portfolio }}
+      mf-pricing: ${{ steps.filter.outputs.mf-pricing }}
+      etrm-service: ${{ steps.filter.outputs.etrm-service }}
+      risk-service: ${{ steps.filter.outputs.risk-service }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            k8s: 'infra/k8s/**'
+            app-shell: 'frontend/app-shell/**'
+            mf-hydrology: 'frontend/mf-hydrology/**'
+            mf-operations: 'frontend/mf-operations/**'
+            mf-portfolio: 'frontend/mf-portfolio/**'
+            mf-pricing: 'frontend/mf-pricing/**'
+            etrm-service: 'backend/etrm-service/**'
+            risk-service: 'backend/risk-service/**'
+
+  deploy:
+    needs: detect-changes
+    runs-on: self-hosted
     steps:
       - name: 📥 Checkout do Repositório
         uses: actions/checkout@v4
 
-      - name: 🏗️ Deploy da Infraestrutura & Aplicações (K8s via Kustomize)
+      - name: ⚙️ Configurar Docker do Minikube
+        run: |
+          eval $(minikube -p minikube docker-env 2>/dev/null || true)
+
+      - name: 🏗️ Deploy de Manifestos K8s (Se houve alteração infra)
+        if: needs.detect-changes.outputs.k8s == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           kubectl apply -k infra/k8s/overlays/prod
-          
-      - name: "⚙️ Build & Deploy: ETRM Backend (K8s)"
-        run: |
-          cd backend/etrm-service
-          for i in 1 2 3; do docker build --network=host -t energysuite/etrm-service:latest . && break || sleep 10; done
-          cd ../../
-          kubectl rollout restart deployment etrm-service -n energysuite
 
-      - name: "🎨 Build & Deploy: App Shell (K8s)"
+      - name: "🎨 Build & Deploy: App Shell"
+        if: needs.detect-changes.outputs.app-shell == 'true' || github.event_name == 'workflow_dispatch'
         run: |
-          cd frontend/app-shell
-          for i in 1 2 3; do docker build --network=host -t energysuite/app-shell:latest . && break || sleep 10; done
-          cd ../../
+          eval $(minikube -p minikube docker-env 2>/dev/null || true)
+          docker build -t energysuite/app-shell:latest frontend/app-shell
           kubectl rollout restart deployment app-shell -n energysuite
 
-      - name: "🐍 Build & Deploy: Risk Service (K8s)"
+      - name: "💧 Build & Deploy: MF Hydrology"
+        if: needs.detect-changes.outputs.mf-hydrology == 'true' || github.event_name == 'workflow_dispatch'
         run: |
-          cd backend/risk-service
-          for i in 1 2 3; do docker build --network=host -t energysuite/risk-service:latest . && break || sleep 10; done
-          cd ../../
+          eval $(minikube -p minikube docker-env 2>/dev/null || true)
+          docker build -t energysuite/mf-hydrology:latest frontend/mf-hydrology
+          kubectl rollout restart deployment mf-hydrology -n energysuite
+
+      - name: "⚙️ Build & Deploy: MF Operations"
+        if: needs.detect-changes.outputs.mf-operations == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          eval $(minikube -p minikube docker-env 2>/dev/null || true)
+          docker build -t energysuite/mf-operations:latest frontend/mf-operations
+          kubectl rollout restart deployment mf-operations -n energysuite
+
+      - name: "📊 Build & Deploy: MF Portfolio"
+        if: needs.detect-changes.outputs.mf-portfolio == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          eval $(minikube -p minikube docker-env 2>/dev/null || true)
+          docker build -t energysuite/mf-portfolio:latest frontend/mf-portfolio
+          kubectl rollout restart deployment mf-portfolio -n energysuite
+
+      - name: "🏷️ Build & Deploy: MF Pricing"
+        if: needs.detect-changes.outputs.mf-pricing == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          eval $(minikube -p minikube docker-env 2>/dev/null || true)
+          docker build -t energysuite/mf-pricing:latest frontend/mf-pricing
+          kubectl rollout restart deployment mf-pricing -n energysuite
+
+      - name: "⚡ Build & Deploy: ETRM Service"
+        if: needs.detect-changes.outputs.etrm-service == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          eval $(minikube -p minikube docker-env 2>/dev/null || true)
+          docker build -t energysuite/etrm-service:latest backend/etrm-service
+          kubectl rollout restart deployment etrm-service -n energysuite
+
+      - name: "🐍 Build & Deploy: Risk Service"
+        if: needs.detect-changes.outputs.risk-service == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          eval $(minikube -p minikube docker-env 2>/dev/null || true)
+          docker build -t energysuite/risk-service:latest backend/risk-service
           kubectl rollout restart deployment risk-service -n energysuite
