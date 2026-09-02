@@ -58,10 +58,21 @@ metadata:
   name: headlamp
   namespace: energysuite
 spec:
-  type: ClusterIP
+  type: NodePort
   ports:
     - name: http
       port: 80
       targetPort: 4466
+      nodePort: 30080
   selector:
     app: headlamp
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: headlamp-admin-token
+  namespace: energysuite
+  annotations:
+    kubernetes.io/service-account.name: headlamp-admin
+type: kubernetes.io/service-account-token
+
