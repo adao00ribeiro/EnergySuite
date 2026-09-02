@@ -20,6 +20,7 @@ spec:
       containers:
         - name: app-shell
           image: energysuite/app-shell:latest
+          imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: federation-manifest
               mountPath: /usr/share/nginx/html/federation.manifest.json

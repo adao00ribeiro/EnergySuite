@@ -16,6 +16,7 @@ spec:
       containers:
         - name: mf-portfolio
           image: energysuite/mf-portfolio:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
           resources:

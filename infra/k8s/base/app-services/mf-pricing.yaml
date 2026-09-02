@@ -16,6 +16,7 @@ spec:
       containers:
         - name: mf-pricing
           image: energysuite/mf-pricing:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
           resources:

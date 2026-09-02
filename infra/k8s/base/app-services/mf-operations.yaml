@@ -16,6 +16,7 @@ spec:
       containers:
         - name: mf-operations
           image: energysuite/mf-operations:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
           resources:

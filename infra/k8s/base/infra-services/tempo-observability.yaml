@@ -16,7 +16,6 @@ spec:
       containers:
         - name: tempo
           image: grafana/tempo:latest
-          args: ["-config.file=/etc/tempo.yaml"]
           ports:
             - containerPort: 3200 # HTTP API
             - containerPort: 4317 # OTLP gRPC

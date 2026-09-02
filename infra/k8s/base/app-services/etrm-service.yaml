@@ -16,6 +16,7 @@ spec:
       containers:
         - name: etrm-service
           image: energysuite/etrm-service:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
           envFrom:

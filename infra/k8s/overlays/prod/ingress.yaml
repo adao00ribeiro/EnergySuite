@@ -22,6 +22,15 @@ spec:
                 port:
                   number: 80
 
+          # ── Headlamp Dashboard ──
+          - path: /headlamp
+            pathType: Prefix
+            backend:
+              service:
+                name: headlamp
+                port:
+                  number: 80
+
           # ── API routes → etrm-service ──
           - path: /api/v1/contracts
             pathType: Prefix
