@@ -6,6 +6,7 @@ metadata:
 data:
   ASPNETCORE_ENVIRONMENT: "Production"
   KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+  Kafka__BootstrapServers: "kafka:9092"
   OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"
   KEYCLOAK_AUTHORITY: "http://keycloak:8080/realms/EnergySuite"
   MINIO_ENDPOINT: "http://minio:9000"
