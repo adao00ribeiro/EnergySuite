@@ -45,56 +45,25 @@ jobs:
         run: |
           eval $(minikube -p minikube docker-env 2>/dev/null || true)
 
-      - name: 🏗️ Deploy de Manifestos K8s (Se houve alteração infra)
-        if: needs.detect-changes.outputs.k8s == 'true' || github.event_name == 'workflow_dispatch'
+      - name: 🏗️ Deploy de Manifestos K8s
         run: |
           kubectl apply -k infra/k8s/overlays/prod
 
-      - name: "🎨 Build & Deploy: App Shell"
-        if: needs.detect-changes.outputs.app-shell == 'true' || github.event_name == 'workflow_dispatch'
+      - name: 🚀 Build & Deploy Automatizado
         run: |
-          eval $(minikube -p minikube docker-env 2>/dev/null || true)
-          docker build -t energysuite/app-shell:latest frontend/app-shell
-          kubectl rollout restart deployment app-shell -n energysuite
-
-      - name: "💧 Build & Deploy: MF Hydrology"
-        if: needs.detect-changes.outputs.mf-hydrology == 'true' || github.event_name == 'workflow_dispatch'
-        run: |
-          eval $(minikube -p minikube docker-env 2>/dev/null || true)
-          docker build -t energysuite/mf-hydrology:latest frontend/mf-hydrology
-          kubectl rollout restart deployment mf-hydrology -n energysuite
-
-      - name: "⚙️ Build & Deploy: MF Operations"
-        if: needs.detect-changes.outputs.mf-operations == 'true' || github.event_name == 'workflow_dispatch'
-        run: |
-          eval $(minikube -p minikube docker-env 2>/dev/null || true)
-          docker build -t energysuite/mf-operations:latest frontend/mf-operations
-          kubectl rollout restart deployment mf-operations -n energysuite
-
-      - name: "📊 Build & Deploy: MF Portfolio"
-        if: needs.detect-changes.outputs.mf-portfolio == 'true' || github.event_name == 'workflow_dispatch'
-        run: |
-          eval $(minikube -p minikube docker-env 2>/dev/null || true)
-          docker build -t energysuite/mf-portfolio:latest frontend/mf-portfolio
-          kubectl rollout restart deployment mf-portfolio -n energysuite
-
-      - name: "🏷️ Build & Deploy: MF Pricing"
-        if: needs.detect-changes.outputs.mf-pricing == 'true' || github.event_name == 'workflow_dispatch'
-        run: |
-          eval $(minikube -p minikube docker-env 2>/dev/null || true)
-          docker build -t energysuite/mf-pricing:latest frontend/mf-pricing
-          kubectl rollout restart deployment mf-pricing -n energysuite
-
-      - name: "⚡ Build & Deploy: ETRM Service"
-        if: needs.detect-changes.outputs.etrm-service == 'true' || github.event_name == 'workflow_dispatch'
-        run: |
-          eval $(minikube -p minikube docker-env 2>/dev/null || true)
-          docker build -t energysuite/etrm-service:latest backend/etrm-service
-          kubectl rollout restart deployment etrm-service -n energysuite
-
-      - name: "🐍 Build & Deploy: Risk Service"
-        if: needs.detect-changes.outputs.risk-service == 'true' || github.event_name == 'workflow_dispatch'
-        run: |
-          eval $(minikube -p minikube docker-env 2>/dev/null || true)
-          docker build -t energysuite/risk-service:latest backend/risk-service
-          kubectl rollout restart deployment risk-service -n energysuite
+          chmod +x infra/deploy-local.sh
+          
+          # Se foi um disparo manual (workflow_dispatch) ou alteração de infra K8s, compila TODOS os serviços
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ needs.detect-changes.outputs.k8s }}" = "true" ]; then
+            echo "🔄 Executando build e deploy de TODOS os serviços no Minikube..."
+            ./infra/deploy-local.sh all
+          else
+            echo "🎯 Executando build seletivo para serviços modificados..."
+            [ "${{ needs.detect-changes.outputs.app-shell }}" = "true" ] && ./infra/deploy-local.sh app-shell || true
+            [ "${{ needs.detect-changes.outputs.mf-hydrology }}" = "true" ] && ./infra/deploy-local.sh mf-hydrology || true
+            [ "${{ needs.detect-changes.outputs.mf-operations }}" = "true" ] && ./infra/deploy-local.sh mf-operations || true
+            [ "${{ needs.detect-changes.outputs.mf-portfolio }}" = "true" ] && ./infra/deploy-local.sh mf-portfolio || true
+            [ "${{ needs.detect-changes.outputs.mf-pricing }}" = "true" ] && ./infra/deploy-local.sh mf-pricing || true
+            [ "${{ needs.detect-changes.outputs.etrm-service }}" = "true" ] && ./infra/deploy-local.sh etrm-service || true
+            [ "${{ needs.detect-changes.outputs.risk-service }}" = "true" ] && ./infra/deploy-local.sh risk-service || true
+          fi
