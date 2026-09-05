@@ -3,22 +3,9 @@ kind: Ingress
 metadata:
   name: energysuite-base-ingress
   namespace: energysuite
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-    nginx.ingress.kubernetes.io/websocket-services: "etrm-service"
-    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
 spec:
-  tls:
-    - hosts:
-        - energysuite.com
-        - api.energysuite.com
-      secretName: energysuite-tls
   rules:
-    - host: energysuite.com
+    - host: 192.168.0.180.nip.io
       http:
         paths:
           - path: /

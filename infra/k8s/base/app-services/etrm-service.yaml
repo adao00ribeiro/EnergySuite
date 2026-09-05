@@ -12,6 +12,10 @@ spec:
     metadata:
       labels:
         app: etrm-service
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/health"
     spec:
       containers:
         - name: etrm-service
@@ -24,7 +28,10 @@ spec:
                 name: energysuite-env-config
           env:
             - name: ConnectionStrings__DefaultConnection
-              value: "Host=postgres;Port=5432;Database=etrm_db;Username=root;Password=rootpassword"
+              valueFrom:
+                secretKeyRef:
+                  name: energysuite-secrets
+                  key: ETRM_DB_CONNECTION
           resources:
             requests:
               cpu: "250m"

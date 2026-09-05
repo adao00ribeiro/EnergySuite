@@ -6,8 +6,8 @@ metadata:
 data:
   federation.manifest.json: |
     {
-      "mf-portfolio": "http://192.168.0.180:32001/remoteEntry.json",
-      "mf-operations": "http://192.168.0.180:32002/remoteEntry.json",
-      "mf-pricing": "http://192.168.0.180:32003/remoteEntry.json",
-      "mf-hydrology": "http://192.168.0.180:32004/remoteEntry.json"
+      "mf-portfolio": "/mf-portfolio/remoteEntry.json",
+      "mf-operations": "/mf-operations/remoteEntry.json",
+      "mf-pricing": "/mf-pricing/remoteEntry.json",
+      "mf-hydrology": "/mf-hydrology/remoteEntry.json"
     }

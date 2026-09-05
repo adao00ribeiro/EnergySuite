@@ -12,6 +12,10 @@ spec:
     metadata:
       labels:
         app: risk-service
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8001"
+        prometheus.io/path: "/metrics"
     spec:
       containers:
         - name: risk-service
@@ -25,7 +29,10 @@ spec:
                 name: energysuite-env-config
           env:
             - name: DATABASE_URL
-              value: "postgresql+asyncpg://root:rootpassword@postgres:5432/etrm_db"
+              valueFrom:
+                secretKeyRef:
+                  name: energysuite-secrets
+                  key: RISK_DB_CONNECTION
           resources:
             requests:
               cpu: "500m"

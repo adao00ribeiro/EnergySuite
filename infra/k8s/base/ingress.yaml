@@ -5,22 +5,21 @@ metadata:
   namespace: energysuite
   annotations:
     kubernetes.io/ingress.class: "nginx"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, PUT, POST, DELETE, PATCH, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
     nginx.ingress.kubernetes.io/websocket-services: "etrm-service"
     nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
 spec:
-  tls:
-    - hosts:
-        - energysuite.com
-        - api.energysuite.com
-      secretName: energysuite-tls
+  ingressClassName: nginx
   rules:
-    - host: energysuite.com
-      http:
+    - http:
         paths:
+          # ── Micro-frontends ──
           - path: /
             pathType: Prefix
             backend:
@@ -56,6 +55,8 @@ spec:
                 name: mf-pricing
                 port:
                   number: 80
+
+          # ── Headlamp Dashboard ──
           - path: /headlamp
             pathType: Prefix
             backend:
@@ -63,6 +64,8 @@ spec:
                 name: headlamp
                 port:
                   number: 80
+
+          # ── Identity & Access Management (Keycloak) ──
           - path: /auth
             pathType: Prefix
             backend:
@@ -70,6 +73,8 @@ spec:
                 name: keycloak
                 port:
                   number: 8080
+
+          # ── Python Risk Service ──
           - path: /api/v1/risk
             pathType: Prefix
             backend:
@@ -77,6 +82,8 @@ spec:
                 name: risk-service
                 port:
                   number: 8000
+
+          # ── ETRM Core Backend Services & APIs ──
           - path: /api/v1
             pathType: Prefix
             backend:
@@ -84,6 +91,8 @@ spec:
                 name: etrm-service
                 port:
                   number: 8080
+
+          # ── SignalR Hubs ──
           - path: /hubs
             pathType: Prefix
             backend:

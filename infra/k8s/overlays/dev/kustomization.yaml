@@ -3,7 +3,6 @@ kind: Kustomization
 
 resources:
   - ../../base
-  - hpa-risk-service.yaml
 
 patches:
   - path: ingress.yaml
