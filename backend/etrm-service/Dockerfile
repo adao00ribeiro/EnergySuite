@@ -7,7 +7,7 @@ COPY ["EtrmService.API/EtrmService.API.csproj", "EtrmService.API/"]
 COPY ["EtrmService.Application/EtrmService.Application.csproj", "EtrmService.Application/"]
 COPY ["EtrmService.Domain/EtrmService.Domain.csproj", "EtrmService.Domain/"]
 COPY ["EtrmService.Infrastructure/EtrmService.Infrastructure.csproj", "EtrmService.Infrastructure/"]
-RUN dotnet restore "EtrmService.API/EtrmService.API.csproj"
+RUN --mount=type=cache,target=/root/.nuget/packages dotnet restore "EtrmService.API/EtrmService.API.csproj"
 
 # Copy everything else and build
 COPY . .

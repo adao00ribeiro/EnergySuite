@@ -11,7 +11,7 @@ export function initializeKeycloak(keycloak: KeycloakService) {
     withTimeout(
       keycloak.init({
         config: {
-          url: 'http://localhost:8083',
+          url: '/auth',
           realm: 'EnergySuite',
           clientId: 'energysuite-frontend'
         },
@@ -19,7 +19,8 @@ export function initializeKeycloak(keycloak: KeycloakService) {
           onLoad: 'login-required',
           silentCheckSsoRedirectUri:
             window.location.origin + '/assets/silent-check-sso.html',
-          pkceMethod: 'S256'
+          pkceMethod: 'S256',
+          checkLoginIframe: false
         },
         bearerExcludedUrls: ['/assets']
       }),

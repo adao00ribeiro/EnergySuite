@@ -11,7 +11,7 @@ RUN npm config set fetch-retries 5 \
 
 # Copy source and build
 COPY . .
-RUN npm run build --configuration=production
+RUN --mount=type=cache,target=/app/.angular/cache npm run build --configuration=production
 
 # Final image using Nginx
 FROM nginx:alpine

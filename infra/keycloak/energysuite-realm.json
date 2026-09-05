@@ -64,6 +64,7 @@
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
       "redirectUris": [
+        "*",
         "http://localhost:8080/*",
         "http://localhost:4200/*"
       ],

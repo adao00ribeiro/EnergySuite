@@ -36,6 +36,7 @@ if [ "$SERVICE" = "all" ]; then
     build_and_deploy "mf-pricing" "frontend/mf-pricing"
     build_and_deploy "etrm-service" "backend/etrm-service"
     build_and_deploy "risk-service" "backend/risk-service"
+    build_and_deploy "keycloak" "infra/keycloak"
 else
     case $SERVICE in
         app-shell) build_and_deploy "app-shell" "frontend/app-shell" ;;
@@ -45,6 +46,7 @@ else
         mf-pricing) build_and_deploy "mf-pricing" "frontend/mf-pricing" ;;
         etrm-service) build_and_deploy "etrm-service" "backend/etrm-service" ;;
         risk-service) build_and_deploy "risk-service" "backend/risk-service" ;;
+        keycloak) build_and_deploy "keycloak" "infra/keycloak" ;;
         *)
             echo "❌ Serviço desconhecido: $SERVICE"
             echo "Opções válidas: app-shell, mf-hydrology, mf-operations, mf-portfolio, mf-pricing, etrm-service, risk-service, all"
