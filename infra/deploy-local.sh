@@ -7,6 +7,10 @@
 
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+cd "${PROJECT_ROOT}"
+
 SERVICE=${1:-"all"}
 
 echo "🚀 Configurando ambiente Docker para o Minikube..."
@@ -16,14 +20,14 @@ build_and_deploy() {
     local name=$1
     local path=$2
     echo "📦 [${name}] Compilando imagem diretamente no Minikube..."
-    docker build -t energysuite/${name}:latest "${path}"
+    docker build -t energysuite/${name}:latest "${PROJECT_ROOT}/${path}"
     echo "🔄 [${name}] Reiniciando pod no Kubernetes..."
     kubectl rollout restart deployment/${name} -n energysuite
 }
 
 if [ "$SERVICE" = "all" ]; then
     echo "⚡ Atualizando manifestos K8s..."
-    kubectl apply -k infra/k8s/overlays/prod
+    kubectl apply -k "${PROJECT_ROOT}/infra/k8s/overlays/prod"
 
     build_and_deploy "app-shell" "frontend/app-shell"
     build_and_deploy "mf-hydrology" "frontend/mf-hydrology"
