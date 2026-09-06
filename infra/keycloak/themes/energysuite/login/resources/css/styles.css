@@ -1,19 +1,63 @@
-/* Keycloak Custom Login Theme - EnergySuite Enterprise UI */
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap');
+/* ==========================================================================
+   EnergySuite Enterprise UI - Keycloak Custom Theme
+   Styled strictly following Angular Material 3 (M3) Design System Guidelines
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+
+:root {
+  /* Material 3 Color Tokens */
+  --mat-sys-primary: #0284c7;
+  --mat-sys-primary-hover: #0369a1;
+  --mat-sys-primary-container: #e0f2fe;
+  --mat-sys-on-primary: #ffffff;
+  
+  --mat-sys-surface: #ffffff;
+  --mat-sys-on-surface: #0f172a;
+  --mat-sys-on-surface-variant: #64748b;
+  
+  --mat-sys-outline: #cbd5e1;
+  --mat-sys-outline-focused: #0284c7;
+  
+  --mat-sys-error: #dc2626;
+  --mat-sys-error-container: #fef2f2;
+  --mat-sys-on-error: #ffffff;
+  
+  --mat-sys-bg-dark: #090d16;
+  --mat-sys-bg-gradient: radial-gradient(circle at 50% 30%, #1e293b 0%, #090d16 100%);
+  
+  /* Material 3 Elevation & Radius Tokens */
+  --mat-sys-radius-card: 20px;
+  --mat-sys-radius-input: 10px;
+  --mat-sys-radius-button: 24px;
+  --mat-elevation-z8: 0px 12px 32px -4px rgba(0, 0, 0, 0.35), 0px 4px 12px -2px rgba(0, 0, 0, 0.2);
+  --mat-elevation-glow: 0 0 30px rgba(2, 132, 199, 0.25);
+}
+
+/* Base resets & Layout */
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: #0F172A;
-  background: linear-gradient(135deg, #0F172A, #1E293B);
-  color: #F8FAFC;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--mat-sys-bg-dark);
+  background: var(--mat-sys-bg-gradient);
+  color: var(--mat-sys-on-surface);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
 }
 
-/* Hide default keycloak headers and stuff from base theme */
+/* Hide default Keycloak headers */
 #kc-header, #kc-page-title {
-  display: none;
+  display: none !important;
 }
+
 #kc-content {
   padding: 0 !important;
   margin: 0 !important;
@@ -22,139 +66,356 @@ body {
 }
 
 .login-wrapper {
+  position: relative;
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
   align-items: center;
   justify-content: center;
+  padding: 24px;
 }
 
+/* Ambient glow effect in background */
+.ambient-glow {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(2, 132, 199, 0.18) 0%, rgba(6, 182, 212, 0.05) 50%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(40px);
+}
+
+/* Angular Material Card (`mat-card`) */
 .login-card {
-  background-color: #ffffff;
-  border-radius: 12px;
-  padding: 48px;
+  position: relative;
+  z-index: 1;
+  background-color: var(--mat-sys-surface);
+  border-radius: var(--mat-sys-radius-card);
+  padding: 44px 38px;
   width: 100%;
-  max-width: 400px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  max-width: 420px;
+  box-shadow: var(--mat-elevation-z8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.3s ease;
 }
 
+/* Brand Section */
 .brand {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
 }
+
 .logo-icon {
-  width: 32px;
-  height: 32px;
-  background: #0369A1;
-  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
 }
+
+.energy-bolt {
+  width: 22px;
+  height: 22px;
+}
+
 .brand h2 {
-  font-family: 'Fira Code', monospace;
-  font-size: 24px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 26px;
   font-weight: 700;
-  color: #0F172A;
+  color: var(--mat-sys-on-surface);
   margin: 0;
+  letter-spacing: -0.5px;
 }
 
 .login-box {
   width: 100%;
-  text-align: center;
 }
 
 .login-box h1 {
-  font-family: 'Fira Code', monospace;
-  font-size: 28px;
-  font-weight: 700;
-  color: #0F172A;
-  margin: 0 0 12px 0;
+  font-family: 'Outfit', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+  margin: 0 0 6px 0;
+  text-align: center;
 }
+
 .login-box p {
-  color: #475569;
-  font-size: 15px;
-  margin: 0 0 32px 0;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 14px;
+  margin: 0 0 28px 0;
+  text-align: center;
 }
 
-.form-group {
+/* Keycloak Alert / Messages (styled as Material Card Alert) */
+.mat-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 10px;
   margin-bottom: 20px;
-  text-align: left;
-  position: relative;
-}
-.password-group {
-  position: relative;
-}
-.form-control {
-  width: 100%;
-  padding: 14px 16px;
-  border: 1px solid #CBD5E1;
-  border-radius: 8px;
-  font-size: 15px;
-  font-family: inherit;
-  box-sizing: border-box;
-  background-color: #F8FAFC;
-  color: #0F172A;
-  transition: all 0.2s ease;
-}
-#password {
-  padding-right: 48px; /* Room for the eye icon */
-}
-.form-control:focus {
-  outline: none;
-  border-color: #0369A1;
-  box-shadow: 0 0 0 3px rgba(3, 105, 161, 0.15);
-  background-color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  animation: fadeIn 0.3s ease;
 }
 
-.toggle-password {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: #64748B;
-  cursor: pointer;
-  padding: 4px;
+.mat-alert-error {
+  background-color: var(--mat-sys-error-container);
+  color: var(--mat-sys-error);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.mat-alert-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Angular Material Form Field (`mat-form-field`) */
+.mat-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mat-form-field {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+}
+
+.mat-form-field-flex {
+  display: flex;
+  align-items: center;
+  position: relative;
+  background-color: #f8fafc;
+  border: 1px solid var(--mat-sys-outline);
+  border-radius: var(--mat-sys-radius-input);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 54px;
+}
+
+.mat-form-field-prefix {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.2s;
-  outline: none;
-}
-.toggle-password:hover {
-  color: #0F172A;
+  padding-left: 14px;
+  color: var(--mat-sys-on-surface-variant);
+  transition: color 0.2s ease;
 }
 
+.mat-form-field-infix {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  height: 100%;
+}
+
+/* Angular Material Floating Input & Label */
+.mat-input {
+  width: 100%;
+  height: 52px;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--mat-sys-on-surface);
+  padding-top: 14px;
+}
+
+.mat-floating-label {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  color: var(--mat-sys-on-surface-variant);
+  pointer-events: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: left top;
+}
+
+/* Floating behavior on focus or non-empty input */
+.mat-input:focus ~ .mat-floating-label,
+.mat-input:not(:placeholder-shown) ~ .mat-floating-label {
+  top: 8px;
+  transform: translateY(0) scale(0.78);
+  font-weight: 500;
+  color: var(--mat-sys-primary);
+}
+
+/* Form Field Focus States */
+.mat-form-field-flex:focus-within {
+  border-color: var(--mat-sys-outline-focused);
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+  background-color: #ffffff;
+}
+
+.mat-form-field-flex:focus-within .mat-form-field-prefix {
+  color: var(--mat-sys-primary);
+}
+
+/* Suffix & Toggle Password Button */
+.mat-form-field-suffix {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 8px;
+}
+
+.mat-icon-button {
+  background: none;
+  border: none;
+  color: var(--mat-sys-on-surface-variant);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, color 0.2s;
+  outline: none;
+}
+
+.mat-icon-button:hover {
+  background-color: rgba(15, 23, 42, 0.06);
+  color: var(--mat-sys-on-surface);
+}
+
+/* Error Subscript State (`mat-error`) */
+.mat-form-field-subscript {
+  min-height: 18px;
+  padding-top: 4px;
+  padding-left: 4px;
+}
+
+.mat-error {
+  font-size: 12px;
+  color: var(--mat-sys-error);
+  font-weight: 500;
+  display: block;
+}
+
+.mat-form-field-invalid .mat-form-field-flex {
+  border-color: var(--mat-sys-error);
+  background-color: #fff8f8;
+}
+
+.mat-form-field-invalid .mat-input:focus ~ .mat-floating-label,
+.mat-form-field-invalid .mat-input:not(:placeholder-shown) ~ .mat-floating-label {
+  color: var(--mat-sys-error);
+}
+
+.mat-form-field-invalid .mat-form-field-prefix {
+  color: var(--mat-sys-error);
+}
+
+/* Actions Section */
 .form-actions {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-top: 24px;
-}
-.btn-submit {
-  width: 100%;
-  padding: 14px;
-  background-color: #0369A1;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.btn-submit:hover {
-  background-color: #0284c7;
-  transform: translateY(-1px);
+  margin-top: 8px;
 }
 
 .forgot-pwd {
-  color: #0369A1;
+  align-self: flex-end;
+  color: var(--mat-sys-primary);
   text-decoration: none;
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.forgot-pwd:hover {
+  color: var(--mat-sys-primary-hover);
+  text-decoration: underline;
+}
+
+/* Angular Material Raised Button (`mat-raised-button mat-primary`) */
+.mat-raised-button.mat-primary {
+  width: 100%;
+  height: 48px;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: var(--mat-sys-on-primary);
+  border: none;
+  border-radius: var(--mat-sys-radius-button);
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+  transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+  outline: none;
+}
+
+.mat-raised-button.mat-primary:hover {
+  background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
+  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
+  transform: translateY(-1px);
+}
+
+.mat-raised-button.mat-primary:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+}
+
+.btn-arrow {
+  transition: transform 0.2s ease;
+}
+
+.mat-raised-button.mat-primary:hover .btn-arrow {
+  transform: translateX(4px);
+}
+
+/* Keyframes for animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 32px 24px;
+    border-radius: 16px;
+  }
+  
+  .brand h2 {
+    font-size: 22px;
+  }
+  
+  .login-box h1 {
+    font-size: 21px;
+  }
 }

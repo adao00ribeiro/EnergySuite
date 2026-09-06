@@ -64,12 +64,28 @@
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
       "redirectUris": [
-        "*",
+        "http://localhost:4200/*",
+        "http://localhost:4200",
         "http://localhost:8080/*",
-        "http://localhost:4200/*"
+        "http://localhost:8080",
+        "http://localhost/*",
+        "http://localhost",
+        "http://127.0.0.1:4200/*",
+        "http://127.0.0.1:4200",
+        "http://127.0.0.1/*",
+        "http://127.0.0.1",
+        "http://energysuite.local/*",
+        "http://energysuite.local",
+        "http://energysuite.local:4200/*",
+        "http://energysuite.local:4200"
       ],
       "webOrigins": [
-        "*"
+        "+",
+        "http://localhost:4200",
+        "http://localhost:8080",
+        "http://localhost",
+        "http://energysuite.local",
+        "http://energysuite.local:4200"
       ],
       "fullScopeAllowed": true,
       "defaultRoles": [

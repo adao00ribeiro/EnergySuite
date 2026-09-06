@@ -40,9 +40,30 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
       KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
     # volumes:
     #   - kafka_data:/tmp/kraft-combined-logs
+    networks:
+      - energysuite-net
+
+  kafka-init:
+    image: apache/kafka:latest
+    container_name: energysuite-kafka-init
+    depends_on:
+      - kafka
+    entrypoint: [ "/bin/sh", "-c" ]
+    command: >
+      "
+      echo 'Aguardando Kafka...' &&
+      /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:19092 --create --if-not-exists --topic risk-events --partitions 1 --replication-factor 1 &&
+      /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:19092 --create --if-not-exists --topic ena-events --partitions 1 --replication-factor 1 &&
+      /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:19092 --create --if-not-exists --topic operation-events --partitions 1 --replication-factor 1 &&
+      /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:19092 --create --if-not-exists --topic study-execution-requested --partitions 1 --replication-factor 1 &&
+      /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:19092 --create --if-not-exists --topic contract-events --partitions 1 --replication-factor 1 &&
+      /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:19092 --create --if-not-exists --topic pluvia-events --partitions 1 --replication-factor 1 &&
+      echo 'Tópicos do Kafka inicializados automaticamente!'
+      "
     networks:
       - energysuite-net
 
@@ -146,9 +167,11 @@ services:
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=etrm_db;Username=root;Password=rootpassword
       - Kafka__BootstrapServers=kafka:19092
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4317
+      - KEYCLOAK_AUTHORITY=http://keycloak:8080/auth/realms/EnergySuite
     depends_on:
       - postgres
       - kafka
+      - kafka-init
       - tempo
     networks:
       - energysuite-net
@@ -184,6 +207,7 @@ services:
       dockerfile: Dockerfile
     container_name: energysuite-app-shell
     ports:
+      - "80:80"
       - "4200:80"
     depends_on:
       - keycloak

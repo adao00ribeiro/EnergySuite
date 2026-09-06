@@ -75,11 +75,12 @@ builder.Services.AddSignalR();
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(options =>
     {
-        options.Authority = builder.Configuration["KEYCLOAK_AUTHORITY"] ?? "http://keycloak:8080/realms/EnergySuite";
+        options.Authority = builder.Configuration["KEYCLOAK_AUTHORITY"] ?? "http://keycloak:8080/auth/realms/EnergySuite";
         options.RequireHttpsMetadata = false;
         options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
         {
-            ValidateAudience = false
+            ValidateAudience = false,
+            ValidateIssuer = false
         };
     });
 
