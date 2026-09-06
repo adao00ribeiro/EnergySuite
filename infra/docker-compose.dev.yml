@@ -137,6 +137,8 @@ services:
       KC_DB_PASSWORD: rootpassword
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HTTP_RELATIVE_PATH: "/auth"
+      KC_PROXY: "edge"
     ports:
       - "8083:8080"
     volumes:

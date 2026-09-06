@@ -15,8 +15,8 @@ RUN --mount=type=cache,target=/app/.angular/cache npm run build --configuration=
 
 # Final image using Nginx
 FROM nginx:alpine
-# Copy nginx configuration if needed
-RUN echo 'server { listen 80; location / { root /usr/share/nginx/html; index index.html; try_files $uri $uri/ /index.html; } }' > /etc/nginx/conf.d/default.conf
+# Copy nginx configuration with reverse proxy rules for backend services and MFEs
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy build artifacts to nginx public folder
 COPY --from=build /app/dist/app-shell/browser /usr/share/nginx/html

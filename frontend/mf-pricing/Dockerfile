@@ -17,7 +17,7 @@ RUN --mount=type=cache,target=/app/.angular/cache npm run build --configuration=
 FROM nginx:alpine
 
 # Copy nginx config for SPA routing and CORS if needed for MFE
-RUN echo 'server { listen 80; location / { root /usr/share/nginx/html; index index.html; try_files $uri $uri/ /mf-pricing/index.html; add_header Access-Control-Allow-Origin *; } }' > /etc/nginx/conf.d/default.conf
+RUN echo 'server { listen 80; location /mf-pricing/ { root /usr/share/nginx/html; index index.html; try_files $uri $uri/ /mf-pricing/index.html; add_header Access-Control-Allow-Origin *; } location / { root /usr/share/nginx/html/mf-pricing; index index.html; try_files $uri $uri/ /index.html; add_header Access-Control-Allow-Origin *; } }' > /etc/nginx/conf.d/default.conf
 
 # Copy build artifacts to nginx public folder
 COPY --from=build /app/dist/mf-pricing/browser /usr/share/nginx/html/mf-pricing

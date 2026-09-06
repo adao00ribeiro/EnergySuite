@@ -73,6 +73,8 @@ services:
       KC_DB_PASSWORD: rootpassword
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HTTP_RELATIVE_PATH: "/auth"
+      KC_PROXY: "edge"
     ports:
       - "8083:8080"
     volumes:
@@ -183,6 +185,14 @@ services:
     container_name: energysuite-app-shell
     ports:
       - "4200:80"
+    depends_on:
+      - keycloak
+      - etrm-service
+      - risk-service
+      - mf-portfolio
+      - mf-operations
+      - mf-pricing
+      - mf-hydrology
     networks:
       - energysuite-net
 
