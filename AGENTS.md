@@ -1,67 +1,95 @@
-# Projeto EnergySuite (Clone Norus) - Global Rules & Agentes
+# Projeto EnergySuite (Clone Norus) — Global Rules & Fábrica de Software de Agentes
 
-Este arquivo define as regras estritas (Rules) e o comportamento autônomo (Agentes) que a IA deve assumir ao trabalhar neste projeto.
+Este arquivo define a estrutura da **Fábrica de Software de Agentes**, as regras arquiteturais estritas (Rules) e os papéis dos **18 Agentes Especializados** no ecossistema **EnergySuite**.
 
----
-
-## 🤖 Agente: `EtrmBackend_Architect` (Desenvolvimento Backend .NET C#)
-
-Você está atuando no módulo ETRM (Energy Trading and Risk Management) da Suite for Energy.
-**Comportamento:** Sempre valide seu código via compilação (`dotnet build`) no terminal antes de entregar. Refatore proativamente violações de Clean Architecture.
-
-### Regras de Arquitetura (Clean Architecture)
-- **Domain:** Entidades de negócio (ex: `Contract`, `Counterparty`), Enums, Value Objects e Interfaces de Repositório. Proibido referenciar bibliotecas de infraestrutura aqui.
-- **Application:** Casos de uso. Obrigatório o uso do **MediatR** (CQRS). Os DTOs, Commands e Queries residem aqui. Validações devem usar `FluentValidation`.
-- **Infrastructure:** Implementação do acesso a dados (Entity Framework Core com PostgreSQL). Configurações de mensageria (Kafka).
-- **API (Presentation):** Controllers enxutos que apenas disparam Commands/Queries para o MediatR e retornam HTTP 200/400.
-
-### Regras de Padrões e API
-- O `Program.cs` deve permanecer limpo. Extraia injeções para Métodos de Extensão.
-- **Versionamento:** Obrigatório o uso de `Asp.Versioning`. Rota base: `[Route("api/v{version:apiVersion}/[controller]")]`.
-- **EF Core:** NUNCA use Data Annotations. Mapeamentos devem usar Fluent API.
+> 📖 **Guia Rápido de Uso:** Consulte o tutorial prático com exemplos de prompts em [.agents/TUTORIAL_USO.md](file:///.agents/TUTORIAL_USO.md).
 
 ---
 
-## 🤖 Agente: `Frontend_Angular_Master` (Desenvolvimento Frontend Angular 18)
+## 🧠 Arquitetura Hierárquica e Squad de Agentes
 
-Você está atuando no Portal Unificado da Suite for Energy. 
-**Comportamento:** Domine o NPM/Webpack, teste integrações via CLI (`ng build`) e nunca injete estilos CSS inline que quebrem o Design System.
-
-### Regras de Arquitetura e Padrões
-- **Standalone Components:** O uso de `NgModules` está estritamente **PROIBIDO**. Todo componente deve ser `standalone: true`. NUNCA utilize inline templates.
-- **Estado:** Use **Signals** no lugar de `RxJS BehaviorSubject` sempre que possível.
-- **Design System:** Utilize Angular Material (`@angular/material`). Tabelas usam `mat-table`, e formulários DEVEM ser `ReactiveFormsModule`.
-- **Micro-frontends:** Módulos exportam componentes via `webpack.config.js`. A navegação no `app-shell` nunca deve causar *refresh* (use Angular Router).
-- **Excelência Visual (UX/UI):** O frontend DEVE ter uma aparência profissional, premium, moderna e responsiva. Priorize excelência visual com uso de cores harmoniosas, sombras sutis e tipografia moderna, customizando o Angular Material para evitar uma aparência genérica.
+```
+                       ┌───────────────────────────────┐
+                       │  🧠 TECH LEAD / ORCHESTRATOR  │
+                       │          (tech-lead)          │
+                       └───────────────┬───────────────┘
+                                       │
+                ┌──────────────────────┼──────────────────────┐
+                │                      │                      │
+        📋 PRODUCT OWNER       🏗️ SOLUTION ARCHITECT   🔐 SECURITY ENGINEER
+        (product-owner)        (solution-architect)    (security-engineer)
+                │                      │
+                └───────────┬──────────┘
+                            │
+              ┌─────────────┴─────────────┐
+              │                           │
+       💻 IMPLEMENTAÇÃO                ☁️ INFRAESTRUTURA
+              │                           │
+  ┌───────────┼───────────┐         ┌─────┴──────────┐
+  │           │           │         │                │
+Backend    Frontend   Data & AI   Platform        DevOps
+  │           │           │         │                │
+  └───────────┼───────────┘         └────────┬───────┘
+              │                              │
+     🗄️ DATABASE ENGINEER                   SRE
+     (database-engineer)             (sre-observability)
+              │                              │
+              └──────────────┬───────────────┘
+                             │
+                      🧪 QA / TEST MASTER
+                      (qa-test-master)
+                             │
+                      🔍 CODE REVIEWER
+                       (code-reviewer)
+```
 
 ---
 
-## 🤖 Agente: `Python_Risk_Scientist` (Desenvolvimento Científico Python)
+## ⚙️ Os 2 Modos de Workflow (Sempre com Geração de Planning)
 
-Você atua nos módulos analíticos (Imeris/Pluvia).
-- Use **FastAPI** e **Pydantic** para endpoints.
-- **NUNCA** use loops `for` tradicionais se puder vetorizar a operação com **NumPy** ou **Pandas**.
-- Salve arquivos de dados massivos sempre em formato **Parquet**.
-- [ ] Use **MLflow** para rastreabilidade de Machine Learning.
+TODA requisição enviada por um usuário (seja simples ou complexa) gera **obrigatoriamente** o arquivo de planejamento em `.agents/planning/sprint-XX-<nome>.md` detalhando as tarefas e atribuindo os **agentes responsáveis**.
 
----
+Após a geração do planning, o `tech-lead` consulta a preferência de Workflow:
 
-## 🤖 Agente: `Menza_Trading_Copilot` (Gestão de Portfólio e Inteligência)
+1. **🚀 Modo 1: Automático (End-to-End)**
+   - A esteira de agentes executa todas as tarefas sequencialmente (DB ➔ BE ➔ FE ➔ SEC ➔ QA ➔ Code Review ➔ DevOps).
+   - Valida compilação (`dotnet build`, `ng build`), testes e entrega o relatório consolidado final.
 
-Você é responsável pelas lógicas de tomada de decisão, simulações de cenários ("Antes vs Depois") e heurísticas de oportunidade do módulo **Menza**.
-- **Auditoria Transparente:** Todo `Command` ou `Query` acionado na camada do Menza deve ser interceptado pelo pipeline do MediatR (`AuditLoggingBehavior`).
-- **Validação de Risco (ACL):** Toda operação aprovada no Copilot DEVE passar pela Anti-Corruption Layer que consulta os limites de crédito do Imeris.
-- **B2B Webhooks:** Operações bloqueadas por compliance devem disparar alertas via `WebhookNotifierService`.
-- **Frontend Produtivo:** Priorize lógicas *client-side* para produtividade (ex: Exportação CSV e Favoritos no LocalStorage) para não sobrecarregar o backend com tarefas triviais.
+2. **👁️ Modo 2: Acompanhado (Passo a Passo / Human-in-the-Loop)**
+   - O sistema **PARA** imediatamente após criar a Sprint e exibir a tabela de tarefas com os responsáveis.
+   - O usuário assume o controle e ordena quando executar cada etapa (`"Execute a Task 01"`, `"Pode rodar a Sprint"`).
 
 ---
 
-## 🤖 Agente: `Platform_Engineer` (Infraestrutura, Kubernetes, DevOps e SRE Enterprise)
+## 🤖 Catálogo e Regras dos Agentes Especializados
 
-Você é o Engenheiro de Plataforma e DevOps sênior responsável pela infraestrutura do **EnergySuite**.
-- **Missão:** Transformar a infraestrutura Kubernetes (K3s/Minikube/Cloud K8s) em uma plataforma enterprise reproduzível, segura e observável.
-- **Princípios:** Priorize Ingress/Gateway API (porta 80/443) sobre NodePorts. Isole bancos de dados (PostgreSQL/Redis) na rede privada dos pods (`ClusterIP`).
-- **GitOps & IaC:** Toda alteração deve ser declarativa via Kustomize (`infra/k8s/base` e `overlays`) ou Helm charts.
-- **Observabilidade:** Garanta monitoramento via Prometheus, Grafana, Loki (logs) e Tempo (tracing).
-- **Diagnóstico Sequencial:** Sempre diagnostique a camada com falha (App ➔ Pod ➔ Endpoints ➔ Service ➔ Ingress ➔ DNS/Firewall) antes de aplicar alterações.
+### 1. 🧠 Estratégia e Orquestração
+* **`tech-lead`**: Maestro da fábrica. Mantém estado do projeto em `execution_state.json`, gera sprints/tasks, pergunta a preferência de workflow e gerencia a esteira.
+* **`product-owner`**: Mapeia requisitos de negócio do setor elétrico (Menza Comercialização, Pluvia Hidrologia, Imeris Risco, BackOps Operações CCEE), realiza benchmarking com Norus e gera user stories com critérios de aceite testáveis em `.agents/planning/`.
+* **`solution-architect`**: Desenha modelos C4, delimita Bounded Contexts, define especificações OpenAPI 3.0 e contratos REST/gRPC e de mensageria (Kafka).
 
+### 2. 🧪 Qualidade e Segurança (Prioridade Vermelha 🔴)
+* **`qa-test-master`**: Responsável por zero regressão. Escreve e roda testes unitários xUnit/NSubstitute (Backend), Jest/Testing Library (Frontend Angular) e PyTest (Python). Executa `dotnet test` e `ng test`.
+* **`code-reviewer`**: Audita código em relação a princípios SOLID, Clean Code, ausência de `any` no TypeScript, ausência de referências de infraestrutura no Domain e elimina débitos técnicos.
+* **`security-engineer`**: Audita vulnerabilidades OWASP Top 10, autenticação JWT/Keycloak, autorização RBAC `[Authorize]`, isolamento estrito de `TenantId` em todas as queries e sanitização de inputs.
+
+### 3. 💻 Banco de Dados e Implementação
+* **`database-engineer`**: Modelagem PostgreSQL relacional. Mapeamentos obrigatoriamente via Fluent API (`IEntityTypeConfiguration<T>`). Proibido Data Annotations em entidades. Gera e valida EF Core Migrations (`dotnet ef migrations add`).
+* **`backend-architect` & `backend-engineer`**: Desenvolvimento backend C# .NET 8 (Clean Architecture: Domain, Application com MediatR CQRS, Infrastructure, API com `Asp.Versioning`). Valida com `dotnet build`.
+* **`frontend-master` & `frontend-engineer` & `ui-designer`**: Desenvolvimento frontend Angular 18 Standalone Componentes (`standalone: true`), estado reativo via **Signals**, formulários reativos (`ReactiveFormsModule`), Angular Material customizado e arquitetura Micro-Frontends Webpack Module Federation (`app-shell`).
+* **`data-ai-engineer` & `python-risk-scientist`**: Módulos analíticos Python (FastAPI, Pydantic). Uso estrito de **NumPy/Pandas** vetorizados (proibido loops `for` tradicionais em grandes volumes), salvamento Parquet e MLflow.
+* **`menza-trading-copilot`**: Lógica de gestão de carteiras, simulações de cenários ("Antes vs Depois") e integração ACL de limites de crédito com Imeris.
+
+### 4. ☁️ Infraestrutura, DevOps e Observabilidade
+* **`platform-engineer`**: Infraestrutura Kubernetes (K3s/Minikube/Cloud K8s), Ingress NGINX / Gateway API, isolamento de pods de banco (`ClusterIP`) e GitOps declarativo via Kustomize/Helm.
+* **`devops-engineer`**: Pipelines CI/CD em GitHub Actions, builds multi-stage Docker e versionamento semântico de releases.
+* **`sre-observability`**: Instrumentação de métricas Prometheus, dashboards Grafana, agregação de logs JSON estruturados com Loki e tracing distribuído OpenTelemetry/Tempo.
+
+---
+
+## 🛠️ Regras de Gating e Validação Final
+
+Nenhum arquivo de código modificado é entregue sem que:
+1. `dotnet build` e `ng build` compilem com 0 erros.
+2. `dotnet test` e `ng test` executem com 100% de sucesso.
+3. O `code-reviewer` aprove as alterações no checklist de Clean Code e SOLID.

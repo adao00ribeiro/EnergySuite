@@ -89,4 +89,18 @@ Este documento rastreia todos os débitos técnicos gerados pelo uso de mocks na
 ## 11. Dados de Uso Não Utilizados (Backend — baixa prioridade)
 | Status | ID | Descrição | Localização |
 |---|---|---|---|
-| CONCLUÍDA | BK-16 | DbSets declarados sem uso: `Persons`, `EconomicGroups`, `PriceIndexValues`, `DocumentAttachments`, `ContractAmendments` (via DbSet). Verificar se pertencem a escopo futuro (cadastro) ou remover. *Decisão: MANTIDOS (domínio de cadastro; EconomicGroups usado na resolução de contraparte CCEE).* | `EtrmService.Infrastructure/Persistence/EtrmDbContext.cs:18-31` |
+| CONCLUÍDA | BK-16 | DbSets declarados sem uso: `Persons`, `EconomicGroups`, `PriceIndexValues`, `DocumentAttachments`, `ContractAmendments` (via DbSet). Verificar se pertencem a escopo futuro (cadastro) ou remover. *Decisão: MANTIDOS (domínio de cadastro; EconomicGroups usado na resolução de counterparty CCEE).* | `EtrmService.Infrastructure/Persistence/EtrmDbContext.cs:18-31` |
+
+## 12. Sprint 16 — Auditoria Global de Arquitetura & Plano de Melhorias (Modo Acompanhado)
+| Status | ID | Descrição | Agente Responsável |
+|---|---|---|---|
+| PENDING | TASK-16-01 | Mapeamento EF Core e DbSet para Simulation e Opportunity | `database-engineer` |
+| PENDING | TASK-16-02 | Criar CceeIntegrationController para endpoints CQRS CCEE | `backend-engineer` |
+| PENDING | TASK-16-03 | Eliminar 26 avisos C# CS8618 (non-nullable properties) | `code-reviewer` |
+| PENDING | TASK-16-04 | Criar TenantScopeValidationFilter global para isolamento RBAC/Tenant | `security-engineer` |
+| PENDING | TASK-16-05 | Suite de testes unitários xUnit para CCEE Handlers e ProspectController | `qa-test-master` |
+| PENDING | TASK-16-06 | UserSignalStore reativo no app-shell para sincronização entre MFEs | `frontend-master` |
+| PENDING | TASK-16-07 | Resiliência e backoff exponencial no consumidor Kafka Python (risk-service) | `data-ai-engineer` |
+| PENDING | TASK-16-08 | Coleta de métricas customizadas de negócios no Prometheus | `sre-observability` |
+| PENDING | TASK-16-09 | Publicar especificação OpenAPI 3.0 unificada com Bounded Contexts | `solution-architect` |
+

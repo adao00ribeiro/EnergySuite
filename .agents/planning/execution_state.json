@@ -1,0 +1,72 @@
+{
+  "sprint": "Sprint 16",
+  "name": "Auditoria Global de Arquitetura & Plano de Melhorias",
+  "mode": "ACCOMPANIED",
+  "status": "COMPLETED",
+  "updatedAt": "2026-09-07T09:38:00-03:00",
+  "tasks": [
+    {
+      "id": "TASK-16-01",
+      "discipline": "Database",
+      "agent": "database-engineer",
+      "description": "Registrar DbSets e mapeamentos Fluent API para Simulation e Opportunity no EtrmDbContext e gerar migration EF Core.",
+      "status": "DONE"
+    },
+    {
+      "id": "TASK-16-02",
+      "discipline": "Backend",
+      "agent": "backend-engineer",
+      "description": "Criar CceeIntegrationController expondo os endpoints CQRS para upload de CLIQ CSV, geração de XML CCEAL e comparações.",
+      "status": "DONE"
+    },
+    {
+      "id": "TASK-16-03",
+      "discipline": "Code Review",
+      "agent": "code-reviewer",
+      "description": "Eliminar avisos CS8618 de propriedades non-nullable adicionando o modificador required ou inicializadores nas entidades e DTOs.",
+      "status": "DONE"
+    },
+    {
+      "id": "TASK-16-04",
+      "discipline": "Security",
+      "agent": "security-engineer",
+      "description": "Implementar TenantScopeValidationFilter global para garantir isolamento estrito de TenantId em todas as rotas da API ETRM.",
+      "status": "DONE"
+    },
+    {
+      "id": "TASK-16-05",
+      "discipline": "QA",
+      "agent": "qa-test-master",
+      "description": "Criar suite de testes unitários xUnit para os handlers CceeIntegration e ProspectController elevando a cobertura de testes.",
+      "status": "DONE"
+    },
+    {
+      "id": "TASK-16-06",
+      "discipline": "Frontend",
+      "agent": "frontend-master",
+      "description": "Implementar sincronização de estado reativo de usuário (UserSignalStore) entre o app-shell e os 4 micro-frontends.",
+      "status": "DONE"
+    },
+    {
+      "id": "TASK-16-07",
+      "discipline": "Data & AI",
+      "agent": "data-ai-engineer",
+      "description": "Implementar estratégia de retry com backoff exponencial no consumidor Kafka do risk-service Python.",
+      "status": "DONE"
+    },
+    {
+      "id": "TASK-16-08",
+      "discipline": "Observability",
+      "agent": "sre-observability",
+      "description": "Adicionar métricas de negócios Prometheus (energy_trades_processed, ccee_xml_generated_total) na API .NET.",
+      "status": "DONE"
+    },
+    {
+      "id": "TASK-16-09",
+      "discipline": "Architecture",
+      "agent": "solution-architect",
+      "description": "Gerar e publicar documentação Swagger/OpenAPI 3.0 unificada com especificação de todos os Bounded Contexts.",
+      "status": "DONE"
+    }
+  ]
+}
