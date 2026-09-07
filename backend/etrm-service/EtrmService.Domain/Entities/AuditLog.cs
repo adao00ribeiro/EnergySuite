@@ -5,11 +5,11 @@ namespace EtrmService.Domain.Entities;
 public class AuditLog
 {
     public Guid Id { get; private set; }
-    public string EntityName { get; private set; }
-    public string EntityId { get; private set; }
-    public string Action { get; private set; } // Created, Updated, Deleted, StateChanged
-    public string ChangesJson { get; private set; }
-    public string ChangedBy { get; private set; } // Username or Id
+    public string EntityName { get; private set; } = string.Empty;
+    public string EntityId { get; private set; } = string.Empty;
+    public string Action { get; private set; } = string.Empty; // Created, Updated, Deleted, StateChanged
+    public string ChangesJson { get; private set; } = string.Empty;
+    public string ChangedBy { get; private set; } = string.Empty; // Username or Id
     public DateTime ChangedAt { get; private set; }
     public Guid TenantId { get; private set; }
 

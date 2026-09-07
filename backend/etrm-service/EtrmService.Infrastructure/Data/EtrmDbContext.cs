@@ -50,6 +50,9 @@ public class EtrmDbContext : DbContext, IEtrmDbContext
     // Sprint 7: Strategies
     public DbSet<Strategy> Strategies { get; set; }
 
+    // Sprint 12: App Settings
+    public DbSet<AppSetting> AppSettings { get; set; }
+
     // Sprint 16: Opportunities & Simulations
     public DbSet<Opportunity> Opportunities { get; set; }
     public DbSet<Simulation> Simulations { get; set; }

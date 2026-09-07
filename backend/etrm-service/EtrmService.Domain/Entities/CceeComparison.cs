@@ -8,7 +8,7 @@ public class CceeComparison
     public Guid Id { get; set; }
     public Guid? OperationId { get; set; } // Can be null if it's from CCEE but we don't have it
     public Guid? CounterpartyId { get; set; }
-    public string CounterpartyCceeCode { get; set; }
+    public string CounterpartyCceeCode { get; set; } = string.Empty;
     public DateTime Period { get; set; }
     public decimal BackOpsVolume { get; set; }
     public decimal CceeVolume { get; set; }

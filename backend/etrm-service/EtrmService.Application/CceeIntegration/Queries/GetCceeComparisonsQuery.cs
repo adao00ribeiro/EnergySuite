@@ -14,12 +14,12 @@ public class CceeComparisonDto
 {
     public Guid Id { get; set; }
     public Guid? OperationId { get; set; }
-    public string CounterpartyCceeCode { get; set; }
+    public string CounterpartyCceeCode { get; set; } = string.Empty;
     public DateTime Period { get; set; }
     public decimal BackOpsVolume { get; set; }
     public decimal CceeVolume { get; set; }
     public decimal Difference { get; set; }
-    public string Status { get; set; }
+    public string Status { get; set; } = string.Empty;
 }
 
 public class GetCceeComparisonsQuery : IRequest<List<CceeComparisonDto>>

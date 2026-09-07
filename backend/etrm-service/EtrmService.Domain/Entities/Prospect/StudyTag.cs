@@ -6,10 +6,10 @@ public class StudyTag
 {
     public Guid Id { get; private set; }
     public Guid StudyId { get; private set; }
-    public string Name { get; private set; }
-    public string ColorHex { get; private set; }
+    public string Name { get; private set; } = string.Empty;
+    public string ColorHex { get; private set; } = string.Empty;
 
-    public Study Study { get; private set; }
+    public Study Study { get; private set; } = null!;
 
     protected StudyTag() { }
 
