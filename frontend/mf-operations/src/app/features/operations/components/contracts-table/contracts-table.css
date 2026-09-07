@@ -30,6 +30,10 @@
 .search-input:focus {
   border-color: var(--accent-indigo);
 }
+.search-input::placeholder {
+  color: var(--color-muted-foreground);
+  opacity: 1;
+}
 .btn-icon {
   background: color-mix(in srgb, var(--color-foreground) 5%, transparent);
   border: 1px solid var(--color-border);

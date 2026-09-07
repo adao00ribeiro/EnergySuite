@@ -239,19 +239,97 @@ body:not(.light-theme) .mat-mdc-dialog-actions button[mat-button],
   border-radius: 8px !important;
 }
 
-/* Dark Mode Form Fields */
+/* Dark Mode Form Fields & Controls (High Contrast Light Text) */
 body:not(.light-theme) .mat-mdc-form-field,
 .glass-panel-dialog .mat-mdc-form-field {
-  --mdc-outlined-text-field-outline-color: rgba(255, 255, 255, 0.18) !important;
+  --mdc-outlined-text-field-outline-color: rgba(255, 255, 255, 0.22) !important;
   --mdc-outlined-text-field-hover-outline-color: #60a5fa !important;
   --mdc-outlined-text-field-focus-outline-color: #3b82f6 !important;
+
   --mdc-outlined-text-field-label-text-color: #94a3b8 !important;
   --mdc-outlined-text-field-hover-label-text-color: #cbd5e1 !important;
   --mdc-outlined-text-field-focus-label-text-color: #60a5fa !important;
+
   --mdc-outlined-text-field-input-text-color: #f8fafc !important;
+  --mdc-outlined-text-field-input-text-placeholder-color: #94a3b8 !important;
+  --mdc-outlined-text-field-caret-color: #3b82f6 !important;
+
   --mat-select-enabled-trigger-text-color: #f8fafc !important;
   --mat-select-arrow-color: #94a3b8 !important;
   --mat-datepicker-toggle-icon-color: #94a3b8 !important;
+}
+
+/* Explicit Dark Mode Text Color Overrides for Form Inputs and Select Triggers */
+body:not(.light-theme) .mat-mdc-input-element,
+body:not(.light-theme) input.mat-mdc-input-element,
+body:not(.light-theme) textarea.mat-mdc-input-element,
+body:not(.light-theme) .mdc-text-field__input,
+body:not(.light-theme) .mat-mdc-select-value,
+body:not(.light-theme) .mat-mdc-select-value-text,
+body:not(.light-theme) .mat-mdc-select-trigger,
+body:not(.light-theme) .mat-mdc-select-min-line,
+.glass-panel-dialog .mat-mdc-input-element,
+.glass-panel-dialog input.mat-mdc-input-element,
+.glass-panel-dialog textarea.mat-mdc-input-element,
+.glass-panel-dialog .mat-mdc-select-value,
+.glass-panel-dialog .mat-mdc-select-value-text,
+.glass-panel-dialog .mat-mdc-select-trigger {
+  color: #f8fafc !important;
+  -webkit-text-fill-color: #f8fafc !important;
+}
+
+/* Floating labels in Dark Mode */
+body:not(.light-theme) .mat-mdc-form-field .mdc-floating-label,
+body:not(.light-theme) .mat-mdc-form-field .mat-mdc-floating-label,
+body:not(.light-theme) .mat-mdc-form-field mat-label,
+body:not(.light-theme) .mdc-text-field--outlined .mdc-floating-label,
+.glass-panel-dialog .mat-mdc-form-field .mdc-floating-label,
+.glass-panel-dialog .mat-mdc-form-field .mat-mdc-floating-label,
+.glass-panel-dialog .mat-mdc-form-field mat-label {
+  color: #94a3b8 !important;
+  -webkit-text-fill-color: #94a3b8 !important;
+}
+
+body:not(.light-theme) .mat-mdc-form-field.mat-focused .mdc-floating-label,
+body:not(.light-theme) .mat-mdc-form-field.mat-focused .mat-mdc-floating-label,
+body:not(.light-theme) .mat-mdc-form-field.mat-focused mat-label,
+.glass-panel-dialog .mat-mdc-form-field.mat-focused .mdc-floating-label,
+.glass-panel-dialog .mat-mdc-form-field.mat-focused mat-label {
+  color: #60a5fa !important;
+  -webkit-text-fill-color: #60a5fa !important;
+}
+
+body:not(.light-theme) .mat-mdc-select-placeholder,
+.glass-panel-dialog .mat-mdc-select-placeholder {
+  color: #94a3b8 !important;
+  -webkit-text-fill-color: #94a3b8 !important;
+}
+
+body:not(.light-theme) .mat-mdc-input-element::placeholder,
+body:not(.light-theme) input.mat-mdc-input-element::placeholder,
+body:not(.light-theme) textarea.mat-mdc-input-element::placeholder,
+body:not(.light-theme) input::placeholder,
+body:not(.light-theme) textarea::placeholder,
+.glass-panel-dialog .mat-mdc-input-element::placeholder,
+.glass-panel-dialog input::placeholder {
+  color: #94a3b8 !important;
+  -webkit-text-fill-color: #94a3b8 !important;
+  opacity: 1 !important;
+}
+
+body:not(.light-theme) mat-error,
+.glass-panel-dialog mat-error {
+  color: #f87171 !important;
+  font-weight: 500 !important;
+}
+
+body:not(.light-theme) input:not(.mat-mdc-input-element),
+body:not(.light-theme) select:not(.mat-mdc-select),
+body:not(.light-theme) textarea:not(.mat-mdc-input-element),
+body:not(.light-theme) .input {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border: 1px solid #334155 !important;
 }
 
 /* Light Mode Form Fields */
@@ -290,10 +368,40 @@ body:not(.light-theme) .mat-mdc-option {
   border-radius: 6px !important;
 }
 
+body:not(.light-theme) .mat-mdc-option.mdc-list-item--disabled {
+  color: rgba(248, 250, 252, 0.38) !important;
+}
+
 body:not(.light-theme) .mat-mdc-option:hover:not(.mdc-list-item--disabled),
 body:not(.light-theme) .mat-mdc-option.mdc-list-item--selected {
   background: rgba(59, 130, 246, 0.15) !important;
   color: #60a5fa !important;
+}
+
+/* Datepicker Popup Dark Mode Styling */
+body:not(.light-theme) .cdk-overlay-container .mat-datepicker-content {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5) !important;
+}
+
+body:not(.light-theme) .cdk-overlay-container .mat-calendar-body-cell-content {
+  color: #cbd5e1 !important;
+}
+
+body:not(.light-theme) .cdk-overlay-container .mat-calendar-body-selected {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+body:not(.light-theme) .cdk-overlay-container .mat-calendar-table-header,
+body:not(.light-theme) .cdk-overlay-container .mat-calendar-period-button,
+body:not(.light-theme) .cdk-overlay-container .mat-calendar-arrow {
+  color: #f8fafc !important;
+  fill: #f8fafc !important;
 }
 
 body.light-theme .mat-mdc-option {
