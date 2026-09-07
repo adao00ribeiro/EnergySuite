@@ -304,17 +304,41 @@ body:not(.light-theme) .mat-mdc-select-placeholder,
   -webkit-text-fill-color: #94a3b8 !important;
 }
 
-body:not(.light-theme) .mat-mdc-input-element::placeholder,
-body:not(.light-theme) input.mat-mdc-input-element::placeholder,
-body:not(.light-theme) textarea.mat-mdc-input-element::placeholder,
-body:not(.light-theme) input::placeholder,
-body:not(.light-theme) textarea::placeholder,
-.glass-panel-dialog .mat-mdc-input-element::placeholder,
-.glass-panel-dialog input::placeholder {
+/* Native Standalone Inputs Placeholder */
+body:not(.light-theme) input:not(.mat-mdc-input-element)::placeholder,
+body:not(.light-theme) textarea:not(.mat-mdc-input-element)::placeholder {
   color: #94a3b8 !important;
   -webkit-text-fill-color: #94a3b8 !important;
   opacity: 1 !important;
 }
+
+/* Material MDC Form Fields Placeholder (Prevents overlap with resting mat-label) */
+body:not(.light-theme) .mat-mdc-form-field .mat-mdc-input-element::placeholder,
+body:not(.light-theme) .mat-mdc-form-field input.mat-mdc-input-element::placeholder,
+body:not(.light-theme) .mat-mdc-form-field textarea.mat-mdc-input-element::placeholder,
+.glass-panel-dialog .mat-mdc-form-field .mat-mdc-input-element::placeholder {
+  color: #94a3b8 !important;
+  -webkit-text-fill-color: #94a3b8 !important;
+  transition: opacity 150ms ease !important;
+}
+
+/* Hide placeholder when field is idle & empty so mat-label sits cleanly without text collision */
+body:not(.light-theme) .mat-mdc-form-field:not(.mat-focused):not(.mat-form-field-should-float):not(.mat-mdc-form-field-should-float) .mat-mdc-input-element::placeholder,
+.glass-panel-dialog .mat-mdc-form-field:not(.mat-focused):not(.mat-form-field-should-float):not(.mat-mdc-form-field-should-float) .mat-mdc-input-element::placeholder {
+  opacity: 0 !important;
+}
+
+/* Show placeholder when field is focused or label floats above */
+body:not(.light-theme) .mat-mdc-form-field.mat-focused .mat-mdc-input-element::placeholder,
+body:not(.light-theme) .mat-mdc-form-field.mat-form-field-should-float .mat-mdc-input-element::placeholder,
+body:not(.light-theme) .mat-mdc-form-field.mat-mdc-form-field-should-float .mat-mdc-input-element::placeholder,
+.glass-panel-dialog .mat-mdc-form-field.mat-focused .mat-mdc-input-element::placeholder,
+.glass-panel-dialog .mat-mdc-form-field.mat-form-field-should-float .mat-mdc-input-element::placeholder,
+.glass-panel-dialog .mat-mdc-form-field.mat-mdc-form-field-should-float .mat-mdc-input-element::placeholder {
+  opacity: 1 !important;
+  color: #94a3b8 !important;
+}
+
 
 body:not(.light-theme) mat-error,
 .glass-panel-dialog mat-error {

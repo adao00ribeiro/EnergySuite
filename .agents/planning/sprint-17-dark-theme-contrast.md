@@ -1,4 +1,4 @@
-# 📋 Sprint 17 — Ajuste Global de Tema Escuro e Contraste de Frontend
+# 📋 Sprint 17 — Ajuste Global de Tema Escuro e Correção de Sobreposição de Labels
 
 > **Status:** COMPLETED 🟢  
 > **Modo de Execução:** AUTOMATIC (End-to-End)  
@@ -9,7 +9,8 @@
 
 ## 🎯 Objetivos da Sprint
 
-Ajustar e padronizar o tema escuro (`body:not(.light-theme)`) em todos os micro-frontends do **EnergySuite** (`app-shell`, `mf-operations`, `mf-portfolio`, `mf-hydrology`, `mf-pricing`), eliminando qualquer texto escuro/opaco em fundo escuro, melhorando o contraste de labels, placeholders, formulários, modais, selects e tabelas.
+1. Ajustar e padronizar o tema escuro (`body:not(.light-theme)`) em todos os micro-frontends do **EnergySuite** (`app-shell`, `mf-operations`, `mf-portfolio`, `mf-hydrology`, `mf-pricing`), eliminando texto escuro/opaco em fundo escuro.
+2. **Correção do Bug de Sobreposição de Letras**: Corrigir a colisão/sobreposição visual entre os rótulos do Angular Material (`<mat-label>`) e o atributo `placeholder="..."` que ocorria nos campos não focados e vazios.
 
 ---
 
@@ -17,29 +18,21 @@ Ajustar e padronizar o tema escuro (`body:not(.light-theme)`) em todos os micro-
 
 | ID | Disciplina | Agente Atribuído | Descrição | Status |
 | :--- | :--- | :--- | :--- | :---: |
-| **TASK-17-01** | Frontend | 🎨 `frontend-master` | Sobrescrever variáveis CSS e MDC form fields (`--mdc-outlined-text-field-*`, `-webkit-text-fill-color`, `mat-label`, `placeholder`) com texto claro `#f8fafc` e tom legível `#94a3b8` nos 5 micro-frontends. | **DONE** |
-| **TASK-17-02** | QA & Acessibilidade | 🧪 `qa-test-master` | Auditar contraste de formulários nativos (`contracts-table` search input), subtítulos de modais (`.dialog-subtitle`), opacidade de opções desabilitadas (`.mdc-list-item--disabled`) e popovers (`mat-datepicker`). | **DONE** |
-| **TASK-17-03** | Segurança | 🔐 `security-engineer` | Garantir sanitização de entradas em formulários e proteção de opacidade em elementos de segurança (inputs de senha, tokens e dados sensíveis). | **DONE** |
-| **TASK-17-04** | Code Review | 🔍 `code-reviewer` | Refatorar seletores CSS/SCSS evitando acoplamento e garantindo integridade das folhas de estilo dos micro-frontends em tempo de execução via Webpack Module Federation. | **DONE** |
+| **TASK-17-01** | Frontend | 🎨 `frontend-master` | Sobrescrever variáveis CSS e MDC form fields com texto claro `#f8fafc` e tom legível `#94a3b8` nos 5 micro-frontends. | **DONE** |
+| **TASK-17-02** | QA & Acessibilidade | 🧪 `qa-test-master` | Identificar e corrigir o bug de sobreposição de `mat-label` x `placeholder` aplicando `opacity: 0` no estado inativo e `opacity: 1` apenas no estado focado (`.mat-focused`). | **DONE** |
+| **TASK-17-03** | Segurança | 🔐 `security-engineer` | Garantir sanitização de entradas em formulários e proteção de opacidade em elementos de segurança. | **DONE** |
+| **TASK-17-04** | Code Review | 🔍 `code-reviewer` | Refatorar seletores CSS/SCSS garantindo transição suave de opacidade nos placeholders (`transition: opacity 150ms ease`). | **DONE** |
 | **TASK-17-05** | DevOps & Build | ☁️ `devops-engineer` | Compilar os pacotes de produção/desenvolvimento de todos os 5 projetos (`app-shell`, `mf-operations`, `mf-portfolio`, `mf-hydrology`, `mf-pricing`) garantindo 0 erros. | **DONE** |
 
 ---
 
 ## 🚀 Resultados da Execução
 
-1. **Campos de Entrada e Formulários (Form Fields & Inputs)**:
-   - Forçado contraste de texto em branco suave (`#f8fafc`) e `-webkit-text-fill-color` nos navegadores Webkit.
-   - Placeholders ajustados para tom visível e nítido (`#94a3b8` / `opacity: 1`).
-   - Labels ativas em `#60a5fa` e inativas em `#94a3b8`.
+1. **Correção da Sobreposição de Rótulos (Sem Letras Misturadas)**:
+   - **Campo Vazio / Inativo**: O `placeholder` fica oculto (`opacity: 0 !important`), exibindo exclusivamente o `<mat-label>` ("CNPJ*", "Razão Social*", "Nome Fantasia*") de forma limpa e centralizada.
+   - **Campo Focado**: Ao clicar no campo, o `<mat-label>` desliza suavemente para o entalhe superior da borda, e o `placeholder` ("00.000.000/0000-00", "Razão social completa") surge em `#94a3b8` (`opacity: 1 !important`).
 
-2. **Modais e Diálogos de Sistema (`mat-dialog`)**:
-   - Subtítulos de modais atualizados para `#cbd5e1` garantindo taxa WCAG AAA de contraste em fontes pequenas.
-   - Popups de data (`mat-datepicker-content`) padronizados com fundo escuro `#1e293b` e texto claro.
-
-3. **Dropdowns & Selects (`mat-select`, `mat-option`)**:
-   - Opções ativas, selecionadas e desabilitadas com contraste calibrado.
-
-4. **Validação de Build (0 Erros)**:
+2. **Validação de Build (0 Erros)**:
    - `app-shell`: **SUCCESS** (Exit 0)
    - `mf-operations`: **SUCCESS** (Exit 0)
    - `mf-portfolio`: **SUCCESS** (Exit 0)
