@@ -6,13 +6,13 @@ public class StudyFile
 {
     public Guid Id { get; private set; }
     public Guid StudyId { get; private set; }
-    public string FileName { get; private set; }
-    public string StoragePath { get; private set; }
-    public string FileType { get; private set; } // e.g., ZIP, DAT, XLSX
+    public string FileName { get; private set; } = string.Empty;
+    public string StoragePath { get; private set; } = string.Empty;
+    public string FileType { get; private set; } = string.Empty; // e.g., ZIP, DAT, XLSX
     public long SizeBytes { get; private set; }
     public DateTime UploadedAt { get; private set; }
 
-    public Study Study { get; private set; }
+    public Study Study { get; private set; } = null!;
 
     protected StudyFile() { }
 

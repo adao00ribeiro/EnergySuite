@@ -7,9 +7,9 @@ namespace EtrmService.Domain.Entities.Prospect;
 public class Study
 {
     public Guid Id { get; private set; }
-    public string Name { get; private set; }
-    public string Description { get; private set; }
-    public string Model { get; private set; } // e.g., NEWAVE, DECOMP
+    public string Name { get; private set; } = string.Empty;
+    public string Description { get; private set; } = string.Empty;
+    public string Model { get; private set; } = string.Empty; // e.g., NEWAVE, DECOMP
     public DateTime StartDate { get; private set; }
     public int HorizonMonths { get; private set; }
     public StudyState State { get; private set; }

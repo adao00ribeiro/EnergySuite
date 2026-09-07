@@ -4,7 +4,7 @@ namespace EtrmService.Application.Prospect.DTOs;
 
 public class StudyResultDto
 {
-    public string Month { get; set; }
+    public string Month { get; set; } = string.Empty;
     public decimal PldSE { get; set; }
     public decimal PldS { get; set; }
     public decimal PldNE { get; set; }

@@ -49,5 +49,9 @@ public interface IEtrmDbContext
     // Sprint 12: App Settings
     DbSet<AppSetting> AppSettings { get; set; }
 
+    // Sprint 16: Opportunities & Simulations
+    DbSet<Opportunity> Opportunities { get; set; }
+    DbSet<Simulation> Simulations { get; set; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

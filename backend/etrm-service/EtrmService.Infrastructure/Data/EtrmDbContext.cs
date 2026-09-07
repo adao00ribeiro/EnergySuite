@@ -50,8 +50,9 @@ public class EtrmDbContext : DbContext, IEtrmDbContext
     // Sprint 7: Strategies
     public DbSet<Strategy> Strategies { get; set; }
 
-    // Sprint 12: App Settings
-    public DbSet<AppSetting> AppSettings { get; set; }
+    // Sprint 16: Opportunities & Simulations
+    public DbSet<Opportunity> Opportunities { get; set; }
+    public DbSet<Simulation> Simulations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -68,6 +69,8 @@ public class EtrmDbContext : DbContext, IEtrmDbContext
         modelBuilder.Entity<Portfolio>().HasQueryFilter(c => c.TenantId == _currentUserService.TenantId);
         modelBuilder.Entity<Strategy>().HasQueryFilter(c => c.TenantId == _currentUserService.TenantId);
         modelBuilder.Entity<AppSetting>().HasQueryFilter(c => c.TenantId == _currentUserService.TenantId);
+        modelBuilder.Entity<Opportunity>().HasQueryFilter(o => o.TenantId == _currentUserService.TenantId);
+        modelBuilder.Entity<Simulation>().HasQueryFilter(s => s.TenantId == _currentUserService.TenantId);
         
         base.OnModelCreating(modelBuilder);
     }

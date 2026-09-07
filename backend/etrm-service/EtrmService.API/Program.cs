@@ -49,8 +49,11 @@ builder.Services.AddRateLimiter(options =>
     };
 });
 
-// Configuração Global de JSON
-builder.Services.AddControllers()
+// Configuração Global de JSON & Filtros
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<TenantScopeValidationFilter>();
+})
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
@@ -122,6 +125,7 @@ builder.Services.AddOpenTelemetry()
         metrics.AddAspNetCoreInstrumentation();
         metrics.AddHttpClientInstrumentation();
         metrics.AddRuntimeInstrumentation();
+        metrics.AddMeter(EtrmService.Domain.Metrics.EtrmMetrics.MeterName);
         metrics.AddPrometheusExporter();
     });
 

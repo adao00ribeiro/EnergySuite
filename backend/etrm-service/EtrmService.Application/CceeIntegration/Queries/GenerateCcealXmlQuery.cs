@@ -58,6 +58,8 @@ public class GenerateCcealXmlQueryHandler : IRequestHandler<GenerateCcealXmlQuer
         using var stringWriter = new StringWriter();
         serializer.Serialize(stringWriter, dto, xmlNamespaces);
         
+        EtrmService.Domain.Metrics.EtrmMetrics.CceeXmlGeneratedCounter.Add(1);
+
         return stringWriter.ToString();
     }
 }

@@ -15,19 +15,19 @@ public class CcealXmlDto
 public class CcealContratoDto
 {
     [XmlElement("codigo_contrato")]
-    public string CodigoContrato { get; set; }
+    public string CodigoContrato { get; set; } = string.Empty;
 
     [XmlElement("agente_comprador")]
-    public string AgenteComprador { get; set; }
+    public string AgenteComprador { get; set; } = string.Empty;
 
     [XmlElement("agente_vendedor")]
-    public string AgenteVendedor { get; set; }
+    public string AgenteVendedor { get; set; } = string.Empty;
 
     [XmlElement("inicio_suprimento")]
-    public string InicioSuprimento { get; set; }
+    public string InicioSuprimento { get; set; } = string.Empty;
 
     [XmlElement("fim_suprimento")]
-    public string FimSuprimento { get; set; }
+    public string FimSuprimento { get; set; } = string.Empty;
 
     [XmlElement("montante_mwmed")]
     public decimal MontanteMwmed { get; set; }

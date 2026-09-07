@@ -211,6 +211,10 @@ async def consume_events():
         value_serializer=lambda m: json.dumps(m).encode("utf-8")
     )
 
+    retry_count = 0
+    max_backoff_seconds = 60
+    initial_backoff_seconds = 2
+
     while True:
         try:
             await consumer.start()
@@ -218,8 +222,10 @@ async def consume_events():
             logger.info("Successfully connected to Kafka (Consumer & Producer).")
             break
         except Exception as e:
-            logger.warning(f"Kafka not ready yet: {e}. Retrying in 5 seconds...")
-            await asyncio.sleep(5)
+            retry_count += 1
+            delay = min(max_backoff_seconds, initial_backoff_seconds * (2 ** (retry_count - 1)))
+            logger.warning(f"Kafka connection attempt {retry_count} failed: {e}. Retrying in {delay}s (Exponential Backoff)...")
+            await asyncio.sleep(delay)
 
     try:
         async for msg in consumer:
