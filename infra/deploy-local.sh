@@ -40,8 +40,9 @@ build_and_deploy() {
 }
 
 if [ "$SERVICE" = "all" ]; then
-    echo "🧹 Removendo Jobs imutáveis anteriores (se existirem)..."
+    echo "🧹 Removendo Jobs imutáveis e Webhooks travados do NGINX Ingress..."
     kubectl delete job kafka-init-topics -n energysuite --ignore-not-found=true
+    kubectl delete validatingwebhookconfiguration ingress-nginx-admission --ignore-not-found=true
 
     echo "⚡ Aplicando manifestos K8s do overlay DEV..."
     kubectl apply -k "${PROJECT_ROOT}/infra/k8s/overlays/dev"
