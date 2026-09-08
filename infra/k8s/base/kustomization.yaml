@@ -6,6 +6,7 @@ namespace: energysuite
 resources:
   - namespace.yaml
   - configmaps/env-configmap.yaml
+  - configmaps/postgres-init-cm.yaml
   - secrets/db-secrets.yaml
   - infra-services/postgres.yaml
   - infra-services/kafka.yaml

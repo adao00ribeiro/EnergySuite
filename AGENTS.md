@@ -87,9 +87,16 @@ Após a geração do planning, o `tech-lead` consulta a preferência de Workflow
 
 ---
 
+## 📌 Regra de Uso de Agentes (Strict Mandate)
+
+> ⚠️ **REGRA IMPERATIVA:** É OBRIGATÓRIO utilizar exclusivamente os agentes personalizados pré-existentes definidos na pasta `.agents/agents/` (ex: `platform-engineer`, `database-engineer`, `backend-architect`, `frontend-master`, `security-engineer`, `qa-test-master`, `devops-engineer`, `tech-lead`, etc.). **É ESTRITAMENTE PROIBIDO criar ou instanciar subagentes dinamicamente.**
+
+---
+
 ## 🛠️ Regras de Gating e Validação Final
 
 Nenhum arquivo de código modificado é entregue sem que:
 1. `dotnet build` e `ng build` compilem com 0 erros.
 2. `dotnet test` e `ng test` executem com 100% de sucesso.
 3. O `code-reviewer` aprove as alterações no checklist de Clean Code e SOLID.
+

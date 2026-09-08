@@ -56,3 +56,11 @@ Uma tarefa ou Sprint **NUNCA** pode ser fechada sem atender aos 3 critérios de 
 - **`product-backlog.md`**: Visão global de Epics e Módulos do sistema.
 - **`sprint-XX-<nome>.md`**: Documento da Sprint contendo o plano detalhado, User Story, Tabela de Tasks e Agentes Responsáveis.
 - **`execution_state.json`**: JSON de acompanhamento em tempo real do estado de cada tarefa.
+
+---
+
+## 📌 5. Regra Estrita de Uso de Agentes
+
+> ⚠️ **MANDATO ESTRITO:** É OBRIGATÓRIO utilizar exclusivamente os agentes personalizados pré-existentes catalogados na pasta `.agents/agents/`. **É PROIBIDO criar ou instanciar subagentes dinamicamente.** Qualquer tarefa atribuída deve carregar diretamente as personas e diretrizes dos arquivos Markdown em `.agents/agents/`.
+
+
