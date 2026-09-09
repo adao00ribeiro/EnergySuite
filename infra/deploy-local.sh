@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Deploy Local Script para EnergySuite (k3s + Argo CD GitOps)
+# Deploy Local Script para EnergySuite (Paridade 100% Local-Produção)
 # Uso:
 #   ./infra/deploy-local.sh            -> Atualiza todos os serviços no k3s
 #   ./infra/deploy-local.sh app-shell  -> Atualiza apenas o app-shell rapidamente
@@ -37,8 +37,8 @@ build_and_deploy() {
 }
 
 if [ "$SERVICE" = "all" ]; then
-    echo "⚡ Aplicando manifestos K8s do overlay DEV via Kustomize..."
-    kubectl apply -k "${PROJECT_ROOT}/infra/k8s/overlays/dev" || true
+    echo "⚡ Aplicando manifestos unificados K8s (infra/k8s/base)..."
+    kubectl apply -k "${PROJECT_ROOT}/infra/k8s/base" || true
 
     build_and_deploy "app-shell" "frontend/app-shell"
     build_and_deploy "mf-hydrology" "frontend/mf-hydrology"

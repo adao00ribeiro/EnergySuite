@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# k3s Bootstrap Script para EnergySuite Local Platform (Debian Host)
+# k3s Bootstrap Script para EnergySuite Local & Produção Platform
 # Uso: sudo ./infra/k3s-bootstrap.sh
 
 set -eo pipefail
@@ -34,15 +34,15 @@ kubectl create namespace cattle-system --dry-run=client -o yaml | kubectl apply 
 echo "🔄 Instalando Argo CD GitOps Controller..."
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml || true
 
-# 4. Aplicar Ingress e Configurações Base
+# 4. Aplicar Manifestos Base Únicos da EnergySuite (Paridade 100% Local-Prod)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
-echo "🛠️ Aplicando Manifestos Base da EnergySuite..."
-kubectl apply -k "${PROJECT_ROOT}/infra/k8s/overlays/dev" || true
+echo "🛠️ Aplicando Manifestos Unificados K8s (infra/k8s/base)..."
+kubectl apply -k "${PROJECT_ROOT}/infra/k8s/base" || true
 
 echo "🎉 Bootstrap k3s concluído com sucesso!"
-echo "📌 UIs disponíveis na LAN conforme sua configuração:"
+echo "📌 UIs disponíveis conforme sua configuração:"
 echo "  - Application: http://energysuite.com / http://api.energysuite.com"
 echo "  - Argo CD UI:  http://pc.argocd.com"
 echo "  - Rancher UI:  http://pc.rancher.com"
