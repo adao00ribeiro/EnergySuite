@@ -4,14 +4,10 @@ metadata:
   name: energysuite-base-ingress
   namespace: energysuite
   annotations:
-    kubernetes.io/ingress.class: "nginx"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-    nginx.ingress.kubernetes.io/websocket-services: "etrm-service"
-    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+    ingress.kubernetes.io/ssl-redirect: "true"
 spec:
+  ingressClassName: traefik
   tls:
     - hosts:
         - energysuite.com
@@ -54,13 +50,6 @@ spec:
             backend:
               service:
                 name: mf-pricing
-                port:
-                  number: 80
-          - path: /headlamp
-            pathType: Prefix
-            backend:
-              service:
-                name: headlamp
                 port:
                   number: 80
           - path: /auth

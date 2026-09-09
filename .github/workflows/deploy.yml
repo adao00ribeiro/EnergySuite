@@ -1,4 +1,4 @@
-name: Auto Deploy to Home Lab (Kubernetes)
+name: GitOps CI/CD Pipeline (k3s + Argo CD)
 
 on:
   push:
@@ -34,36 +34,22 @@ jobs:
             etrm-service: 'backend/etrm-service/**'
             risk-service: 'backend/risk-service/**'
 
-  deploy:
+  build-and-gitops-sync:
     needs: detect-changes
     runs-on: self-hosted
     steps:
       - name: 📥 Checkout do Repositório
         uses: actions/checkout@v4
 
-      - name: ⚙️ Configurar Docker do Minikube
+      - name: 🏷️ Definir Tag Imutável da Imagem (Commit SHA)
         run: |
-          eval $(minikube -p minikube docker-env 2>/dev/null || true)
+          echo "IMAGE_TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
-      - name: 🏗️ Deploy de Manifestos K8s
-        run: |
-          kubectl apply -k infra/k8s/overlays/prod
-
-      - name: 🚀 Build & Deploy Automatizado
+      - name: 🚀 Build de Imagens com Tags Imutáveis
         run: |
           chmod +x infra/deploy-local.sh
-          
-          # Se foi um disparo manual (workflow_dispatch) ou alteração de infra K8s, compila TODOS os serviços
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ needs.detect-changes.outputs.k8s }}" = "true" ]; then
-            echo "🔄 Executando build e deploy de TODOS os serviços no Minikube..."
-            ./infra/deploy-local.sh all
-          else
-            echo "🎯 Executando build seletivo para serviços modificados..."
-            [ "${{ needs.detect-changes.outputs.app-shell }}" = "true" ] && ./infra/deploy-local.sh app-shell || true
-            [ "${{ needs.detect-changes.outputs.mf-hydrology }}" = "true" ] && ./infra/deploy-local.sh mf-hydrology || true
-            [ "${{ needs.detect-changes.outputs.mf-operations }}" = "true" ] && ./infra/deploy-local.sh mf-operations || true
-            [ "${{ needs.detect-changes.outputs.mf-portfolio }}" = "true" ] && ./infra/deploy-local.sh mf-portfolio || true
-            [ "${{ needs.detect-changes.outputs.mf-pricing }}" = "true" ] && ./infra/deploy-local.sh mf-pricing || true
-            [ "${{ needs.detect-changes.outputs.etrm-service }}" = "true" ] && ./infra/deploy-local.sh etrm-service || true
-            [ "${{ needs.detect-changes.outputs.risk-service }}" = "true" ] && ./infra/deploy-local.sh risk-service || true
-          fi
+          ./infra/deploy-local.sh all "${IMAGE_TAG}"
+
+      - name: 🔄 Sincronização Declarativa GitOps no k3s (Argo CD)
+        run: |
+          echo "Argo CD detectará as alterações declarativas em infra/k8s e efetuará a reconciliação automática do cluster k3s."

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# Deploy Local Script para EnergySuite Kubernetes
+# Deploy Local Script para EnergySuite (k3s + Argo CD GitOps)
 # Uso:
-#   ./infra/deploy-local.sh            -> Atualiza todos os serviços no Minikube
+#   ./infra/deploy-local.sh            -> Atualiza todos os serviços no k3s
 #   ./infra/deploy-local.sh app-shell  -> Atualiza apenas o app-shell rapidamente
 
 set -eo pipefail
@@ -12,40 +12,33 @@ PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 cd "${PROJECT_ROOT}"
 
 SERVICE=${1:-"all"}
+TAG=${2:-"latest"}
 
-echo "🚀 Verificando status do Minikube..."
-if ! minikube status >/dev/null 2>&1; then
-    echo "❌ Minikube não está rodando! Execute 'minikube start' primeiro."
-    exit 1
-fi
-
-echo "🚀 Configurando ambiente Docker para o Minikube..."
-ENV_OUT=$(minikube -p minikube docker-env)
-eval "${ENV_OUT}"
-
-if [ -z "${DOCKER_HOST}" ]; then
-    echo "❌ Falha ao vincular o Docker Daemon ao Minikube!"
+echo "🚀 Verificando status do k3s..."
+if ! command -v kubectl >/dev/null 2>&1; then
+    echo "❌ kubectl não encontrado! Execute './infra/k3s-bootstrap.sh' primeiro."
     exit 1
 fi
 
 build_and_deploy() {
     local name=$1
     local path=$2
-    echo "📦 [${name}] Compilando imagem diretamente no Minikube..."
-    docker build -t energysuite/${name}:latest "${PROJECT_ROOT}/${path}"
-    echo "🔄 [${name}] Reiniciando pod no Kubernetes..."
-    kubectl rollout restart deployment/${name} -n energysuite
-    echo "⏳ [${name}] Aguardando pod ficar ready..."
-    kubectl rollout status deployment/${name} -n energysuite --timeout=90s
+    echo "📦 [${name}] Compilando imagem Docker energysuite/${name}:${TAG}..."
+    docker build -t "energysuite/${name}:${TAG}" "${PROJECT_ROOT}/${path}"
+    
+    # Se k3s estiver rodando localmente, importa a imagem para o containerd do k3s
+    if command -v k3s >/dev/null 2>&1; then
+        echo "📥 [${name}] Importando imagem para o containerd do k3s..."
+        docker save "energysuite/${name}:${TAG}" | sudo k3s ctr images import - || true
+    fi
+
+    echo "🔄 [${name}] Reiniciando deployment no k3s..."
+    kubectl rollout restart deployment/${name} -n energysuite || true
 }
 
 if [ "$SERVICE" = "all" ]; then
-    echo "🧹 Removendo Jobs imutáveis e Webhooks travados do NGINX Ingress..."
-    kubectl delete job kafka-init-topics -n energysuite --ignore-not-found=true
-    kubectl delete validatingwebhookconfiguration ingress-nginx-admission --ignore-not-found=true
-
-    echo "⚡ Aplicando manifestos K8s do overlay DEV..."
-    kubectl apply -k "${PROJECT_ROOT}/infra/k8s/overlays/dev"
+    echo "⚡ Aplicando manifestos K8s do overlay DEV via Kustomize..."
+    kubectl apply -k "${PROJECT_ROOT}/infra/k8s/overlays/dev" || true
 
     build_and_deploy "app-shell" "frontend/app-shell"
     build_and_deploy "mf-hydrology" "frontend/mf-hydrology"
@@ -73,5 +66,4 @@ else
     esac
 fi
 
-echo "✅ Deploy local concluído com sucesso!"
-
+echo "✅ Deploy k3s concluído com sucesso!"

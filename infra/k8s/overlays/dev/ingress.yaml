@@ -4,8 +4,10 @@ metadata:
   name: energysuite-base-ingress
   namespace: energysuite
 spec:
+  ingressClassName: traefik
   rules:
-    - http:
+    - host: energysuite.home
+      http:
         paths:
           - path: /
             pathType: Prefix
@@ -40,13 +42,6 @@ spec:
             backend:
               service:
                 name: mf-pricing
-                port:
-                  number: 80
-          - path: /headlamp
-            pathType: Prefix
-            backend:
-              service:
-                name: headlamp
                 port:
                   number: 80
           - path: /auth
