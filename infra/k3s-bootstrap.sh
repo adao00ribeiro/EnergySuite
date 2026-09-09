@@ -59,19 +59,24 @@ kubectl create namespace cattle-system --dry-run=client -o yaml | kubectl apply 
 echo "🔄 Instalando Argo CD GitOps Controller..."
 kubectl apply --server-side -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml || true
 
-# 4. Aplicar Ingress de Infraestrutura (Argo CD & Rancher)
+# 4. Implantar Rancher Server no cattle-system
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
+echo "🐮 Deploying Rancher Server em cattle-system..."
+kubectl apply -f "${PROJECT_ROOT}/infra/k8s/base/infra-services/rancher-deployment.yaml" || true
+
+# 5. Aplicar Ingress de Infraestrutura (Argo CD & Rancher)
 echo "🛠️ Aplicando Ingress do Argo CD (pc.argocd.com) e Rancher (pc.rancher.com)..."
 kubectl apply -f "${PROJECT_ROOT}/infra/k8s/base/infra-services/argocd-ingress.yaml" || true
 kubectl apply -f "${PROJECT_ROOT}/infra/k8s/base/infra-services/rancher-ingress.yaml" || true
+kubectl rollout restart deployment/argocd-server -n argocd 2>/dev/null || true
 
-# 5. Aplicar Manifestos Base Únicos da EnergySuite (energysuite.com & api.energysuite.com)
+# 6. Aplicar Manifestos Base Únicos da EnergySuite (energysuite.com & api.energysuite.com)
 echo "🛠️ Aplicando Manifestos Unificados K8s (infra/k8s/base)..."
 kubectl apply -k "${PROJECT_ROOT}/infra/k8s/base" || true
 
-# 6. Registrar a Aplicação no Argo CD (GitOps CRD)
+# 7. Registrar a Aplicação no Argo CD (GitOps CRD)
 echo "🔄 Registrando Argo CD Application CRD..."
 kubectl apply -f "${PROJECT_ROOT}/infra/k8s/base/gitops/argocd-app.yaml" || true
 
