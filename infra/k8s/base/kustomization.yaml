@@ -11,7 +11,12 @@ resources:
   - infra-services/postgres.yaml
   - infra-services/kafka.yaml
   - infra-services/keycloak.yaml
+  - infra-services/keycloak-redirect-middleware.yaml
   - infra-services/tempo-observability.yaml
+  - infra-services/grafana.yaml
+  - infra-services/minio.yaml
+  - infra-services/mlflow.yaml
+  - infra-services/airflow.yaml
   - app-services/etrm-service.yaml
   - app-services/risk-service.yaml
   - app-services/app-shell.yaml

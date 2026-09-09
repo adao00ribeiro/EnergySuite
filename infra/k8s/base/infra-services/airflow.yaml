@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow
+  namespace: energysuite
+  labels:
+    app: airflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow
+  template:
+    metadata:
+      labels:
+        app: airflow
+    spec:
+      containers:
+        - name: airflow
+          image: apache/airflow:2.7.1-python3.11
+          command:
+            - bash
+            - -c
+            - "airflow db init && (airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@energysuite.local --password admin || true) && airflow scheduler & airflow webserver"
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: AIRFLOW__CORE__EXECUTOR
+              value: "LocalExecutor"
+            - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+              value: "postgresql+psycopg2://root:rootpassword@postgres:5432/airflow_db"
+            - name: AIRFLOW__CORE__LOAD_EXAMPLES
+              value: "False"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: energysuite-secrets
+                  key: MINIO_ROOT_USER
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: energysuite-secrets
+                  key: MINIO_ROOT_PASSWORD
+            - name: MINIO_ENDPOINT
+              value: "http://minio:9000"
+            - name: MLFLOW_TRACKING_URI
+              value: "http://mlflow:5000"
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airflow
+  namespace: energysuite
+  labels:
+    app: airflow
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: http
+  selector:
+    app: airflow

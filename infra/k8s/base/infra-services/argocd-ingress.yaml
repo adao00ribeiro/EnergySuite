@@ -20,6 +20,16 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
+    - host: argocd.energysuite.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: argocd-server
+                port:
+                  number: 80
     - host: pc.argocd.com
       http:
         paths:

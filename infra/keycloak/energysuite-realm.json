@@ -76,8 +76,12 @@
         "http://127.0.0.1",
         "http://energysuite.local/*",
         "http://energysuite.local",
-        "http://energysuite.local:4200/*",
-        "http://energysuite.local:4200"
+        "http://app.energysuite.local/*",
+        "http://app.energysuite.local",
+        "http://api.energysuite.local/*",
+        "http://api.energysuite.local",
+        "http://auth.energysuite.local/*",
+        "http://auth.energysuite.local"
       ],
       "webOrigins": [
         "+",
@@ -85,7 +89,9 @@
         "http://localhost:8080",
         "http://localhost",
         "http://energysuite.local",
-        "http://energysuite.local:4200"
+        "http://app.energysuite.local",
+        "http://api.energysuite.local",
+        "http://auth.energysuite.local"
       ],
       "fullScopeAllowed": true,
       "defaultRoles": [

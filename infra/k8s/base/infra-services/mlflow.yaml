@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlflow
+  namespace: energysuite
+  labels:
+    app: mlflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mlflow
+  template:
+    metadata:
+      labels:
+        app: mlflow
+    spec:
+      containers:
+        - name: mlflow
+          image: python:3.11-slim
+          command:
+            - bash
+            - -c
+            - "pip install 'numpy<2.0.0' mlflow boto3 psycopg2-binary && mlflow server --host 0.0.0.0 --port 5000 --cors-allowed-origins '*' --backend-store-uri postgresql://root:rootpassword@postgres:5432/mlflow_db --default-artifact-root s3://mlflow/"
+          ports:
+            - containerPort: 5000
+              name: http
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: energysuite-secrets
+                  key: MINIO_ROOT_USER
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: energysuite-secrets
+                  key: MINIO_ROOT_PASSWORD
+            - name: MLFLOW_S3_ENDPOINT_URL
+              value: "http://minio:9000"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mlflow
+  namespace: energysuite
+  labels:
+    app: mlflow
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5000
+      targetPort: 5000
+      name: http
+  selector:
+    app: mlflow

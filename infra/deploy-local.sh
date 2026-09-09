@@ -29,7 +29,7 @@ build_and_deploy() {
     # Se k3s estiver rodando localmente, importa a imagem para o containerd do k3s
     if command -v k3s >/dev/null 2>&1; then
         echo "📥 [${name}] Importando imagem para o containerd do k3s..."
-        docker save "energysuite/${name}:${TAG}" | sudo k3s ctr images import - || true
+        docker save "energysuite/${name}:${TAG}" | k3s ctr images import - 2>/dev/null || docker save "energysuite/${name}:${TAG}" | sudo -n k3s ctr images import - || true
     fi
 
     echo "🔄 [${name}] Reiniciando deployment no k3s..."

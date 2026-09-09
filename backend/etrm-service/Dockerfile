@@ -19,7 +19,8 @@ RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
 COPY . .
 
 # Publish direto sem restore redundante e sem PDBs
-RUN dotnet publish EtrmService.API/EtrmService.API.csproj \
+RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
+    dotnet publish EtrmService.API/EtrmService.API.csproj \
     -c Release \
     -o /app/publish \
     --no-restore \

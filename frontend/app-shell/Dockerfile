@@ -1,10 +1,11 @@
-# Multi-stage build for Angular 22 App Shell
-FROM node:24-alpine AS build
+# Multi-stage build for Angular App Shell
+FROM node:22-alpine AS build
 WORKDIR /app
 
-# Install dependencies
+# Install dependencies com cache de pacotes npm
 COPY package.json package-lock.json .npmrc ./
-RUN npm config set fetch-retries 5 \
+RUN --mount=type=cache,id=npm,target=/root/.npm \
+    npm config set fetch-retries 5 \
     && npm config set fetch-retry-mintimeout 20000 \
     && npm config set fetch-retry-maxtimeout 120000 \
     && npm ci --legacy-peer-deps --maxsockets 5 --fetch-timeout=600000
