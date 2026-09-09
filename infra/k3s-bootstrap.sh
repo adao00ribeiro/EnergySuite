@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-# k3s Bootstrap Script para EnergySuite Local & Produção Platform
+# k3s Bootstrap Script para Plataforma de Infraestrutura EnergySuite (k3s, Traefik, Argo CD, Rancher)
 # Uso: sudo ./infra/k3s-bootstrap.sh
 
 set -eo pipefail
 
-echo "🚀 Iniciando Bootstrap da Infraestrutura k3s..."
+echo "🚀 Iniciando Bootstrap da Infraestrutura Base k3s..."
 
 # Configurar kubeconfig
 mkdir -p ~/.kube
@@ -46,16 +46,16 @@ except Exception as e:
 }
 
 echo "🧹 Verificando namespaces travados..."
-clear_stuck_namespace "energysuite"
 clear_stuck_namespace "argocd"
+clear_stuck_namespace "cattle-system"
 
-# 2. Criar Namespaces essenciais
-echo "📁 Criando Namespaces..."
+# 2. Criar Namespaces essenciais de Infraestrutura
+echo "📁 Criando Namespaces de Infraestrutura..."
 kubectl create namespace energysuite --dry-run=client -o yaml | kubectl apply -f - || true
 kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f - || true
 kubectl create namespace cattle-system --dry-run=client -o yaml | kubectl apply -f - || true
 
-# 3. Instalar Argo CD (usando --server-side para evitar estouro de tamanho de CRD)
+# 3. Instalar Argo CD GitOps Engine
 echo "🔄 Instalando Argo CD GitOps Controller..."
 kubectl apply --server-side -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml || true
 
@@ -72,17 +72,15 @@ kubectl apply -f "${PROJECT_ROOT}/infra/k8s/base/infra-services/argocd-ingress.y
 kubectl apply -f "${PROJECT_ROOT}/infra/k8s/base/infra-services/rancher-ingress.yaml" || true
 kubectl rollout restart deployment/argocd-server -n argocd 2>/dev/null || true
 
-# 6. Aplicar Manifestos Base Únicos da EnergySuite (energysuite.com & api.energysuite.com)
-echo "🛠️ Aplicando Manifestos Unificados K8s (infra/k8s/base)..."
-kubectl apply -k "${PROJECT_ROOT}/infra/k8s/base" || true
-
-# 7. Registrar a Aplicação no Argo CD (GitOps CRD)
+# 6. Registrar a Aplicação no Argo CD (O Argo CD gerenciará o deploy no cluster)
 echo "🔄 Registrando Argo CD Application CRD..."
 kubectl apply -f "${PROJECT_ROOT}/infra/k8s/base/gitops/argocd-app.yaml" || true
 
 echo ""
-echo "🎉 Bootstrap k3s concluído com sucesso!"
-echo "📌 UIs disponíveis conforme sua configuração:"
-echo "  - Application: http://energysuite.com / http://api.energysuite.com"
+echo "🎉 Bootstrap de Infraestrutura k3s concluído com sucesso!"
+echo "📌 Placa de Plataforma Pronta:"
 echo "  - Argo CD UI:  http://pc.argocd.com"
 echo "  - Rancher UI:  http://pc.rancher.com"
+echo ""
+echo "💡 Para compilar e carregar os serviços da aplicação EnergySuite:"
+echo "   Execute: ./infra/deploy-local.sh all"
