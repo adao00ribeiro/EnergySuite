@@ -5,10 +5,144 @@ metadata:
   namespace: energysuite
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: "web,websecure"
-    traefik.ingress.kubernetes.io/router.middlewares: "energysuite-redirect-keycloak-root@kubernetescrd"
 spec:
   ingressClassName: traefik
   rules:
+    # ── Localhost & nip.io (Sem alterar /etc/hosts) ──
+    - host: localhost
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app-shell
+                port:
+                  number: 80
+          - path: /mf-hydrology
+            pathType: Prefix
+            backend:
+              service:
+                name: mf-hydrology
+                port:
+                  number: 80
+          - path: /mf-operations
+            pathType: Prefix
+            backend:
+              service:
+                name: mf-operations
+                port:
+                  number: 80
+          - path: /mf-portfolio
+            pathType: Prefix
+            backend:
+              service:
+                name: mf-portfolio
+                port:
+                  number: 80
+          - path: /mf-pricing
+            pathType: Prefix
+            backend:
+              service:
+                name: mf-pricing
+                port:
+                  number: 80
+          - path: /auth
+            pathType: Prefix
+            backend:
+              service:
+                name: keycloak
+                port:
+                  number: 8080
+          - path: /api/v1/risk
+            pathType: Prefix
+            backend:
+              service:
+                name: risk-service
+                port:
+                  number: 8000
+          - path: /api/v1
+            pathType: Prefix
+            backend:
+              service:
+                name: etrm-service
+                port:
+                  number: 8080
+          - path: /hubs
+            pathType: Prefix
+            backend:
+              service:
+                name: etrm-service
+                port:
+                  number: 8080
+
+    - host: app.127.0.0.1.nip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app-shell
+                port:
+                  number: 80
+          - path: /mf-hydrology
+            pathType: Prefix
+            backend:
+              service:
+                name: mf-hydrology
+                port:
+                  number: 80
+          - path: /mf-operations
+            pathType: Prefix
+            backend:
+              service:
+                name: mf-operations
+                port:
+                  number: 80
+          - path: /mf-portfolio
+            pathType: Prefix
+            backend:
+              service:
+                name: mf-portfolio
+                port:
+                  number: 80
+          - path: /mf-pricing
+            pathType: Prefix
+            backend:
+              service:
+                name: mf-pricing
+                port:
+                  number: 80
+          - path: /auth
+            pathType: Prefix
+            backend:
+              service:
+                name: keycloak
+                port:
+                  number: 8080
+          - path: /api/v1/risk
+            pathType: Prefix
+            backend:
+              service:
+                name: risk-service
+                port:
+                  number: 8000
+          - path: /api/v1
+            pathType: Prefix
+            backend:
+              service:
+                name: etrm-service
+                port:
+                  number: 8080
+          - path: /hubs
+            pathType: Prefix
+            backend:
+              service:
+                name: etrm-service
+                port:
+                  number: 8080
+
     # ── App Frontend (app.energysuite.local & energysuite.com) ──
     - host: app.energysuite.local
       http:

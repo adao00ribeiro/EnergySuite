@@ -17,6 +17,8 @@ resources:
   - infra-services/minio.yaml
   - infra-services/mlflow.yaml
   - infra-services/airflow.yaml
+  - infra-services/headlamp.yaml
+  - infra-services/headlamp-ingress.yaml
   - app-services/etrm-service.yaml
   - app-services/risk-service.yaml
   - app-services/app-shell.yaml
