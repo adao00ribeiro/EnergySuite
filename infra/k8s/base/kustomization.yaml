@@ -12,8 +12,6 @@ resources:
   - infra-services/kafka.yaml
   - infra-services/keycloak.yaml
   - infra-services/tempo-observability.yaml
-  - infra-services/rancher-ingress.yaml
-  - infra-services/argocd-ingress.yaml
   - app-services/etrm-service.yaml
   - app-services/risk-service.yaml
   - app-services/app-shell.yaml
@@ -22,5 +20,4 @@ resources:
   - app-services/mf-hydrology.yaml
   - app-services/mf-operations.yaml
   - app-services/federation-manifest-cm.yaml
-  - gitops/argocd-app.yaml
   - ingress.yaml
