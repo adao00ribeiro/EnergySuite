@@ -9,6 +9,16 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
+    - host: pc.rancher.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: rancher
+                port:
+                  number: 80
     - host: rancher.home
       http:
         paths:

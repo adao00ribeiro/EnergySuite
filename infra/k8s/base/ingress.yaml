@@ -75,6 +75,37 @@ spec:
                 name: etrm-service
                 port:
                   number: 8080
+    - host: api.energysuite.com
+      http:
+        paths:
+          - path: /auth
+            pathType: Prefix
+            backend:
+              service:
+                name: keycloak
+                port:
+                  number: 8080
+          - path: /api/v1/risk
+            pathType: Prefix
+            backend:
+              service:
+                name: risk-service
+                port:
+                  number: 8000
+          - path: /api/v1
+            pathType: Prefix
+            backend:
+              service:
+                name: etrm-service
+                port:
+                  number: 8080
+          - path: /hubs
+            pathType: Prefix
+            backend:
+              service:
+                name: etrm-service
+                port:
+                  number: 8080
     - host: energysuite.home
       http:
         paths:

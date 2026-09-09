@@ -42,7 +42,7 @@ echo "🛠️ Aplicando Manifestos Base da EnergySuite..."
 kubectl apply -k "${PROJECT_ROOT}/infra/k8s/overlays/dev" || true
 
 echo "🎉 Bootstrap k3s concluído com sucesso!"
-echo "📌 UIs disponíveis na LAN (após configuração DNS /etc/hosts):"
-echo "  - Application: http://energysuite.home"
-echo "  - Argo CD UI:  http://argocd.home"
-echo "  - Rancher UI:  http://rancher.home"
+echo "📌 UIs disponíveis na LAN conforme sua configuração:"
+echo "  - Application: http://energysuite.com / http://api.energysuite.com"
+echo "  - Argo CD UI:  http://pc.argocd.com"
+echo "  - Rancher UI:  http://pc.rancher.com"
