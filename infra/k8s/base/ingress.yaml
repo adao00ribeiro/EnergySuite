@@ -9,10 +9,9 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: energysuite.home
+    - host: energysuite.com
       http:
         paths:
-          # ── Micro-frontends ──
           - path: /
             pathType: Prefix
             backend:
@@ -48,8 +47,6 @@ spec:
                 name: mf-pricing
                 port:
                   number: 80
-
-          # ── Identity & Access Management (Keycloak) ──
           - path: /auth
             pathType: Prefix
             backend:
@@ -57,8 +54,6 @@ spec:
                 name: keycloak
                 port:
                   number: 8080
-
-          # ── Python Risk Service ──
           - path: /api/v1/risk
             pathType: Prefix
             backend:
@@ -66,8 +61,6 @@ spec:
                 name: risk-service
                 port:
                   number: 8000
-
-          # ── ETRM Core Backend Services & APIs ──
           - path: /api/v1
             pathType: Prefix
             backend:
@@ -75,8 +68,72 @@ spec:
                 name: etrm-service
                 port:
                   number: 8080
-
-          # ── SignalR Hubs ──
+          - path: /hubs
+            pathType: Prefix
+            backend:
+              service:
+                name: etrm-service
+                port:
+                  number: 8080
+    - host: energysuite.home
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app-shell
+                port:
+                  number: 80
+          - path: /mf-hydrology
+            pathType: Prefix
+            backend:
+              service:
+                name: mf-hydrology
+                port:
+                  number: 80
+          - path: /mf-operations
+            pathType: Prefix
+            backend:
+              service:
+                name: mf-operations
+                port:
+                  number: 80
+          - path: /mf-portfolio
+            pathType: Prefix
+            backend:
+              service:
+                name: mf-portfolio
+                port:
+                  number: 80
+          - path: /mf-pricing
+            pathType: Prefix
+            backend:
+              service:
+                name: mf-pricing
+                port:
+                  number: 80
+          - path: /auth
+            pathType: Prefix
+            backend:
+              service:
+                name: keycloak
+                port:
+                  number: 8080
+          - path: /api/v1/risk
+            pathType: Prefix
+            backend:
+              service:
+                name: risk-service
+                port:
+                  number: 8000
+          - path: /api/v1
+            pathType: Prefix
+            backend:
+              service:
+                name: etrm-service
+                port:
+                  number: 8080
           - path: /hubs
             pathType: Prefix
             backend:
