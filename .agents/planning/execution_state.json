@@ -1,43 +1,64 @@
 {
-  "sprint": "Sprint 17",
-  "name": "Ajuste Global de Tema Escuro e Contraste de Frontend",
+  "sprint": "Sprint 18",
+  "name": "Erradicação Total de Mocks no Frontend & Integração de APIs Reais nos 5 Micro-Frontends",
   "mode": "AUTOMATIC",
   "status": "COMPLETED",
-  "updatedAt": "2026-09-07T10:13:00-03:00",
+  "updatedAt": "2026-09-11T21:39:00-03:00",
   "tasks": [
     {
-      "id": "TASK-17-01",
+      "id": "TASK-18-01",
       "discipline": "Frontend",
       "agent": "frontend-master",
-      "description": "Sobrescrever variáveis CSS e MDC form fields com texto claro #f8fafc e tom legível #94a3b8 nos 5 micro-frontends.",
+      "description": "Substituir loadMockOpportunities(), loadMockData() e simulações em mf-portfolio por chamadas HTTP aos endpoints ETRM (GET /api/v1/opportunities, POST /api/v1/operations/simulate).",
       "status": "DONE"
     },
     {
-      "id": "TASK-17-02",
-      "discipline": "QA",
-      "agent": "qa-test-master",
-      "description": "Auditar contraste de formulários nativos, subtítulos de modais, opacidade de opções desabilitadas e popovers mat-datepicker.",
+      "id": "TASK-18-02",
+      "discipline": "Frontend",
+      "agent": "frontend-master",
+      "description": "Integrar APIs reais em mf-operations: Dashboard Financeiro (FinancialSettlementItem), Tickets, Reajustes de Contratos, Contrapartes e Quick Action Cards.",
       "status": "DONE"
     },
     {
-      "id": "TASK-17-03",
+      "id": "TASK-18-03",
+      "discipline": "Frontend",
+      "agent": "frontend-master",
+      "description": "Conectar Curva Forward (forward-curve-chart.ts) e o prospect.service.ts em mf-pricing aos dados do ETRM (GET /api/v1/prospect/studies).",
+      "status": "DONE"
+    },
+    {
+      "id": "TASK-18-04",
+      "discipline": "Frontend",
+      "agent": "frontend-master",
+      "description": "Conectar Mapa de Precipitação (precipitation-map.component.ts) e Dashboard de Exportações em mf-hydrology aos endpoints reais Pluvia/Python.",
+      "status": "DONE"
+    },
+    {
+      "id": "TASK-18-05",
       "discipline": "Security",
       "agent": "security-engineer",
-      "description": "Garantir sanitização de entradas em formulários e proteção de opacidade em elementos de segurança.",
+      "description": "Auditar interceptores HTTP Angular em todos os MFEs garantindo headers de JWT Bearer e X-Tenant-ID em todas as requisições de API.",
       "status": "DONE"
     },
     {
-      "id": "TASK-17-04",
+      "id": "TASK-18-06",
+      "discipline": "QA",
+      "agent": "qa-test-master",
+      "description": "Criar suíte de testes xUnit/Jest para validação dos DTOs, Handlers e serviços Angular com 100% de aprovação.",
+      "status": "DONE"
+    },
+    {
+      "id": "TASK-18-07",
       "discipline": "Code Review",
       "agent": "code-reviewer",
-      "description": "Refatorar seletores CSS/SCSS evitando acoplamento e garantindo integridade das folhas de estilo em tempo de execução via Webpack Module Federation.",
+      "description": "Auditar Clean Code e SOLID no frontend: ausência de any, uso estrito de Angular Signals reativos e separação de responsabilidades.",
       "status": "DONE"
     },
     {
-      "id": "TASK-17-05",
+      "id": "TASK-18-08",
       "discipline": "DevOps",
       "agent": "devops-engineer",
-      "description": "Compilar os pacotes de produção/desenvolvimento de todos os 5 projetos (app-shell, mf-operations, mf-portfolio, mf-hydrology, mf-pricing) garantindo 0 erros.",
+      "description": "Executar compilação completa dotnet build no backend e ng build nos 5 micro-frontends (app-shell, mf-portfolio, mf-operations, mf-hydrology, mf-pricing) com 0 erros.",
       "status": "DONE"
     }
   ]
