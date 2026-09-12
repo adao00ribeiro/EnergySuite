@@ -237,3 +237,49 @@ async def get_precipitation_map(model: str = "GEFS", date: str = ""):
         "points": points_day1,
         "days": days,
     }
+
+@app.post("/api/v1/risk/mark-to-market")
+async def calculate_mark_to_market_endpoint(payload: dict):
+    """
+    Calcula o Mark-to-Market (MtM) dinâmico para uma carteira de posições de contratos.
+    """
+    from .risk_engine import RiskEngine
+    positions = payload.get("positions", [])
+    if not positions and isinstance(payload, list):
+        positions = payload
+    return RiskEngine.calculate_portfolio_mtm(positions)
+
+@app.post("/api/v1/parsers/official-files/parse")
+async def parse_official_file_endpoint(file_type: str, content: str):
+    """
+    Parser para arquivos setoriais oficiais do ONS/CCEE (DADVAZ, PREVS, VNA).
+    """
+    from .official_parsers import parse_dadvaz, parse_prevs, parse_vna
+    file_type_upper = file_type.upper()
+    if file_type_upper == "DADVAZ":
+        data = parse_dadvaz(content)
+    elif file_type_upper == "PREVS":
+        data = parse_prevs(content)
+    elif file_type_upper == "VNA":
+        data = parse_vna(content)
+    else:
+        raise HTTPException(status_code=400, detail=f"Unsupported file type: {file_type}")
+    return {"fileType": file_type_upper, "recordsCount": len(data), "data": data}
+
+@app.post("/api/v1/parsers/official-files/generate")
+async def generate_official_file_endpoint(file_type: str, records: list):
+    """
+    Gerador de arquivos setoriais oficiais do ONS/CCEE (DADVAZ, PREVS, VNA).
+    """
+    from .official_parsers import generate_dadvaz, generate_prevs, generate_vna
+    file_type_upper = file_type.upper()
+    if file_type_upper == "DADVAZ":
+        content = generate_dadvaz(records)
+    elif file_type_upper == "PREVS":
+        content = generate_prevs(records)
+    elif file_type_upper == "VNA":
+        content = generate_vna(records)
+    else:
+        raise HTTPException(status_code=400, detail=f"Unsupported file type: {file_type}")
+    return {"fileType": file_type_upper, "content": content}
+

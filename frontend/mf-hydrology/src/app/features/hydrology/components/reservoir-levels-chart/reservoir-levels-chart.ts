@@ -30,6 +30,7 @@ export class ReservoirLevelsChartComponent {
   hasError = signal(false);
   isEmpty = signal(false);
   isLoading = signal(false);
+  simulationProgress = signal<{ percentage: number; message: string } | null>(null);
 
   constructor() {
     effect(() => {

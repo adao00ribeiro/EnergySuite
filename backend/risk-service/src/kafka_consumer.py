@@ -41,10 +41,31 @@ async def process_pluvia_event(event_data: dict, producer: AIOKafkaProducer):
             
             # If this was triggered by BlendCustomMapCommand, the payload will have blendConfig
             blend_config = event_data.get("BlendConfig")
+            tenant_id = event_data.get("TenantId") or event_data.get("tenantId") or "00000000-0000-0000-0000-000000000001"
             
+            # Funcao auxiliar para emitir progresso via Kafka
+            async def emit_progress(pct: int, status_msg: str):
+                try:
+                    progress_payload = {
+                        "SimulationId": str(sim_id or uuid.uuid4()),
+                        "TenantId": str(tenant_id),
+                        "Percentage": pct,
+                        "Status": "COMPLETED" if pct >= 100 else "RUNNING",
+                        "Message": status_msg,
+                        "Timestamp": datetime.now(timezone.utc).isoformat()
+                    }
+                    await producer.send_and_wait(
+                        "simulation-progress",
+                        value=progress_payload,
+                        key=str(tenant_id).encode("utf-8")
+                    )
+                except Exception as ex_prog:
+                    logger.warning(f"Failed to emit progress {pct}%: {ex_prog}")
+
+            await emit_progress(10, f"Iniciando simulação {model}...")
+
             if blend_config:
                 logger.info(f"Running Hydrological Model with Blend Config: {blend_config}")
-                # Parse JSON string {"GEFS": 0.5, "ETA": 0.3, "ECMWF": 0.2}
                 try:
                     weights = json.loads(blend_config)
                     for mod, weight in weights.items():
@@ -54,11 +75,11 @@ async def process_pluvia_event(event_data: dict, producer: AIOKafkaProducer):
             else:
                 logger.info(f"Starting {model} calculation for scenario {scenario_id}")
             
-            # Cálculo de ENA a partir de dados reais de precipitação/hidrologia
-            # do Data Lake (vetorizado com pandas). O modelo físico completo (SMAP)
-            # fica fora de escopo desta sprint (débito registrado); aqui usamos a
-            # série real persistida como projeção, sem qualquer aleatoriedade.
+            await emit_progress(40, "Calculando vazões e ENA a partir do Data Lake...")
+
             ena_records = _compute_ena_forecast(sim_id, model)
+
+            await emit_progress(70, "Persistindo matrizes de ENA e arquivos GEVAZP...")
 
             if not ena_records:
                 logger.warning(
@@ -81,16 +102,19 @@ async def process_pluvia_event(event_data: dict, producer: AIOKafkaProducer):
                             TOPIC_ENA_PRODUCE,
                             ena_event.model_dump(mode='json'),
                             headers=header_list,
+                            key=str(tenant_id).encode("utf-8")
                         )
                     logger.info(
                         f"Published {len(ena_records)} ENA records for simulation {sim_id} "
                         f"to {TOPIC_ENA_PRODUCE}"
                     )
 
-            # Sprint 6: Generate and upload GEVAZP files (apenas se houver dados reais)
+            # Sprint 6: Generate and upload GEVAZP files
             with tracer.start_as_current_span("generate_gevazp_exports"):
                 generator = GevazpGenerator()
                 generator.generate_and_upload(sim_id, ena_records)
+
+            await emit_progress(100, f"Simulação {sim_id} concluída com sucesso!")
             
     except Exception as e:
         logger.error(f"Error processing pluvia event: {e}")

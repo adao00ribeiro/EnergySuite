@@ -127,6 +127,7 @@ public static class NativeInjectorConfig
                 rider.AddConsumer<EtrmService.API.Consumers.ProspectModelRunnerConsumer>();
                 rider.AddConsumer<EtrmService.API.Consumers.EnaCalculatedEventConsumer>();
                 rider.AddConsumer<EtrmService.API.Consumers.OperationPublishedEventConsumer>();
+                rider.AddConsumer<EtrmService.API.Consumers.HydrologicalSimulationProgressConsumer>();
                 rider.AddProducer<ContractCreatedIntegrationEvent>("contract-events");
                 rider.AddProducer<SimulationRequestedIntegrationEvent>("pluvia-events");
                 rider.AddProducer<OperationPublishedIntegrationEvent>("operation-events");
@@ -154,6 +155,11 @@ public static class NativeInjectorConfig
                     k.TopicEndpoint<EtrmService.Application.Prospect.Events.StudyExecutionRequestedEvent>("study-execution-requested", "etrm-service-group", e =>
                     {
                         e.ConfigureConsumer<EtrmService.API.Consumers.ProspectModelRunnerConsumer>(context);
+                    });
+
+                    k.TopicEndpoint<EtrmService.Application.IntegrationEvents.HydrologicalSimulationProgressEvent>("simulation-progress", "etrm-service-group", e =>
+                    {
+                        e.ConfigureConsumer<EtrmService.API.Consumers.HydrologicalSimulationProgressConsumer>(context);
                     });
                 });
             });

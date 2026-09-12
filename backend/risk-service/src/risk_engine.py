@@ -168,3 +168,62 @@ class RiskEngine:
             return "MEDIUM"
         else:
             return "LOW"
+
+    @classmethod
+    def calculate_portfolio_mtm(cls, positions: list) -> dict:
+        """
+        Calcula o MtM agregado para uma lista de posições de contratos.
+        """
+        total_mtm = 0.0
+        total_exposure = 0.0
+        details = []
+
+        now = datetime.now()
+        start_date = datetime(now.year, now.month, 1)
+        end_date = datetime(now.year, 12, 31)
+
+        for pos in positions:
+            contract_id = pos.get("contractId") or pos.get("contract_id", "")
+            code = pos.get("code") or (str(contract_id)[:8] if contract_id else "POS-1")
+            vol = float(pos.get("volumeMWm", pos.get("volume_mwm", 10.0)))
+            contract_price = float(pos.get("contractPrice", pos.get("contract_price", 100.0)))
+            pos_type = str(pos.get("type", "BUY")).upper()
+            submarket = 0
+
+            # Preço de mercado de referência do submercado SE/CO
+            market_price = cls.SUBMARKET_CONFIGS[0]["base_price"]
+
+            # MtM individual
+            mtm_val = cls.calculate_mtm(
+                contract_price=contract_price,
+                volume_mw=vol,
+                contract_type="Purchase" if pos_type == "BUY" else "Sale",
+                submarket=submarket,
+                start_date=start_date,
+                end_date=end_date
+            )
+
+            exposure = vol * 720 * market_price
+            total_mtm += mtm_val
+            total_exposure += exposure
+
+            mtm_pct = (mtm_val / exposure * 100) if exposure > 0 else 0.0
+
+            details.append({
+                "contractId": contract_id,
+                "code": code,
+                "volumeMWm": vol,
+                "contractPrice": contract_price,
+                "currentMarketPrice": market_price,
+                "mtmValue": round(mtm_val, 2),
+                "mtmPercent": round(mtm_pct, 2)
+            })
+
+        return {
+            "totalMtMValue": round(total_mtm, 2),
+            "totalExposureValue": round(total_exposure, 2),
+            "currency": "BRL",
+            "contractDetails": details,
+            "calculatedAt": datetime.utcnow().isoformat()
+        }
+
