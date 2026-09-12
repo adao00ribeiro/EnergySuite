@@ -2,6 +2,7 @@ import { inject } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NotificationService } from '../services/notification.service';
+import { environment } from '../../../environments/environment';
 
 const KEYCLOAK_TIMEOUT_MS = 15000;
 
@@ -11,7 +12,7 @@ export function initializeKeycloak(keycloak: KeycloakService) {
     withTimeout(
       keycloak.init({
         config: {
-          url: '/auth',
+          url: environment.keycloakUrl || 'http://localhost:8083/auth',
           realm: 'EnergySuite',
           clientId: 'energysuite-frontend'
         },

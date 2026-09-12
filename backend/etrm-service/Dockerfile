@@ -18,12 +18,11 @@ RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
 # Copia o restante do código fonte
 COPY . .
 
-# Publish direto sem restore redundante e sem PDBs
+# Publish sem PDBs (com verificação do cache NuGet)
 RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
     dotnet publish EtrmService.API/EtrmService.API.csproj \
     -c Release \
     -o /app/publish \
-    --no-restore \
     /p:UseAppHost=false \
     /p:DebugType=None \
     /p:DebugSymbols=false
