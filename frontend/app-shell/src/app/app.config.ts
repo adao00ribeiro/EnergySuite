@@ -22,8 +22,9 @@ function initializeSessionBridge(
 const keycloakBearerInterceptor: HttpInterceptorFn = (req, next) => {
   const keycloak = inject(KeycloakService);
   if (keycloak.isLoggedIn()) {
-    const token = keycloak.getToken();
-    if (token) {
+    const instance = keycloak.getKeycloakInstance();
+    const token = instance?.token || sessionStorage.getItem('energysuite_token');
+    if (token && typeof token === 'string') {
       const cloned = req.clone({
         setHeaders: { Authorization: `Bearer ${token}` }
       });

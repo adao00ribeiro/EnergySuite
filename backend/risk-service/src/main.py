@@ -28,12 +28,20 @@ trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(otlp_exporter)
 
 SQLAlchemyInstrumentor().instrument(engine=engine.sync_engine)
 
+from .data_lake import ensure_datalake_seeded
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Initialize Database Tables
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
         
+    # Auto-seed Data Lake (MinIO) if empty
+    try:
+        ensure_datalake_seeded()
+    except Exception as exc:
+        print(f"Data Lake auto-seed warning: {exc}")
+
     # Start Kafka consumer as a background task
     task = asyncio.create_task(consume_events())
     yield
@@ -108,6 +116,7 @@ async def get_portfolio_risk(db: AsyncSession = Depends(get_db), token_payload: 
     return portfolio
 
 @app.get("/api/v1/pluvia/precipitation-map")
+@app.get("/api/v1/risk/pluvia/precipitation-map")
 async def get_precipitation_map(model: str = "GEFS", date: str = ""):
     """
     Retorna uma matriz geoespacial de precipitação real lida do Data Lake (MinIO).

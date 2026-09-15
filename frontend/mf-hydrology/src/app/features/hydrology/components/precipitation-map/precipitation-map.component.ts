@@ -11,9 +11,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NgxEchartsModule, NGX_ECHARTS_CONFIG } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
+import * as echarts from 'echarts';
 import { PrecipitationMapDialogComponent } from './precipitation-map-dialog.component';
 import { environment } from '../../../../../environments/environment';
-import { token } from '../../../../core/theme-token';
+import { BRAZIL_GEOJSON } from './brazil-geo';
+
+// Register Brazil Map
+try {
+  echarts.registerMap('brazil', BRAZIL_GEOJSON as any);
+} catch (e) {
+  console.warn('Map brazil already registered', e);
+}
 
 interface ForecastDay {
   offset: number;
@@ -134,22 +142,41 @@ export class PrecipitationMapComponent implements OnInit {
   generateMiniChartOption(points: any[]): EChartsOption {
     return {
       tooltip: { show: false },
-      xAxis: { type: 'value', show: false },
-      yAxis: { type: 'value', show: false },
-      grid: { left: 0, right: 0, top: 0, bottom: 0 },
+      visualMap: {
+        show: false,
+        min: 0,
+        max: 80,
+        inRange: {
+          color: [
+            '#1e293b00',
+            '#70baff',
+            '#005bc5',
+            '#00b848',
+            '#ffd600',
+            '#ff8c00',
+            '#e62222',
+            '#9c27b0'
+          ]
+        }
+      },
+      geo: {
+        map: 'brazil',
+        roam: false,
+        zoom: 1.1,
+        center: [-54, -14],
+        itemStyle: {
+          areaColor: '#1e293b',
+          borderColor: '#334155',
+          borderWidth: 0.8
+        }
+      },
       series: [
         {
-          type: 'scatter',
-          symbolSize: 4,
+          type: 'heatmap',
+          coordinateSystem: 'geo',
           data: points,
-          itemStyle: {
-            color: (params: any) => {
-              const v = params.value[2];
-              if (v < 15) return token('--chart-green');
-              if (v < 30) return token('--chart-yellow');
-              return token('--chart-red');
-            }
-          }
+          pointSize: 10,
+          blurSize: 12
         }
       ]
     };
@@ -157,8 +184,8 @@ export class PrecipitationMapComponent implements OnInit {
 
   openDialog(mapItem: any) {
     this.dialog.open(PrecipitationMapDialogComponent, {
-      width: '80vw',
-      maxWidth: '800px',
+      width: '85vw',
+      maxWidth: '900px',
       data: mapItem
     });
   }

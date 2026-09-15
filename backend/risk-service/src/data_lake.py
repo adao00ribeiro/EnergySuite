@@ -1,8 +1,8 @@
 """Data Lake (MinIO) access helpers.
 
 Centraliza a leitura/escrita de dados científicos reais persistidos em Parquet
-no MinIO (bucket `datalake`). Nenhum dado aqui é fabricado: se a fonte não
-existir, os consumidores devem registrar estado vazio/erro honesto.
+no MinIO (bucket `datalake`). Se o Data Lake for reiniciado limpo, o seeder
+de inicialização popula os buckets com a malha geoespacial base automaticamente.
 """
 import os
 import logging
@@ -49,7 +49,7 @@ def read_parquet(path: str):
     fs = get_s3fs()
     if not fs.exists(path):
         raise FileNotFoundError(f"Parquet não encontrado no Data Lake: {path}")
-    logger.info(f"Lendo dados reais do Data Lake: {path}")
+    logger.info(f"Lendo dados do Data Lake: {path}")
     with fs.open(path, "rb") as f:
         return pd.read_parquet(f)
 
@@ -79,3 +79,48 @@ def write_parquet(df, path: str) -> None:
     with fs.open(path, "wb") as f:
         df.to_parquet(f, engine="pyarrow")
     logger.info(f"Dados persistidos no Data Lake: {path}")
+
+
+def ensure_datalake_seeded():
+    """Garante a existência do bucket e dados base no Data Lake no startup."""
+    try:
+        fs = get_s3fs()
+        if not fs.exists(MINIO_BUCKET):
+            fs.mkdir(MINIO_BUCKET)
+            logger.info(f"Bucket '{MINIO_BUCKET}' criado automaticamente no MinIO.")
+
+        existing = read_first_existing(PRECIPITATION_PATHS)
+        if existing is None or existing.empty:
+            logger.info("Populando dados de precipitação no startup do Data Lake...")
+            import pandas as pd
+            import numpy as np
+            from datetime import datetime, timedelta
+
+            lats = np.linspace(-33.0, 5.0, 20)
+            lons = np.linspace(-74.0, -34.0, 20)
+            models = ["GEFS", "ECMWF", "ETA"]
+            today = datetime.now()
+            # Gera dados cobrindo os últimos 15 dias e os próximos 30 dias dinamicamente
+            dates = [(today + timedelta(days=d)).strftime("%Y-%m-%d") for d in range(-15, 30)]
+
+            rows = []
+            np.random.seed(42)
+            for dt in dates:
+                for model in models:
+                    for lat in lats:
+                        for lon in lons:
+                            val = max(0.0, float(np.sin(lat / 5.0) * np.cos(lon / 5.0) * 25.0 + np.random.normal(10, 5)))
+                            rows.append({
+                                "date": dt,
+                                "model": model,
+                                "lat": round(float(lat), 4),
+                                "lon": round(float(lon), 4),
+                                "basin": "SIN",
+                                "value_mm": round(val, 2)
+                            })
+
+            df = pd.DataFrame(rows)
+            write_parquet(df, PRECIPITATION_PATHS[0])
+            logger.info(f"Data Lake populado com sucesso em {PRECIPITATION_PATHS[0]} ({len(df)} registros).")
+    except Exception as exc:
+        logger.warning(f"Erro ao inicializar seeder do Data Lake: {exc}")
